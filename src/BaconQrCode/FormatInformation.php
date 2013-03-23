@@ -9,8 +9,6 @@
 
 namespace BaconQrCode;
 
-use SplFixedArray;
-
 /**
  * Encapsulates a QR Code's format information, including the data mask used and
  * error correction level.
