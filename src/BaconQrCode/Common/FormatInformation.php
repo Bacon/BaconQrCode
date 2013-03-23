@@ -69,13 +69,13 @@ class FormatInformation
 
         return (
             self::$bitsSetInHalfByte[$a & 0xf]
-            + self::$bitsSetInHalfByte[(self::unsignedRightShift($a, 4) & 0x0f)]
-            + self::$bitsSetInHalfByte[(self::unsignedRightShift($a, 8) & 0x0f)]
-            + self::$bitsSetInHalfByte[(self::unsignedRightShift($a, 12) & 0x0f)]
-            + self::$bitsSetInHalfByte[(self::unsignedRightShift($a, 16) & 0x0f)]
-            + self::$bitsSetInHalfByte[(self::unsignedRightShift($a, 20) & 0x0f)]
-            + self::$bitsSetInHalfByte[(self::unsignedRightShift($a, 24) & 0x0f)]
-            + self::$bitsSetInHalfByte[(self::unsignedRightShift($a, 28) & 0x0f)]
+            + self::$bitsSetInHalfByte[(BitUtils::unsignedRightShift($a, 4) & 0x0f)]
+            + self::$bitsSetInHalfByte[(BitUtils::unsignedRightShift($a, 8) & 0x0f)]
+            + self::$bitsSetInHalfByte[(BitUtils::unsignedRightShift($a, 12) & 0x0f)]
+            + self::$bitsSetInHalfByte[(BitUtils::unsignedRightShift($a, 16) & 0x0f)]
+            + self::$bitsSetInHalfByte[(BitUtils::unsignedRightShift($a, 20) & 0x0f)]
+            + self::$bitsSetInHalfByte[(BitUtils::unsignedRightShift($a, 24) & 0x0f)]
+            + self::$bitsSetInHalfByte[(BitUtils::unsignedRightShift($a, 28) & 0x0f)]
         );
     }
 
@@ -159,14 +159,5 @@ class FormatInformation
             $this->ecLevel->get() === $other->getErrorCorrectionLevel()->get()
             && $this->dataMask === $other->getDataMask()
         );
-    }
-
-    protected static function unsignedRightShift($a, $b)
-    {
-        if ($b === 0) {
-            return $a;
-        }
-
-        return ($a >> $b) & ~(1 << (8 * PHP_INT_SIZE - 1) >> ($b - 1));
     }
 }

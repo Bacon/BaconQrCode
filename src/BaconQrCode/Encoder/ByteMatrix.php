@@ -12,7 +12,7 @@ namespace BaconQrCode\Encoder;
 use SplFixedArray;
 
 /**
- * Matrix.
+ * Byte matrix.
  */
 class ByteMatrix
 {
