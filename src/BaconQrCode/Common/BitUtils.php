@@ -26,10 +26,10 @@ class BitUtils
      */
     public static function unsignedRightShift($a, $b)
     {
-        if ($b === 0) {
-            return $a;
-        }
-
-        return ($a >> $b) & ~(1 << (8 * PHP_INT_SIZE - 1) >> ($b - 1));
+        return (
+            $a >= 0
+            ? $a >> $b
+            : (($a & 0x7fffffff) >> $b) | (0x40000000 >> ($b - 1))
+        );
     }
 }
