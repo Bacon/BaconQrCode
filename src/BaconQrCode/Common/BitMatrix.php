@@ -84,7 +84,7 @@ class BitMatrix
     public function flip($x, $y)
     {
         $offset = $y * $this->rowSize + ($x >> 5);
-        $this->bits[$offset] = $this->bits[$offset] ^ (1 << ($x & 0x1f))
+        $this->bits[$offset] = $this->bits[$offset] ^ (1 << ($x & 0x1f));
     }
 
     /**
