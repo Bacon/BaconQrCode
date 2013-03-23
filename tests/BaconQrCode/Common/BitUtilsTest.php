@@ -19,4 +19,12 @@ class BitUtilsTest extends TestCase
         $this->assertEquals(1, BitUtils::unsignedRightShift(10, 3));
         $this->assertEquals(536870910, BitUtils::unsignedRightShift(-10, 3));
     }
+
+    public function testNumberOfTrailingZeros()
+    {
+        $this->assertEquals(32, BitUtils::numberOfTrailingZeros(0));
+        $this->assertEquals(1, BitUtils::numberOfTrailingZeros(10));
+        $this->assertEquals(0, BitUtils::numberOfTrailingZeros(15));
+        $this->assertEquals(2, BitUtils::numberOfTrailingZeros(20));
+    }
 }

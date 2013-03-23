@@ -77,7 +77,7 @@ class BitArray
             $currentBits = $this->bits[$bitsOffset];
         }
 
-        $result = ($bitsOffset << 5) + $this->numberOfTrailingZeros($currentBits);
+        $result = ($bitsOffset << 5) + BitUtils::numberOfTrailingZeros($currentBits);
 
         return $result > $this->size ? $this->size : $result;
     }
@@ -102,7 +102,7 @@ class BitArray
             $currentBits = ~$this->bits[$bitsOffset];
         }
 
-        $result = ($bitsOffset << 5) + $this->numberOfTrailingZeros($currentBits);
+        $result = ($bitsOffset << 5) + BitUtils::numberOfTrailingZeros($currentBits);
 
         return $result > $this->size ? $this->size : $result;
     }
@@ -276,12 +276,5 @@ class BitArray
         }
 
         $this->bits = newBits;
-    }
-
-    protected function numberOfTrailingZeros($i)
-    {
-        $lastPos = strrpos(str_pad(decbin($i), 32, '0', STR_PAD_LEFT), '1');
-
-        return $lastPos === false ? 32 : 31 - $lastPos;
     }
 }
