@@ -188,7 +188,7 @@ class Encoder
         Version $version,
         ByteMatrix $matrix
     ) {
-        $minPenality = 0;
+        $minPenality     = PHP_INT_MAX;
         $bestMaskPattern = -1;
 
         for ($maskPattern = 0; $maskPattern < QrCode::NUM_MASK_PATTERNS; $maskPattern++) {
