@@ -7,7 +7,7 @@
  * @license   http://opensource.org/licenses/BSD-2-Clause Simplified BSD License
  */
 
-namespace BaconQrCode;
+namespace BaconQrCode\Common;
 
 /**
  * Encapsualtes the parameters for one error-correction block in one symbol

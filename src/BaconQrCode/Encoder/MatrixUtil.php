@@ -9,9 +9,9 @@
 
 namespace BaconQrCode\Encoder;
 
-use BaconQrCode\BitArray;
-use BaconQrCode\ErrorCorrectionLevel;
-use BaconQrCode\Version;
+use BaconQrCode\Common\BitArray;
+use BaconQrCode\Common\ErrorCorrectionLevel;
+use BaconQrCode\Common\Version;
 
 /**
  * Matrix utility.

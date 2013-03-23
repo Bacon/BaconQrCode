@@ -9,11 +9,11 @@
 
 namespace BaconQrCode\Encoder;
 
-use BaconQrCode\BitArray;
-use BaconQrCode\ErrorCorrectionLevel;
-use BaconQrCode\Mode;
+use BaconQrCode\Common\BitArray;
+use BaconQrCode\Common\ErrorCorrectionLevel;
+use BaconQrCode\Common\Mode;
+use BaconQrCode\Common\Version;
 use BaconQrCode\ReedSolomon;
-use BaconQrCode\Version;
 use SplFixedArray;
 
 /**

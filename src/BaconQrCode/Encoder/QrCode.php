@@ -9,7 +9,7 @@
 
 namespace BaconQrCode\Encoder;
 
-use BaconQrCode\ErrorCorrectionLevel;
+use BaconQrCode\Common\ErrorCorrectionLevel;
 
 /**
  * QR code.
