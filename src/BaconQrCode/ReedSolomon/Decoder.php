@@ -42,7 +42,7 @@ class Decoder
      * in-place, in the input.
      *
      * @param  SplFixedArray $received
-     * @param  integer $twoS
+     * @param  integer       $twoS
      * @return void
      * @throws Exception\RuntimeException
      */
@@ -89,7 +89,7 @@ class Decoder
      *
      * @param  GenericGfPoly $a
      * @param  GenericGfPoly $b
-     * @param  integer $radius
+     * @param  integer       $radius
      * @return array
      * @throws Exception\RuntimeException
      */
