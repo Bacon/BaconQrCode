@@ -17,13 +17,35 @@ use SplFixedArray;
  */
 class Decoder
 {
+    /**
+     * Generic Galois Field.
+     *
+     * @var GenericGf
+     */
     protected $field;
 
+    /**
+     * Create a new decoder.
+     *
+     * @param GenericGf $field
+     */
     public function __construct(GenericGf $field)
     {
         $this->field = $field;
     }
 
+    /**
+     * Decodes given set of received codewords, which include both data and
+     * error-correction codewords.
+     *
+     * Really, this means it uses Reed-Solomon to detect and correct errors,
+     * in-place, in the input.
+     *
+     * @param  SplFixedArray $received
+     * @param  integer $twoS
+     * @return void
+     * @throws Exception\RuntimeException
+     */
     public function decode(SplFixedArray $received, $twoS)
     {
         $poly                 = new GenericGfPoly($this->field, $received);
@@ -62,6 +84,15 @@ class Decoder
         }
     }
 
+    /**
+     * Runs the euclidean algorithm on two GF polys.
+     *
+     * @param  GenericGfPoly $a
+     * @param  GenericGfPoly $b
+     * @param  integer $radius
+     * @return array
+     * @throws Exception\RuntimeException
+     */
     protected function runEuclideanAlgorithm(GenericGfPoly $a, GenericGfPoly $b, $radius)
     {
         if ($a->getDegree() < $b->getDegree()) {
@@ -114,6 +145,13 @@ class Decoder
         return array($sigma, $omega);
     }
 
+    /**
+     * Finds error locations in a GF poly.
+     *
+     * @param  GenericGfPoly $errorLocator
+     * @return SplFixedArray
+     * @throws Exception\RuntimeException
+     */
     protected function findErrorLocations(GenericGfPoly $errorLocator)
     {
         $numErrors = $errorLocator->getDegree();
@@ -139,6 +177,13 @@ class Decoder
         return $result;
     }
 
+    /**
+     * Finds error magnitudes in a GF poly.
+     *
+     * @param  GenericGfPoly $errorEvaluator
+     * @param  SplFixedArray $errorLocations
+     * @return SplFixedArray
+     */
     protected function findErrorMagnitudes(GenericGfPoly $errorEvaluator, SplFixedArray $errorLocations)
     {
         $s      = count($errorLocations);

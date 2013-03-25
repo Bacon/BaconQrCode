@@ -18,9 +18,27 @@ use SplFixedArray;
  */
 class GenericGfPoly
 {
+    /**
+     * Generic galois field.
+     *
+     * @var GenericGf
+     */
     protected $field;
+
+    /**
+     * Coefficients of the poly.
+     *
+     * @var SplFixedArray
+     */
     protected $coefficients;
 
+    /**
+     * Creates a new generic GF poly with a given field and coefficients.
+     *
+     * @param  GenericGf     $field
+     * @param  SplFixedArray $coefficients
+     * @throws Exception\InvalidArgumentException
+     */
     public function __construct(GenericGf $field, SplFixedArray $coefficients)
     {
         $coefficientsLength = count($coefficients);
@@ -49,26 +67,53 @@ class GenericGfPoly
         }
     }
 
+    /**
+     * Gets the coefficients of the poly.
+     *
+     * @return SplFixedArray
+     */
     public function getCoefficients()
     {
         return $this->coefficients;
     }
 
+    /**
+     * Get the degree of the poly.
+     *
+     * @return integer
+     */
     public function getDegree()
     {
         return count($this->coefficients) - 1;
     }
 
+    /**
+     * Returns true if the poly is the monomial "0".
+     *
+     * @return boolean
+     */
     public function isZero()
     {
         return $this->coefficients[0] === 0;
     }
 
+    /**
+     * Returns the coefficient of x^degree term in the poly.
+     *
+     * @param  integer $degree
+     * @return integer
+     */
     public function getCoefficient($degree)
     {
         return $this->coefficients[count($this->coefficients) - 1 - $degree];
     }
 
+    /**
+     * Evauluates the poly at a given point.
+     *
+     * @param  integer $a
+     * @return integer
+     */
     public function evaluateAt($a)
     {
         if ($a === 0) {
@@ -95,6 +140,13 @@ class GenericGfPoly
         return $result;
     }
 
+    /**
+     * Adds or substracts this and another poly.
+     *
+     * @param  GenericGfPoly $other
+     * @return GenericGfPoly
+     * @throws Exception\InvalidArgumentException
+     */
     public function addOrSubtract(GenericGfPoly $other)
     {
         if ($this->field !== $other->getField()) {
@@ -131,6 +183,13 @@ class GenericGfPoly
         return new GenericGfPoly($this->field, $sumDiff);
     }
 
+/**
+     * Multiplies this and another poly or integer.
+     *
+     * @param  GenericGfPoly|integer $other
+     * @return GenericGfPoly
+     * @throws Exception\InvalidArgumentException
+     */
     public function multiply($other)
     {
         if (is_int($other)) {
@@ -165,16 +224,10 @@ class GenericGfPoly
                 $aCoefficient = $aCoefficients[$i];
 
                 for ($j = 0; $j < $bLength; $j++) {
-                    try {
                     $product[$i + $j] = GenericGf::addOrSubtract(
                         $product[$i + $j],
                         $this->field->multiply($aCoefficient, $bCoefficients[$j])
                     );
-                    } catch (\Exception $e) {
-
-            var_dump($aCoefficients);
-            throw $e;
-                    }
                 }
             }
         } else {
@@ -184,6 +237,14 @@ class GenericGfPoly
         return new GenericGfPoly($this->field, $product);
     }
 
+    /**
+     * Mulitplies the poly by a monomial.
+     *
+     * @param  integer $degree
+     * @param  integer $coefficient
+     * @return GenericGfPoly
+     * @throws Exception\InvalidArgumentException
+     */
     public function multiplyByMonomial($degree, $coefficient)
     {
         if ($degree < 0) {
@@ -202,6 +263,13 @@ class GenericGfPoly
         return new GenericGfPoly($this->field, $product);
     }
 
+    /**
+     * Divides the poly by another poly.
+     *
+     * @param  GenericGfPoly $other
+     * @return array
+     * @throws Exception\InvalidArgumentException
+     */
     public function divide(GenericGfPoly $other)
     {
         if ($this->field !== $other->getField()) {
@@ -228,6 +296,11 @@ class GenericGfPoly
         return array($quotient, $remainder);
     }
 
+    /**
+     * Gets the field of this poly.
+     *
+     * @return GenericGf
+     */
     public function getField()
     {
         return $this->field;

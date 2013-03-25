@@ -18,7 +18,7 @@ use SplFixedArray;
 class Encoder
 {
     /**
-     * Generic Galois Field.
+     * Generic galois field.
      *
      * @var GenericGf
      */
@@ -32,23 +32,23 @@ class Encoder
     protected $cachedGenerators = array();
 
     /**
-     * Create a new Reed-Solomon encoder.
+     * Creates a new Reed-Solomon encoder.
      *
      * @param GenericGf $field
      */
     public function __construct(GenericGf $field)
     {
-        $this->field = $field;
+        $this->field              = $field;
         $this->cachedGenerators[] = new GenericGfPoly($field, SplFixedArray::fromArray(array(1)));
     }
 
     /**
-     * Encode a message.
+     * Encodes a message.
      *
      * @param  SplFixedArray $toEncode
      * @param  integer       $ecBytes
-     * @throws Exception\InvalidArgumentException
      * @return void
+     * @throws Exception\InvalidArgumentException
      */
     public function encode(SplFixedArray $toEncode, $ecBytes)
     {
@@ -80,6 +80,12 @@ class Encoder
         ArrayUtils::arrayCopy($coefficients, 0, $toEncode, $dataBytes + $numZeroCoefficients, count($coefficients));
     }
 
+    /**
+     * Builds a generator with a certain degree.
+     *
+     * @param  integer $degree
+     * @return GenericGfPoly
+     */
     protected function buildGenerator($degree)
     {
         if ($degree >= count($this->cachedGenerators)) {

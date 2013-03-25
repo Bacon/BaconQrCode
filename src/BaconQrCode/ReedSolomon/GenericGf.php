@@ -19,8 +19,16 @@ use SplFixedArray;
  */
 class GenericGf
 {
+    /**
+     * Initialization threshold.
+     */
     const INITIALIZATION_THRESHOLD = 0;
 
+    /**
+     * Default generic Galois fields.
+     *
+     * @var array
+     */
     protected static $defaultGenericGfs = array(
         'aztec_data_12'         => array(0x1069, 4096, 1),
         'aztec_data_10'         => array(0x409, 1024, 1),
@@ -32,15 +40,69 @@ class GenericGf
         'maxicode_field_64'     => 'aztec_data_6'
     );
 
+    /**
+     * Exponent table.
+     *
+     * @var SplFixedArray
+     */
     protected $expTable;
+
+    /**
+     * Logarithm table.
+     *
+     * @var SplFixedArray
+     */
     protected $logTable;
+
+    /**
+     * GF poly representing zero.
+     *
+     * @var GenericGfPoly
+     */
+    protected $zero;
+
+    /**
+     * GF poly representing one.
+     *
+     * @var GenericGfPoly
+     */
     protected $one;
-    protected $two;
+
+    /**
+     * Size of the field.
+     *
+     * @var integer
+     */
     protected $size;
+
+    /**
+     * Primitive of the field.
+     *
+     * @var integer
+     */
     protected $primitive;
+
+    /**
+     * Generator base.
+     *
+     * @var integer
+     */
     protected $generatorBase;
+
+    /**
+     * Whether the field was initialized.
+     *
+     * @var boolean
+     */
     protected $initialized = false;
 
+    /**
+     * Creates a representation of GF(size) using the given primitive polynomial.
+     *
+     * @param integer $primitive
+     * @param integer $size
+     * @param integer $b
+     */
     public function __construct($primitive, $size, $b)
     {
         $this->primitive     = $primitive;
@@ -52,6 +114,13 @@ class GenericGf
         }
     }
 
+    /**
+     * Gets a default generic galois field.
+     *
+     * @param  string $name
+     * @return GenericGf
+     * @throws Exception\InvalidArgumentException
+     */
     public static function getDefaultGenericGf($name)
     {
         if (!isset(self::$defaultGenericGfs[$name])) {
@@ -71,6 +140,11 @@ class GenericGf
         return self::$defaultGenericGfs[$name];
     }
 
+    /**
+     * Initializes the field.
+     *
+     * @return void
+     */
     protected function initialize()
     {
         $this->expTable = new SplFixedArray($this->size);
@@ -99,6 +173,11 @@ class GenericGf
         $this->initialized = true;
     }
 
+    /**
+     * Checks if the field was initialized and initializes it if required.
+     *
+     * @return void
+     */
     protected function checkInit()
     {
         if (!$this->initialized) {
@@ -106,18 +185,36 @@ class GenericGf
         }
     }
 
+    /**
+     * Gets the zero GF poly.
+     *
+     * @return GenericGfPoly
+     */
     public function getZero()
     {
         $this->checkInit();
         return $this->zero;
     }
 
+    /**
+     * Gets the one GF poly.
+     *
+     * @return GenericGfPoly
+     */
     public function getOne()
     {
         $this->checkInit();
         return $this->one;
     }
 
+    /**
+     * Builds a monomial representing coefficient * x^degree.
+     *
+     * @param  integer $degree
+     * @param  integer $coefficient
+     * @return GenericGfPoly
+     * @throws Exception\InvalidArgumentException
+     */
     public function buildMonomial($degree, $coefficient)
     {
         $this->checkInit();
@@ -134,11 +231,24 @@ class GenericGf
         return new GenericGfPoly($this, $coefficients);
     }
 
+    /**
+     * Implements both addition and substraction; they are the same in GF(size).
+     *
+     * @param  integer $a
+     * @param  integer $b
+     * @return integer
+     */
     public static function addOrSubtract($a, $b)
     {
         return $a ^ $b;
     }
 
+    /**
+     * Returns 2 to the power of $a in GF(size).
+     *
+     * @param  integer $a
+     * @return integer
+     */
     public function exp($a)
     {
         $this->checkInit();
@@ -148,6 +258,13 @@ class GenericGf
         return $this->expTable[$a];
     }
 
+    /**
+     * Returns base 2 log of $a in GF(size).
+     *
+     * @param  integer $a
+     * @return integer
+     * @throws Exception\InvalidArgumentException
+     */
     public function log($a)
     {
         $this->checkInit();
@@ -161,6 +278,13 @@ class GenericGf
         return $this->logTable[$a];
     }
 
+    /**
+     * Returns multiplicative inverse of $a.
+     *
+     * @param  integer $a
+     * @return integer
+     * @throws Exception\InvalidArgumentException
+     */
     public function inverse($a)
     {
         $this->checkInit();
@@ -174,6 +298,13 @@ class GenericGf
         return $this->expTable[$this->size - $this->logTable[$a] - 1];
     }
 
+    /**
+     * Returns product of $a and $b in GF(size).
+     *
+     * @param  integer $a
+     * @param  integer $b
+     * @return integer
+     */
     public function multiply($a, $b)
     {
         $this->checkInit();
@@ -185,19 +316,24 @@ class GenericGf
             return 0;
         }
 
-        try {
         return $this->expTable[($this->logTable[$a] + $this->logTable[$b]) % ($this->size - 1)];
-        } catch (\Exception $e) {
-            var_dump($this->size, count($this->logTable), $a, $b);
-            throw $e;
-        }
     }
 
+    /**
+     * Gets the size of the field.
+     *
+     * @return integer
+     */
     public function getSize()
     {
         return $this->size;
     }
 
+    /**
+     * Get sthe generator base.
+     *
+     * @return integer
+     */
     public function getGeneratorBase()
     {
         return $this->generatorBase;

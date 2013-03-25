@@ -567,7 +567,7 @@ class EncoderTest extends TestCase
     }
 
     /**
-     * Assert that the data of two SplfFixedArrays are equal.
+     * Asserts that the data of two SplfFixedArrays are equal.
      *
      * Elements only contained in the received array are ignored.
      *
