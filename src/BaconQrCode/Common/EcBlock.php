@@ -33,6 +33,6 @@ class EcBlock
 
     public function getDataCodewords()
     {
-        return $this->getDataCodewords();
+        return $this->dataCodewords;
     }
 }

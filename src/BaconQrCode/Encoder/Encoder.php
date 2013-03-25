@@ -214,7 +214,7 @@ class Encoder
             $numEcBytes = $ecBlocks->getTotalEcCodewords();
 
             $numDataBytes    = $numBytes - $numEcBytes;
-            $totalInputBytes = floor(($numInputBits + 8) / 8);
+            $totalInputBytes = intval(($numInputBits + 8) / 8);
 
             if ($numDataBytes >= $totalInputBytes) {
                 return $version;
@@ -267,9 +267,9 @@ class Encoder
 
         $numRsBlocksInGroup2   = $numTotalBytes % $numRsBlocks;
         $numRsBlocksInGroup1   = $numRsBlocks - $numRsBlocksInGroup2;
-        $numTotalBytesInGroup1 = floor($numTotalBytes / $numRsBlocks);
+        $numTotalBytesInGroup1 = intval($numTotalBytes / $numRsBlocks);
         $numTotalBytesInGroup2 = $numTotalBytesInGroup1 + 1;
-        $numDataBytesInGroup1  = floor($numDataBytes / $numRsBlocks);
+        $numDataBytesInGroup1  = intval($numDataBytes / $numRsBlocks);
         $numDataBytesInGroup2  = $numDataBytesInGroup1 + 1;
         $numEcBytesInGroup1    = $numTotalBytesInGroup1 - $numDataBytesInGroup1;
         $numEcBytesInGroup2    = $numTotalBytesInGroup2 - $numDataBytesInGroup2;

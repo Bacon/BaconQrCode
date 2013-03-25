@@ -45,7 +45,7 @@ class BitMatrix
         $this->width   = $width;
         $this->height  = $height;
         $this->rowSize = ($width + 31) >> 5;
-        $this->bits    = new SplFixedArray($rowSize * $height);
+        $this->bits    = new SplFixedArray($this->rowSize * $height);
     }
 
     /**
@@ -254,7 +254,7 @@ class BitMatrix
             return null;
         }
 
-        $x = floor($bitsOffset / $this->rowSize);
+        $x = intval($bitsOffset / $this->rowSize);
         $y = ($bitsOffset % $this->rowSize) << 5;
 
         $bits = $this->bits[$bitsOffset];
@@ -286,7 +286,7 @@ class BitMatrix
             return null;
         }
 
-        $x = floor($bitsOffset / $this->rowSize);
+        $x = intval($bitsOffset / $this->rowSize);
         $y = ($bitsOffset % $this->rowSize) << 5;
 
         $bits = $this->bits[$bitsOffset];

@@ -9,6 +9,8 @@
 
 namespace BaconQrCode\ReedSolomon;
 
+use BaconQrCode\Common\ArrayUtils;
+use BaconQrCode\Exception;
 use SplFixedArray;
 
 /**
@@ -40,10 +42,7 @@ class GenericGfPoly
                 $this->coefficients = $field->getZero()->getCoefficients();
             } else {
                 $this->coefficients = new SplFixedArray($coefficientsLength - $firstNonZero);
-
-                for ($i = $firstNonZero; $i < $coefficientsLength; $i++) {
-                    $this->coefficients[] = $coefficients[$i];
-                }
+                ArrayUtils::arrayCopy($coefficients, $firstNonZero, $this->coefficients, 0, count($this->coefficients));
             }
         } else {
             $this->coefficients = $coefficients;
@@ -80,23 +79,23 @@ class GenericGfPoly
             $result = 0;
 
             foreach ($this->coefficients as $coefficient) {
-                $result = GenericGf::addOrSubstract($result, $coefficient);
+                $result = GenericGf::addOrSubtract($result, $coefficient);
             }
 
             return $result;
         }
 
         $size   = count($this->coefficients);
-        $result = $coefficient[0];
+        $result = $this->coefficients[0];
 
         for ($i = 1; $i < $size; $i++) {
-            $result = GenericGf::addOrSubstract($this->field->multiply($a, $result), $coefficient[$i]);
+            $result = GenericGf::addOrSubtract($this->field->multiply($a, $result), $this->coefficients[$i]);
         }
 
         return $result;
     }
 
-    public function addOrSubstract(GenericGfPoly $other)
+    public function addOrSubtract(GenericGfPoly $other)
     {
         if ($this->field !== $other->getField()) {
             throw new Exception\InvalidArgumentException('GenericGfPolys do not have same GenericGf field');
@@ -123,12 +122,10 @@ class GenericGfPoly
         $sumDiff    = new SplFixedArray($largerCoefficientsLength);
         $lengthDiff = $largerCoefficientsLength - $smallerCoefficientsLength;
 
-        for ($i = 0; $i < $lengthDiff; $i++) {
-            $sumDiff[] = $largerCoefficients[$i];
-        }
+        ArrayUtils::arrayCopy($largerCoefficients, 0, $sumDiff, 0, $lengthDiff);
 
         for ($i = $lengthDiff; $i < $largerCoefficientsLength; $i++) {
-            $sumDiff[$i] = GenericGf::addOrSubstract($smallerCoefficients[$i - $lengthDiff], $largerCoefficients[$i]);
+            $sumDiff[$i] = GenericGf::addOrSubtract($smallerCoefficients[$i - $lengthDiff], $largerCoefficients[$i]);
         }
 
         return new GenericGfPoly($this->field, $sumDiff);
@@ -168,10 +165,16 @@ class GenericGfPoly
                 $aCoefficient = $aCoefficients[$i];
 
                 for ($j = 0; $j < $bLength; $j++) {
-                    $product[$i + $j] = GenericGf::addOrSubstract(
+                    try {
+                    $product[$i + $j] = GenericGf::addOrSubtract(
                         $product[$i + $j],
                         $this->field->multiply($aCoefficient, $bCoefficients[$j])
                     );
+                    } catch (\Exception $e) {
+
+            var_dump($aCoefficients);
+            throw $e;
+                    }
                 }
             }
         } else {
@@ -218,8 +221,8 @@ class GenericGfPoly
             $scale             = $this->field->multiply($remainder->getCoefficient($remainder->getDegree()), $inverseDenominatorLeadingTerm);
             $term              = $other->multiplyByMonomial($degreeDifference, $scale);
             $iterationQuotient = $this->field->buildMonomial($degreeDifference, $scale);
-            $quotient          = $quotient->addOrSubstract($iterationQuotient);
-            $remainder         = $remainder->addOrSubstract($term);
+            $quotient          = $quotient->addOrSubtract($iterationQuotient);
+            $remainder         = $remainder->addOrSubtract($term);
         }
 
         return array($quotient, $remainder);

@@ -9,6 +9,7 @@
 
 namespace BaconQrCode\ReedSolomon;
 
+use BaconQrCode\Common\ArrayUtils;
 use SplFixedArray;
 
 /**
@@ -38,38 +39,36 @@ class Encoder
     public function __construct(GenericGf $field)
     {
         $this->field = $field;
-        $this->cachedGenerators[] = new GenericGfPoly($field);
+        $this->cachedGenerators[] = new GenericGfPoly($field, SplFixedArray::fromArray(array(1)));
     }
 
     /**
-     * Encode a value.
+     * Encode a message.
      *
-     * @param  string  $toEncode
-     * @param  integer $ecBytes
+     * @param  SplFixedArray $toEncode
+     * @param  integer       $ecBytes
      * @throws Exception\InvalidArgumentException
-     * @return string
+     * @return void
      */
-    public function encode(array $toEncode, $ecBytes)
+    public function encode(SplFixedArray $toEncode, $ecBytes)
     {
-        $toEncode = unpack('C*', $toEncode);
-
         if ($ecBytes === 0) {
             throw new Exception\InvalidArgumentException('No error correction bytes provided');
         }
 
-        $dataBytes = strlen($toEncode) - $ecBytes;
+        $dataBytes = count($toEncode) - $ecBytes;
 
         if ($dataBytes <= 0) {
             throw new Exception\InvalidArgumentException('No data bytes provided');
         }
 
         $generator        = $this->buildGenerator($ecBytes);
-        $infoCoefficients = SplFixedArray::fromArray(array_splice($toEncode, 0, $dataBytes));
+        $infoCoefficients = new SplFixedArray($dataBytes);
+        ArrayUtils::arrayCopy($toEncode, 0, $infoCoefficients, 0, $dataBytes);
 
-        $info      = new GenericGfPoly($this->field, $infoCoefficients);
-        $info      = $info->multiplyByMonomial($ecBytes, 1);
-        $remainder = $info->divide($generator);
-        $remainder = $remainder[1];
+        $info              = new GenericGfPoly($this->field, $infoCoefficients);
+        $info              = $info->multiplyByMonomial($ecBytes, 1);
+        list(, $remainder) = $info->divide($generator);
 
         $coefficients        = $remainder->getCoefficients();
         $numZeroCoefficients = $ecBytes - count($coefficients);
@@ -78,11 +77,7 @@ class Encoder
             $toEncode[$dataBytes + $i] = 0;
         }
 
-        foreach ($coefficients as $key => $value) {
-            $toEncode[$dataBytes + $numZeroCoefficients + $key] = $value;
-        }
-
-        return pack('C*', $toEncode);
+        ArrayUtils::arrayCopy($coefficients, 0, $toEncode, $dataBytes + $numZeroCoefficients, count($coefficients));
     }
 
     protected function buildGenerator($degree)
@@ -92,7 +87,15 @@ class Encoder
 
             for ($d = count($this->cachedGenerators); $d <= $degree; $d++) {
                 $nextGenerator = $lastGenerator->multiply(
-                    new GenericGfPoly($field)
+                    new GenericGfPoly(
+                        $this->field,
+                        SplFixedArray::fromArray(
+                            array(
+                                1,
+                                $this->field->exp($d - 1 + $this->field->getGeneratorBase())
+                            )
+                        )
+                    )
                 );
 
                 $this->cachedGenerators[] = $nextGenerator;

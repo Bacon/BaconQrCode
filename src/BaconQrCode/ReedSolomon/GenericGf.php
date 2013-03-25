@@ -9,6 +9,7 @@
 
 namespace BaconQrCode\ReedSolomon;
 
+use BaconQrCode\Exception;
 use SplFixedArray;
 
 /**
@@ -82,18 +83,18 @@ class GenericGf
 
             $x <<= 1;
 
-            if ($x >= $size) {
+            if ($x >= $this->size) {
                 $x ^= $this->primitive;
                 $x &= $this->size - 1;
             }
         }
 
-        for ($i = 0; $i < $size - 1; $i++) {
+        for ($i = 0; $i < $this->size - 1; $i++) {
             $this->logTable[$this->expTable[$i]] = $i;
         }
 
-        $this->zero = new GenericGfPoly($this);
-        $this->one  = new GenericGfPoly($this);
+        $this->zero = new GenericGfPoly($this, SplFixedArray::fromArray(array(0)));
+        $this->one  = new GenericGfPoly($this, SplFixedArray::fromArray(array(1)));
 
         $this->initialized = true;
     }
@@ -133,7 +134,7 @@ class GenericGf
         return new GenericGfPoly($this, $coefficients);
     }
 
-    public static function addOrSubstract($a, $b)
+    public static function addOrSubtract($a, $b)
     {
         return $a ^ $b;
     }
@@ -141,12 +142,17 @@ class GenericGf
     public function exp($a)
     {
         $this->checkInit();
+
+        $a = (int) $a;
+
         return $this->expTable[$a];
     }
 
     public function log($a)
     {
         $this->checkInit();
+
+        $a = (int) $a;
 
         if ($a === 0) {
             throw new Exception\InvalidArgumentException('Value may not be zero');
@@ -159,6 +165,8 @@ class GenericGf
     {
         $this->checkInit();
 
+        $a = (int) $a;
+
         if ($a === 0) {
             throw new Exception\InvalidArgumentException('Value may not be zero');
         }
@@ -170,11 +178,14 @@ class GenericGf
     {
         $this->checkInit();
 
+        $a = (int) $a;
+        $b = (int) $b;
+
         if ($a === 0 || $b === 0) {
-            throw new Exception\InvalidArgumentException('Values may not be zero');
+            return 0;
         }
 
-        return $this->expTable[($this->logTable[$a] + $this->logTable[$a]) % ($this->size - 1)];
+        return $this->expTable[($this->logTable[$a] + $this->logTable[$b]) % ($this->size - 1)];
     }
 
     public function getSize()
