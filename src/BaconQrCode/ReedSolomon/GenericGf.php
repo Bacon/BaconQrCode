@@ -24,7 +24,7 @@ class GenericGf
     protected static $defaultGenericGfs = array(
         'aztec_data_12'         => array(0x1069, 4096, 1),
         'aztec_data_10'         => array(0x409, 1024, 1),
-        'aztec_data_8'          => 'aztec_data_6',
+        'aztec_data_8'          => 'data_matrix_field_256',
         'aztec_data_6'          => array(0x43, 64, 1),
         'aztec_param'           => array(0x13, 16, 1),
         'qr_code_field_256'     => array(0x011d, 256, 0),
@@ -185,7 +185,12 @@ class GenericGf
             return 0;
         }
 
+        try {
         return $this->expTable[($this->logTable[$a] + $this->logTable[$b]) % ($this->size - 1)];
+        } catch (\Exception $e) {
+            var_dump($this->size, count($this->logTable), $a, $b);
+            throw $e;
+        }
     }
 
     public function getSize()

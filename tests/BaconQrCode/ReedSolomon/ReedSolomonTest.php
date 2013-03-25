@@ -55,7 +55,7 @@ class EncoderTest extends TestCase
             ),
             // QR Code
             array(
-                GenericGf::getDefaultGenericGf('data_matrix_field_256'),
+                GenericGf::getDefaultGenericGf('qr_code_field_256'),
                 SplFixedArray::fromArray(array(
                     0x10, 0x20, 0x0c, 0x56, 0x61, 0x80, 0xec, 0x11, 0xec, 0x11,
                     0xec, 0x11, 0xec, 0x11, 0xec, 0x11
@@ -65,7 +65,7 @@ class EncoderTest extends TestCase
                 ))
             ),
             array(
-                GenericGf::getDefaultGenericGf('data_matrix_field_256'),
+                GenericGf::getDefaultGenericGf('qr_code_field_256'),
                 SplFixedArray::fromArray(array(
                     0x72, 0x67, 0x2f, 0x77, 0x69, 0x6b, 0x69, 0x2f, 0x4d, 0x61,
                     0x69, 0x6e, 0x5f, 0x50, 0x61, 0x67, 0x65, 0x3b, 0x3b, 0x00,
@@ -473,19 +473,19 @@ class EncoderTest extends TestCase
      */
     public function testEncodeDecodeRandom(GenericGf $field, $dataSize, $ecSize)
     {
-        mt_srand(hexdec('DEADBEEF'));
-
         $this->assertTrue($dataSize > 0 && $dataSize <= $field->getSize() - 3, 'Invalid data size for field');
         $this->assertTrue($ecSize > 0 && $ecSize + $dataSize <= $field->getSize(), 'Invalid ECC size for field');
 
-        $encoder = new Encoder($field);
-        $message = new SplFixedArray($dataSize + $ecSize);
-        $dataWords = new SplFixedArray($dataSize);
-        $ecWords = new SplFixedArray($ecSize);
+        $encoder    = new Encoder($field);
+        $message    = new SplFixedArray($dataSize + $ecSize);
+        $dataWords  = new SplFixedArray($dataSize);
+        $ecWords    = new SplFixedArray($ecSize);
         $iterations = $field->getSize() > 256 ? 1 : self::DECODER_RANDOM_TEST_ITERATIONS;
 
         for ($i = 0; $i < $iterations; $i++) {
             // Generate random data.
+            mt_srand(hexdec('DEADBEEF' . $i));
+
             for ($k = 0; $k < $dataSize; $k++) {
                 $dataWords[$k] = mt_rand(0, $field->getSize() - 1);
             }
@@ -517,6 +517,8 @@ class EncoderTest extends TestCase
 
     protected function doTestDecoder(GenericGf $field, SplFixedArray $dataWords, SplFixedArray $ecWords)
     {
+        mt_srand(hexdec('DEADBEEF'));
+
         $decoder = new Decoder($field);
         $message = new SplFixedArray(count($dataWords) + count($ecWords));
         $maxErrors = intval(count($ecWords) / 2);
