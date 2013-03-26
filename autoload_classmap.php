@@ -17,6 +17,7 @@ return array(
     'BaconQrCode\Common\ArrayUtils'                  => __DIR__ . '/src/BaconQrCode/Common/ArrayUtils.php',
     'BaconQrCode\Common\EcBlock'                     => __DIR__ . '/src/BaconQrCode/Common/EcBlock.php',
     'BaconQrCode\Common\ErrorCorrectionLevel'        => __DIR__ . '/src/BaconQrCode/Common/ErrorCorrectionLevel.php',
+    'BaconQrCode\Common\ReedSolomon'                 => __DIR__ . '/src/BaconQrCode/Common/ReedSolomon.php',
     'BaconQrCode\Exception\ExceptionInterface'       => __DIR__ . '/src/BaconQrCode/Exception/ExceptionInterface.php',
     'BaconQrCode\Exception\InvalidArgumentException' => __DIR__ . '/src/BaconQrCode/Exception/InvalidArgumentException.php',
     'BaconQrCode\Exception\RuntimeException'         => __DIR__ . '/src/BaconQrCode/Exception/RuntimeException.php',
