@@ -225,18 +225,22 @@ class ReedSolomon
      * @param  SplFixedArray $data
      * @param  SplFixedArray $erasurePos
      * @param  integer       $numErasures
-     * @return void
+     * @return boolean
      */
     public function decode(SplFixedArray $data, SplFixedArray $erasurePos, $numErasures)
     {
-        $lambda    = SplFixedArray::fromArray(array_fill(0, $this->numRoots + 1, 0));
-        $syndromes = SplFixedArray::fromArray(array_fill(0, $this->numRoots, 0));
-        $b         = SplFixedArray::fromArray(array_fill(0, $this->numRoots + 1, 0));
-        $t         = SplFixedArray::fromArray(array_fill(0, $this->numRoots + 1, 0));
-        $omega     = SplFixedArray::fromArray(array_fill(0, $this->numRoots + 1, 0));
-        $root      = SplFixedArray::fromArray(array_fill(0, $this->numRoots, 0));
-        $reg       = SplFixedArray::fromArray(array_fill(0, $this->numRoots + 1, 0));
-        $loc       = SplFixedArray::fromArray(array_fill(0, $this->numRoots, 0));
+        // This speeds up the initialization a bit.
+        $numRootsPlusOne = SplFixedArray::fromArray(array_fill(0, $this->numRoots + 1, 0));
+        $numRoots        = SplFixedArray::fromArray(array_fill(0, $this->numRoots, 0));
+
+        $lambda    = clone $numRootsPlusOne;
+        $syndromes = clone $numRoots;
+        $b         = clone $numRootsPlusOne;
+        $t         = clone $numRootsPlusOne;
+        $omega     = clone $numRootsPlusOne;
+        $root      = clone $numRoots;
+        $reg       = clone $numRootsPlusOne;
+        $loc       = clone $numRoots;
 
         // Form the Syndromes; i.e., evaluate data(x) at roots of g(x)
         for ($i = 0; $i < $this->numRoots; $i++) {
@@ -269,7 +273,6 @@ class ReedSolomon
             return;
         }
 
-        // @todo memset(&lambda[1],0,NROOTS*sizeof(lambda[0]));
         $lambda[0] = 1;
 
         if ($numErasures > 0) {
@@ -311,8 +314,10 @@ class ReedSolomon
             $discrepancyR = $this->indexOf[$discrepancyR];
 
             if ($discrepancyR === $this->symbolSize) {
-                // @todo memmove(&b[1],b,NROOTS*sizeof(b[0]));
-                $b[0] = $this->symbolSize;
+                $tmp = $b->toArray();
+                array_unshift($tmp, $this->symbolSize);
+                array_pop($tmp);
+                $b = SplFixedArray::fromArray($tmp);
             } else {
                 $t[0] = $lambda[0];
 
@@ -331,11 +336,13 @@ class ReedSolomon
                         $b[$i] = $lambda[$i] === 0 ? $this->numRoots : $this->modNn($this->indexOf[$lambda[$i]] - $discrepancyR + $this->symbolSize);
                     }
                 } else {
-                    // @todo memmove(&b[1],b,NROOTS*sizeof(b[0]));
-                    $b[0] = $this->symbolSize;
+                    $tmp = $b->toArray();
+                    array_unshift($tmp, $this->symbolSize);
+                    array_pop($tmp);
+                    $b = SplFixedArray::fromArray($tmp);
                 }
 
-                // @todo memcpy(lambda,t,(NROOTS+1)*sizeof(t[0]));
+                $lambda = clone $t;
             }
         }
 
@@ -351,8 +358,10 @@ class ReedSolomon
         }
 
         // Find roots of the error+erasure locator polynomial by Chien search.
-        // @todo memcpy(&reg[1],&lambda[1],NROOTS*sizeof(reg[0]));
-        $count = 0;
+        $tmp    = $reg[0];
+        $reg    = clone $lambda;
+        $reg[0] = $tmp;
+        $count  = 0;
 
         for ($i = 1, $k = $this->iPrimitive - 1; $i <= $this->symbolSize; $i++, $k = $this->modNn($k + $this->iPrimitive)) {
             $q = 1;
@@ -381,8 +390,7 @@ class ReedSolomon
         if (++$count === $degLambda) {
             // deg(lambda) unequal to number of roots: uncorreactable error
             // detected
-            // @todo throw exception?
-            return;
+            return false;
         }
 
         // Compute err+eras evaluate poly omega(x) = s(x)*lambda(x) (modulo
@@ -441,6 +449,8 @@ class ReedSolomon
                 $erasurePos[$i] = $loc[$i];
             }
         }
+
+        return true;
     }
 
     /**
