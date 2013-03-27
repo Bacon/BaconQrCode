@@ -223,11 +223,11 @@ class ReedSolomon
      * Decodes received data.
      *
      * @param  SplFixedArray $data
-     * @param  integer       $erasurePos
+     * @param  SplFixedArray $erasurePos
      * @param  integer       $numErasures
      * @return void
      */
-    public function decode(SplFixedArray $data, $erasurePos, $numErasures)
+    public function decode(SplFixedArray $data, SplFixedArray $erasurePos, $numErasures)
     {
         $lambda    = SplFixedArray::fromArray(array_fill(0, $this->numRoots + 1, 0));
         $syndromes = SplFixedArray::fromArray(array_fill(0, $this->numRoots, 0));
