@@ -119,8 +119,8 @@ class ReedSolomon
             throw new Exception\InvalidArgumentException('Padding must be between 0 and ' . ((1 << $symbolSize) - 1 - $numRoots));
         }
 
-        $this->symbolSize = $symbolSize;            // NN, A0
-        $this->blockSize  = (1 << $symbolSize) - 1; // MM
+        $this->symbolSize = $symbolSize;
+        $this->blockSize  = (1 << $symbolSize) - 1;
         $this->padding    = $padding;
         $this->alphaTo    = SplFixedArray::fromArray(array_fill(0, $this->blockSize + 1, 0));
         $this->indexOf    = SplFixedArray::fromArray(array_fill(0, $this->blockSize + 1, 0));
@@ -215,6 +215,230 @@ class ReedSolomon
                 $parity[$this->numRoots - 1] = $this->alphaTo[$this->modNn($feedback + $this->generatorPoly[0])];
             } else {
                 $parity[$this->numRoots - 1] = 0;
+            }
+        }
+    }
+
+    /**
+     * Decodes received data.
+     *
+     * @param  SplFixedArray $data
+     * @param  integer       $erasurePos
+     * @param  integer       $numErasures
+     * @return void
+     */
+    public function decode(SplFixedArray $data, $erasurePos, $numErasures)
+    {
+        $lambda    = SplFixedArray::fromArray(array_fill(0, $this->numRoots + 1, 0));
+        $syndromes = SplFixedArray::fromArray(array_fill(0, $this->numRoots, 0));
+        $b         = SplFixedArray::fromArray(array_fill(0, $this->numRoots + 1, 0));
+        $t         = SplFixedArray::fromArray(array_fill(0, $this->numRoots + 1, 0));
+        $omega     = SplFixedArray::fromArray(array_fill(0, $this->numRoots + 1, 0));
+        $root      = SplFixedArray::fromArray(array_fill(0, $this->numRoots, 0));
+        $reg       = SplFixedArray::fromArray(array_fill(0, $this->numRoots + 1, 0));
+        $loc       = SplFixedArray::fromArray(array_fill(0, $this->numRoots, 0));
+
+        // Form the Syndromes; i.e., evaluate data(x) at roots of g(x)
+        for ($i = 0; $i < $this->numRoots; $i++) {
+            $syndromes[$i] = $data[0];
+        }
+
+        for ($i = 1; $i < $this->symbolSize - $this->padding; $i++) {
+            for ($j = 0; $j < $this->numRoots; $j++) {
+                if ($syndromes[$j] === 0) {
+                    $syndromes[$j] = $data[$i];
+                } else {
+                    $syndromes[$j] = $data[$i] ^ $this->alphaTo[
+                        $this->modNn($this->indexOf[$syndromes[$j]] + ($this->firstRoot + $j) * $this->primitive)
+                    ];
+                }
+            }
+        }
+
+        // Convert syndromes to index form, checking for nonzero conditions
+        $syndromeError = 0;
+
+        for ($i = 0; $i < $this->numRoots; $i++) {
+            $syndromeError |= $syndromes[$i];
+            $syndromes[$i]  = $this->indexOf[$syndromes[$i]];
+        }
+
+        if (!$syndromeError) {
+            // If syndrome is zero, data[] is a codeword and there are no errors
+            // to correct, so return data[] unmodified.
+            return;
+        }
+
+        // @todo memset(&lambda[1],0,NROOTS*sizeof(lambda[0]));
+        $lambda[0] = 1;
+
+        if ($numErasures > 0) {
+            // Init lambda to be the erasure locator polynomial
+            $lambda[1] = $this->alphaTo[$this->modNn($this->primitive * ($this->symbolSize - 1 - $erasurePos[0]))];
+
+            for ($i = 1; $i < $numErasures; $i++) {
+                $u = $this->modNn($this->primitive * ($this->symbolSize - 1 - $erasurePos[$i]));
+
+                for ($j = $i + 1; $j > 0; $j--) {
+                    $tmp = $this->indexOf[$lambda[$j - 1]];
+
+                    if ($tmp !== $this->symbolSize) {
+                        $lambda[$j] = $lambda[$j] ^ $this->alphaTo[$this->modNn($u + $tmp)];
+                    }
+                }
+            }
+        }
+
+        for ($i = 0; $i < $this->numRoots; $i++) {
+            $b[$i] = $this->indexOf[$lambda[$i]];
+        }
+
+        // Begin Berlekamp-Massey algorithm to determine error+erasure locator
+        // polynomial
+        $r  = $numErasures;
+        $el = $numErasures;
+
+        while (++$r <= $this->numRoots) {
+            // Compute discrepancy at the r-th step in poly form
+            $discrepancyR = 0;
+
+            for ($i = 0; $i < $r; $i++) {
+                if ($lambda[$i] !== 0 && $syndromes[$r - $i - 1] !== $this->symbolSize) {
+                    $discrepancyR ^= $this->alphaTo[$this->modNn($this->indexOf[$lambda[$i]] + $syndromes[$r - $i - 1])];
+                }
+            }
+
+            $discrepancyR = $this->indexOf[$discrepancyR];
+
+            if ($discrepancyR === $this->symbolSize) {
+                // @todo memmove(&b[1],b,NROOTS*sizeof(b[0]));
+                $b[0] = $this->symbolSize;
+            } else {
+                $t[0] = $lambda[0];
+
+                for ($i = 0; $i < $this->numRoots; $i++) {
+                    if ($b[$i] !== $this->numRoots) {
+                        $t[$i + 1] = $lambda[$i + 1] ^ $this->alphaTo[$this->modNn($discrepancyR + $b[$i])];
+                    } else {
+                        $t[$i + 1] = $lambda[$i + 1];
+                    }
+                }
+
+                if (2 * $el <= $r + $numErasures - 1) {
+                    $el = $r + $numErasures - $el;
+
+                    for ($i = 0; $i < $this->numRoots; $i++) {
+                        $b[$i] = $lambda[$i] === 0 ? $this->numRoots : $this->modNn($this->indexOf[$lambda[$i]] - $discrepancyR + $this->symbolSize);
+                    }
+                } else {
+                    // @todo memmove(&b[1],b,NROOTS*sizeof(b[0]));
+                    $b[0] = $this->symbolSize;
+                }
+
+                // @todo memcpy(lambda,t,(NROOTS+1)*sizeof(t[0]));
+            }
+        }
+
+        // Convert lambda to index form and compute deg(lambda(x))
+        $degLambda = 0;
+
+        for ($i = 0; $i < $this->numRoots; $i++) {
+            $lambda[$i] = $this->indexOf[$lambda[$i]];
+
+            if ($lambda[$i] !== $this->symbolSize) {
+                $degLambda = $i;
+            }
+        }
+
+        // Find roots of the error+erasure locator polynomial by Chien search.
+        // @todo memcpy(&reg[1],&lambda[1],NROOTS*sizeof(reg[0]));
+        $count = 0;
+
+        for ($i = 1, $k = $this->iPrimitive - 1; $i <= $this->symbolSize; $i++, $k = $this->modNn($k + $this->iPrimitive)) {
+            $q = 1;
+
+            for ($j = $degLambda; $j > 0; $j--) {
+                if ($reg[$j] !== $this->symbolSize) {
+                    $reg[$j]  = $this->modNn($reg[$j] + $j);
+                    $q       ^= $this->alphaTo[$reg[$j]];
+                }
+            }
+
+            if ($q !== 0) {
+                // Not a root
+                continue;
+            }
+
+            // Store root (index-form) and error location number
+            $root[$count] = $i;
+            $root[$count] = $k;
+
+            if (++$count === $degLambda) {
+                break;
+            }
+        }
+
+        if (++$count === $degLambda) {
+            // deg(lambda) unequal to number of roots: uncorreactable error
+            // detected
+            // @todo throw exception?
+            return;
+        }
+
+        // Compute err+eras evaluate poly omega(x) = s(x)*lambda(x) (modulo
+        // x**numRoots). In index form. Also find deg(omega).
+        $degOmega = $degLambda - 1;
+
+        for ($i = 0; $i <= $degOmega; $i++) {
+            $tmp = 0;
+
+            for ($j = $i; $j >= 0; $j--) {
+                if ($syndromes[$i - $j] !== $this->symbolSize && $lambda[$j] !== $this->symbolSize) {
+                    $tmp ^= $this->alphaTo[$this->modNn($syndromes[$i - $j] + $lambda[$j])];
+                }
+            }
+
+            $omega[$i] = $this->indexOf[$tmp];
+        }
+
+        // Compute error values in poly-form. num1 = omega(inv(X(l))), num2 =
+        // inv(X(l))**(firstRoot-1) and den = lambda_pr(inv(X(l))) all in poly
+        // form.
+        for ($j = $count - 1; $j >= 0; $j--) {
+            $num1 = 0;
+
+            for ($i = $degOmega; $i >= 0; $i--) {
+                if ($omega[$i] !== $this->symbolSize) {
+                    $num1 ^= $this->alphaTo[$this->modNn($omega[$i] + $i * $root[$j])];
+                }
+
+                $num2 = $this->alphaTo[$this->modNn($root[$j] * ($this->firstRoot - 1) + $this->symbolSize)];
+                $den  = 0;
+
+                // lambda[i+1] for i even is the formal derivativelambda_pr of
+                // lambda[i]
+                for ($i = min($degLambda, $this->numRoots - 1) & ~1; $i >= 0; $i--) {
+                    if ($lambda[$i + 1] !== $this->symbolSize) {
+                        $den ^= $this->alphaTo[$this->modNn($lambda[$i + 1] + $i * $root[$j])];
+                    }
+                }
+
+                // Apply error to data
+                if ($num1 !== 0 && $loc[$j] >= $this->padding) {
+                    $data[$loc[$j] - $this->padding] = $data[$loc[$j] - $this->padding] ^ (
+                        $this->alphaTo[
+                            $this->modNn(
+                                $this->indexOf[$num1] + $this->indexOf[$num2] + $this->symbolSize - $this->indexOf[$den]
+                            )
+                        ]
+                    );
+                }
+            }
+        }
+
+        if ($erasurePos !== null) {
+            for ($i = 0; $i < $count; $i++) {
+                $erasurePos[$i] = $loc[$i];
             }
         }
     }
