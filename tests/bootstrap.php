@@ -7,4 +7,4 @@
  * @license   http://opensource.org/licenses/BSD-2-Clause Simplified BSD License
  */
 
-require_once '../autoload_register.php';
+require_once __DIR__ . '/../autoload_register.php';
