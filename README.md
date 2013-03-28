@@ -1,6 +1,8 @@
 QR Code generator
 =================
 
+Master: [![Build Status](https://api.travis-ci.org/Bacon/BaconQrCode.png?branch=master)](http://travis-ci.org/Bacon/BaconQrCode)
+
 Introduction
 ------------
 BaconQrCode is a port of QR code portion of the ZXing library. It currently
