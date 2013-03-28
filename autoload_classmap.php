@@ -22,8 +22,4 @@ return array(
     'BaconQrCode\Exception\InvalidArgumentException' => __DIR__ . '/src/BaconQrCode/Exception/InvalidArgumentException.php',
     'BaconQrCode\Exception\RuntimeException'         => __DIR__ . '/src/BaconQrCode/Exception/RuntimeException.php',
     'BaconQrCode\Exception\OutOfBoundsException'     => __DIR__ . '/src/BaconQrCode/Exception/OutOfBoundsException.php',
-    'BaconQrCode\ReedSolomon\Encoder'                => __DIR__ . '/src/BaconQrCode/ReedSolomon/Encoder.php',
-    'BaconQrCode\ReedSolomon\GenericGfPoly'          => __DIR__ . '/src/BaconQrCode/ReedSolomon/GenericGfPoly.php',
-    'BaconQrCode\ReedSolomon\Decoder'                => __DIR__ . '/src/BaconQrCode/ReedSolomon/Decoder.php',
-    'BaconQrCode\ReedSolomon\GenericGf'              => __DIR__ . '/src/BaconQrCode/ReedSolomon/GenericGf.php',
 );
