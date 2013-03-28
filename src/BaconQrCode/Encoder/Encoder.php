@@ -12,8 +12,8 @@ namespace BaconQrCode\Encoder;
 use BaconQrCode\Common\BitArray;
 use BaconQrCode\Common\ErrorCorrectionLevel;
 use BaconQrCode\Common\Mode;
+use BaconQrCode\Common\ReedSolomonCodec;
 use BaconQrCode\Common\Version;
-use BaconQrCode\ReedSolomon;
 use SplFixedArray;
 
 /**
@@ -369,13 +369,9 @@ class Encoder
             $toEncode[$i] = ord($dataBytes[$i]) & 0xff;
         }
 
-        $encoder = new ReedSolomon\Encoder(ReedSolomon\GenericGf::getDefaultGenericGf('qr_code_field_256'));
-        $encoded = $encoder->encode($toEncode, $numEcBytesInBlock);
         $ecBytes = new SplFixedArray($numEcBytesInBlock);
-
-        for ($i = 0; $i < $numEcBytesInBlock; $i++) {
-            $ecBytes[$i] = $encoded[$numDataBytes + $i];
-        }
+        $codec   = new ReedSolomonCodec(8, 0x11d, 0, 1, $numEcBytesInBlock, 255 - $numDataBytes - $numEcBytesInBlock);
+        $codec->encode($toEncode, $ecBytes);
 
         return $ecBytes;
     }
