@@ -13,11 +13,11 @@ use BaconQrCode\Exception;
 use SplFixedArray;
 
 /**
- * Reed-Solomon en- and decoder.
+ * Reed-Solomon codec for 8-bit characters.
  *
  * Based on libfec by Phil Karn, KA9Q.
  */
-class ReedSolomon
+class ReedSolomonCodec
 {
     /**
      * Symbol size in bits.
@@ -193,25 +193,25 @@ class ReedSolomon
             $parity[$i] = 0;
         }
 
-        $iterations = $this->symbolSize - $this->numRoots - $this->padding;
+        $iterations = $this->blockSize - $this->numRoots - $this->padding;
 
         for ($i = 0; $i < $iterations; $i++) {
             $feedback = $this->indexOf[$data[$i] ^ $parity[0]];
 
-            if ($feedback !== $this->symbolSize) {
+            if ($feedback !== $this->blockSize) {
                 // Feedback term is non-zero
-                $feedback = $this->modNn($this->symbolSize - $this->generatorPoly[$this->numRoots] + $feedback);
+                $feedback = $this->modNn($this->blockSize - $this->generatorPoly[$this->numRoots] + $feedback);
 
                 for ($j = 1; $j < $this->numRoots; $j++) {
                     $parity[$j] = $parity[$j] ^ $this->alphaTo[$this->modNn($feedback + $this->generatorPoly[$this->numRoots - $j])];
                 }
             }
 
-            for ($i = 0; $i < $this->numRoots; $i++) {
-                $parity[$i] = $parity[$i + 1];
+            for ($j = 0; $j < $this->numRoots - 1; $j++) {
+                $parity[$j] = $parity[$j + 1];
             }
 
-            if ($feedback !== $this->symbolSize) {
+            if ($feedback !== $this->blockSize) {
                 $parity[$this->numRoots - 1] = $this->alphaTo[$this->modNn($feedback + $this->generatorPoly[0])];
             } else {
                 $parity[$this->numRoots - 1] = 0;
@@ -222,32 +222,29 @@ class ReedSolomon
     /**
      * Decodes received data.
      *
-     * @param  SplFixedArray $data
-     * @param  SplFixedArray $erasurePos
-     * @param  integer       $numErasures
-     * @return boolean
+     * @param  SplFixedArray      $data
+     * @param  SplFixedArray|null $erasures
+     * @return null|integer
      */
-    public function decode(SplFixedArray $data, SplFixedArray $erasurePos, $numErasures)
+    public function decode(SplFixedArray $data, SplFixedArray $erasures = null)
     {
         // This speeds up the initialization a bit.
         $numRootsPlusOne = SplFixedArray::fromArray(array_fill(0, $this->numRoots + 1, 0));
         $numRoots        = SplFixedArray::fromArray(array_fill(0, $this->numRoots, 0));
 
         $lambda    = clone $numRootsPlusOne;
-        $syndromes = clone $numRoots;
         $b         = clone $numRootsPlusOne;
         $t         = clone $numRootsPlusOne;
         $omega     = clone $numRootsPlusOne;
         $root      = clone $numRoots;
-        $reg       = clone $numRootsPlusOne;
         $loc       = clone $numRoots;
 
-        // Form the Syndromes; i.e., evaluate data(x) at roots of g(x)
-        for ($i = 0; $i < $this->numRoots; $i++) {
-            $syndromes[$i] = $data[0];
-        }
+        $numErasures = ($erasures !== null ? count($erasures) : 0);
 
-        for ($i = 1; $i < $this->symbolSize - $this->padding; $i++) {
+        // Form the Syndromes; i.e., evaluate data(x) at roots of g(x)
+        $syndromes = SplFixedArray::fromArray(array_fill(0, $this->numRoots, $data[0]));
+
+        for ($i = 1; $i < $this->blockSize - $this->padding; $i++) {
             for ($j = 0; $j < $this->numRoots; $j++) {
                 if ($syndromes[$j] === 0) {
                     $syndromes[$j] = $data[$i];
@@ -270,29 +267,29 @@ class ReedSolomon
         if (!$syndromeError) {
             // If syndrome is zero, data[] is a codeword and there are no errors
             // to correct, so return data[] unmodified.
-            return;
+            return 0;
         }
 
         $lambda[0] = 1;
 
         if ($numErasures > 0) {
             // Init lambda to be the erasure locator polynomial
-            $lambda[1] = $this->alphaTo[$this->modNn($this->primitive * ($this->symbolSize - 1 - $erasurePos[0]))];
+            $lambda[1] = $this->alphaTo[$this->modNn($this->primitive * ($this->blockSize - 1 - $erasures[0]))];
 
             for ($i = 1; $i < $numErasures; $i++) {
-                $u = $this->modNn($this->primitive * ($this->symbolSize - 1 - $erasurePos[$i]));
+                $u = $this->modNn($this->primitive * ($this->blockSize - 1 - $erasures[$i]));
 
                 for ($j = $i + 1; $j > 0; $j--) {
                     $tmp = $this->indexOf[$lambda[$j - 1]];
 
-                    if ($tmp !== $this->symbolSize) {
+                    if ($tmp !== $this->blockSize) {
                         $lambda[$j] = $lambda[$j] ^ $this->alphaTo[$this->modNn($u + $tmp)];
                     }
                 }
             }
         }
 
-        for ($i = 0; $i < $this->numRoots; $i++) {
+        for ($i = 0; $i <= $this->numRoots; $i++) {
             $b[$i] = $this->indexOf[$lambda[$i]];
         }
 
@@ -306,23 +303,23 @@ class ReedSolomon
             $discrepancyR = 0;
 
             for ($i = 0; $i < $r; $i++) {
-                if ($lambda[$i] !== 0 && $syndromes[$r - $i - 1] !== $this->symbolSize) {
+                if ($lambda[$i] !== 0 && $syndromes[$r - $i - 1] !== $this->blockSize) {
                     $discrepancyR ^= $this->alphaTo[$this->modNn($this->indexOf[$lambda[$i]] + $syndromes[$r - $i - 1])];
                 }
             }
 
             $discrepancyR = $this->indexOf[$discrepancyR];
 
-            if ($discrepancyR === $this->symbolSize) {
+            if ($discrepancyR === $this->blockSize) {
                 $tmp = $b->toArray();
-                array_unshift($tmp, $this->symbolSize);
+                array_unshift($tmp, $this->blockSize);
                 array_pop($tmp);
                 $b = SplFixedArray::fromArray($tmp);
             } else {
                 $t[0] = $lambda[0];
 
                 for ($i = 0; $i < $this->numRoots; $i++) {
-                    if ($b[$i] !== $this->numRoots) {
+                    if ($b[$i] !== $this->blockSize) {
                         $t[$i + 1] = $lambda[$i + 1] ^ $this->alphaTo[$this->modNn($discrepancyR + $b[$i])];
                     } else {
                         $t[$i + 1] = $lambda[$i + 1];
@@ -332,12 +329,16 @@ class ReedSolomon
                 if (2 * $el <= $r + $numErasures - 1) {
                     $el = $r + $numErasures - $el;
 
-                    for ($i = 0; $i < $this->numRoots; $i++) {
-                        $b[$i] = $lambda[$i] === 0 ? $this->numRoots : $this->modNn($this->indexOf[$lambda[$i]] - $discrepancyR + $this->symbolSize);
+                    for ($i = 0; $i <= $this->numRoots; $i++) {
+                        $b[$i] = (
+                            $lambda[$i] === 0
+                            ? $this->blockSize
+                            : $this->modNn($this->indexOf[$lambda[$i]] - $discrepancyR + $this->blockSize)
+                        );
                     }
                 } else {
                     $tmp = $b->toArray();
-                    array_unshift($tmp, $this->symbolSize);
+                    array_unshift($tmp, $this->blockSize);
                     array_pop($tmp);
                     $b = SplFixedArray::fromArray($tmp);
                 }
@@ -349,25 +350,24 @@ class ReedSolomon
         // Convert lambda to index form and compute deg(lambda(x))
         $degLambda = 0;
 
-        for ($i = 0; $i < $this->numRoots; $i++) {
+        for ($i = 0; $i <= $this->numRoots; $i++) {
             $lambda[$i] = $this->indexOf[$lambda[$i]];
 
-            if ($lambda[$i] !== $this->symbolSize) {
+            if ($lambda[$i] !== $this->blockSize) {
                 $degLambda = $i;
             }
         }
 
         // Find roots of the error+erasure locator polynomial by Chien search.
-        $tmp    = $reg[0];
         $reg    = clone $lambda;
-        $reg[0] = $tmp;
+        $reg[0] = 0;
         $count  = 0;
 
-        for ($i = 1, $k = $this->iPrimitive - 1; $i <= $this->symbolSize; $i++, $k = $this->modNn($k + $this->iPrimitive)) {
+        for ($i = 1, $k = $this->iPrimitive - 1; $i <= $this->blockSize; $i++, $k = $this->modNn($k + $this->iPrimitive)) {
             $q = 1;
 
             for ($j = $degLambda; $j > 0; $j--) {
-                if ($reg[$j] !== $this->symbolSize) {
+                if ($reg[$j] !== $this->blockSize) {
                     $reg[$j]  = $this->modNn($reg[$j] + $j);
                     $q       ^= $this->alphaTo[$reg[$j]];
                 }
@@ -380,17 +380,17 @@ class ReedSolomon
 
             // Store root (index-form) and error location number
             $root[$count] = $i;
-            $root[$count] = $k;
+            $loc[$count]  = $k;
 
             if (++$count === $degLambda) {
                 break;
             }
         }
 
-        if (++$count === $degLambda) {
+        if ($degLambda !== $count) {
             // deg(lambda) unequal to number of roots: uncorreactable error
             // detected
-            return false;
+            return null;
         }
 
         // Compute err+eras evaluate poly omega(x) = s(x)*lambda(x) (modulo
@@ -401,7 +401,7 @@ class ReedSolomon
             $tmp = 0;
 
             for ($j = $i; $j >= 0; $j--) {
-                if ($syndromes[$i - $j] !== $this->symbolSize && $lambda[$j] !== $this->symbolSize) {
+                if ($syndromes[$i - $j] !== $this->blockSize && $lambda[$j] !== $this->blockSize) {
                     $tmp ^= $this->alphaTo[$this->modNn($syndromes[$i - $j] + $lambda[$j])];
                 }
             }
@@ -416,41 +416,45 @@ class ReedSolomon
             $num1 = 0;
 
             for ($i = $degOmega; $i >= 0; $i--) {
-                if ($omega[$i] !== $this->symbolSize) {
+                if ($omega[$i] !== $this->blockSize) {
                     $num1 ^= $this->alphaTo[$this->modNn($omega[$i] + $i * $root[$j])];
                 }
+            }
 
-                $num2 = $this->alphaTo[$this->modNn($root[$j] * ($this->firstRoot - 1) + $this->symbolSize)];
-                $den  = 0;
+            $num2 = $this->alphaTo[$this->modNn($root[$j] * ($this->firstRoot - 1) + $this->blockSize)];
+            $den  = 0;
 
-                // lambda[i+1] for i even is the formal derivativelambda_pr of
-                // lambda[i]
-                for ($i = min($degLambda, $this->numRoots - 1) & ~1; $i >= 0; $i--) {
-                    if ($lambda[$i + 1] !== $this->symbolSize) {
-                        $den ^= $this->alphaTo[$this->modNn($lambda[$i + 1] + $i * $root[$j])];
-                    }
+            // lambda[i+1] for i even is the formal derivativelambda_pr of
+            // lambda[i]
+            for ($i = min($degLambda, $this->numRoots - 1) & ~1; $i >= 0; $i -= 2) {
+                if ($lambda[$i + 1] !== $this->blockSize) {
+                    $den ^= $this->alphaTo[$this->modNn($lambda[$i + 1] + $i * $root[$j])];
                 }
+            }
 
-                // Apply error to data
-                if ($num1 !== 0 && $loc[$j] >= $this->padding) {
-                    $data[$loc[$j] - $this->padding] = $data[$loc[$j] - $this->padding] ^ (
-                        $this->alphaTo[
-                            $this->modNn(
-                                $this->indexOf[$num1] + $this->indexOf[$num2] + $this->symbolSize - $this->indexOf[$den]
-                            )
-                        ]
-                    );
-                }
+            // Apply error to data
+            if ($num1 !== 0 && $loc[$j] >= $this->padding) {
+                $data[$loc[$j] - $this->padding] = $data[$loc[$j] - $this->padding] ^ (
+                    $this->alphaTo[
+                        $this->modNn(
+                            $this->indexOf[$num1] + $this->indexOf[$num2] + $this->blockSize - $this->indexOf[$den]
+                        )
+                    ]
+                );
             }
         }
 
-        if ($erasurePos !== null) {
+        if ($erasures !== null) {
+            if (count($erasures) < $count) {
+                $erasures->setSize($count);
+            }
+
             for ($i = 0; $i < $count; $i++) {
-                $erasurePos[$i] = $loc[$i];
+                $erasures[$i] = $loc[$i];
             }
         }
 
-        return true;
+        return $count;
     }
 
     /**
