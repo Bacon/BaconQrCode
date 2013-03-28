@@ -41,6 +41,13 @@ class Encoder
     );
 
     /**
+     * Codec cache.
+     *
+     * @var array
+     */
+    protected static $codecs = array();
+
+    /**
      * Encode "content" with the error correction level "ecLevel".
      *
      * @param  string               $content
@@ -370,10 +377,28 @@ class Encoder
         }
 
         $ecBytes = new SplFixedArray($numEcBytesInBlock);
-        $codec   = new ReedSolomonCodec(8, 0x11d, 0, 1, $numEcBytesInBlock, 255 - $numDataBytes - $numEcBytesInBlock);
+        $codec   = self::getCodec($numDataBytes, $numEcBytesInBlock);
         $codec->encode($toEncode, $ecBytes);
 
         return $ecBytes;
+    }
+
+    protected static function getCodec($numDataBytes, $numEcBytesInBlock)
+    {
+        $cacheId = $numDataBytes . '-' . $numEcBytesInBlock;
+
+        if (!self::$codecs[$cacheId]) {
+            self::$codecs[$cacheId] = new ReedSolomonCodec(
+                8,
+                0x11d,
+                0,
+                1,
+                $numEcBytesInBlock,
+                255 - $numDataBytes - $numEcBytesInBlock
+            );
+        }
+
+        return self::$codecs[$cacheId];
     }
 
     protected static function appendModeInfo(Mode $mode, BitArray $bits)
