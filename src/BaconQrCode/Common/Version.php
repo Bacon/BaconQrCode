@@ -578,7 +578,6 @@ class Version
                     new EcBlocks(30, new EcBlock(20, 15), new EcBlock(61, 16)),
                 );
                 break;
-
         }
 
         self::$versions[$versionNumber - 1] = new self(
