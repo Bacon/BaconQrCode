@@ -59,8 +59,8 @@ class FormatInformation
 
     protected function __construct($formatInfo)
     {
-        $this->ecLevel  = new ErrorCorrectionLevel(($formatInfo >> 3) & 0x03);
-        $this->dataMask = $formatInfo & 0x07;
+        $this->ecLevel  = new ErrorCorrectionLevel(($formatInfo >> 3) & 0x3);
+        $this->dataMask = $formatInfo & 0x7;
     }
 
     public static function numBitsDiffering($a, $b)
@@ -69,13 +69,13 @@ class FormatInformation
 
         return (
             self::$bitsSetInHalfByte[$a & 0xf]
-            + self::$bitsSetInHalfByte[(BitUtils::unsignedRightShift($a, 4) & 0x0f)]
-            + self::$bitsSetInHalfByte[(BitUtils::unsignedRightShift($a, 8) & 0x0f)]
-            + self::$bitsSetInHalfByte[(BitUtils::unsignedRightShift($a, 12) & 0x0f)]
-            + self::$bitsSetInHalfByte[(BitUtils::unsignedRightShift($a, 16) & 0x0f)]
-            + self::$bitsSetInHalfByte[(BitUtils::unsignedRightShift($a, 20) & 0x0f)]
-            + self::$bitsSetInHalfByte[(BitUtils::unsignedRightShift($a, 24) & 0x0f)]
-            + self::$bitsSetInHalfByte[(BitUtils::unsignedRightShift($a, 28) & 0x0f)]
+            + self::$bitsSetInHalfByte[(BitUtils::unsignedRightShift($a, 4) & 0xf)]
+            + self::$bitsSetInHalfByte[(BitUtils::unsignedRightShift($a, 8) & 0xf)]
+            + self::$bitsSetInHalfByte[(BitUtils::unsignedRightShift($a, 12) & 0xf)]
+            + self::$bitsSetInHalfByte[(BitUtils::unsignedRightShift($a, 16) & 0xf)]
+            + self::$bitsSetInHalfByte[(BitUtils::unsignedRightShift($a, 20) & 0xf)]
+            + self::$bitsSetInHalfByte[(BitUtils::unsignedRightShift($a, 24) & 0xf)]
+            + self::$bitsSetInHalfByte[(BitUtils::unsignedRightShift($a, 28) & 0xf)]
         );
     }
 
