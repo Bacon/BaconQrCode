@@ -277,4 +277,19 @@ class BitArray
 
         $this->bits = newBits;
     }
+
+    public function __toString()
+    {
+        $result = '';
+
+        for ($i = 0; $i < $this->size; $i++) {
+            if (($i & 0x07) === 0) {
+                $result .= ' ';
+            }
+
+            $result .= $this->get($i) ? 'X' : '.';
+        }
+
+        return $result;
+    }
 }

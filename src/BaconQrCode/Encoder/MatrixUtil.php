@@ -104,7 +104,7 @@ class MatrixUtil
 
     public static function clearMatrix(ByteMatrix $matrix)
     {
-        $matrix->clear(null);
+        $matrix->clear(-1);
     }
 
     public static function buildMatrix(
@@ -264,8 +264,8 @@ class MatrixUtil
     protected static function embedHorizontalSeparationPattern($xStart, $yStart, ByteMatrix $matrix)
     {
         for ($x = 0; $x < 8; $x++) {
-            if ($matrix->get($xStart + $x, $yStart) !== null) {
-                throw new \RuntimeException();
+            if ($matrix->get($xStart + $x, $yStart) !== -1) {
+                throw new Exception\RuntimeException('Byte already set');
             }
 
             $matrix->set($xStart + $x, $yStart, 0);
@@ -275,8 +275,8 @@ class MatrixUtil
     protected static function embedVerticalSeparationPattern($xStart, $yStart, ByteMatrix $matrix)
     {
         for ($y = 0; $y < 7; $y++) {
-            if ($matrix->get($xStart, $yStart + $y) !== null) {
-                throw new \RuntimeException();
+            if ($matrix->get($xStart, $yStart + $y) !== -1) {
+                throw new Exception\RuntimeException('Byte already set');
             }
 
             $matrix->set($xStart, $yStart + $y, 0);
@@ -286,7 +286,7 @@ class MatrixUtil
     protected static function embedDarkDotAtLeftBottomCorner(ByteMatrix $matrix)
     {
         if ($matrix->get(8, $matrix->getHeight() - 8) === 0) {
-            throw new \RuntimeException();
+            throw new Exception\RuntimeException('Byte already set to 0');
         }
 
         $matrix->set(8, $matrix->getHeight() - 8, 1);
@@ -312,7 +312,7 @@ class MatrixUtil
                     continue;
                 }
 
-                if ($matrix->get($x, $y) === null) {
+                if ($matrix->get($x, $y) === -1) {
                     self::embedPositionAdjustmentPattern($x - 2, $y - 2, $matrix);
                 }
             }
@@ -335,11 +335,11 @@ class MatrixUtil
         for ($i = 8; $i < $matrixWidth - 8; $i++) {
             $bit = ($i + 1) % 2;
 
-            if ($matrix->get($i, 6) === null) {
+            if ($matrix->get($i, 6) === -1) {
                 $matrix->set($i, 6, $bit);
             }
 
-            if ($matrix->get(6, $i) === null) {
+            if ($matrix->get(6, $i) === -1) {
                 $matrix->set(6, $i, $bit);
             }
         }
@@ -377,7 +377,7 @@ class MatrixUtil
                     $xx = $x - $i;
 
                     // Skip the cell if it's not empty.
-                    if ($matrix->get($xx, $y) !== null) {
+                    if ($matrix->get($xx, $y) !== -1) {
                         continue;
                     }
 
