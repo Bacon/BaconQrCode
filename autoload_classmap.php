@@ -20,6 +20,7 @@ return array(
     'BaconQrCode\Common\ErrorCorrectionLevel'        => __DIR__ . '/src/BaconQrCode/Common/ErrorCorrectionLevel.php',
     'BaconQrCode\Exception\ExceptionInterface'       => __DIR__ . '/src/BaconQrCode/Exception/ExceptionInterface.php',
     'BaconQrCode\Exception\InvalidArgumentException' => __DIR__ . '/src/BaconQrCode/Exception/InvalidArgumentException.php',
+    'BaconQrCode\Exception\UnexpectedValueException' => __DIR__ . '/src/BaconQrCode/Exception/UnexpectedValueException.php',
     'BaconQrCode\Exception\RuntimeException'         => __DIR__ . '/src/BaconQrCode/Exception/RuntimeException.php',
     'BaconQrCode\Exception\OutOfBoundsException'     => __DIR__ . '/src/BaconQrCode/Exception/OutOfBoundsException.php',
 );

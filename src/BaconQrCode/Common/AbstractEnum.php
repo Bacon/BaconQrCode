@@ -88,7 +88,7 @@ abstract class AbstractEnum
      */
     public function getConstList($includeDefault = true)
     {
-        if ($this->constantsTable === null) {
+        if ($this->constants === null) {
             $reflection      = new ReflectionClass($this);
             $this->constants = $reflection->getConstants();
         }
