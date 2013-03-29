@@ -10,6 +10,7 @@
 namespace BaconQrCode\Encoder;
 
 use BaconQrCode\Common\BitArray;
+use BaconQrCode\Common\CharacterSetEci;
 use BaconQrCode\Common\ErrorCorrectionLevel;
 use BaconQrCode\Common\Mode;
 use BaconQrCode\Common\ReedSolomonCodec;
@@ -479,7 +480,7 @@ class Encoder
             }
 
             if ($i + 1 < $length) {
-                if (-1 === ($code1 = self::getAlphanumericCode(ord($content[$i + 1])))) {
+                if (-1 === ($code2 = self::getAlphanumericCode(ord($content[$i + 1])))) {
                     throw new Exception\WriterException('Invalid alphanumeric code');
                 }
 
@@ -535,7 +536,8 @@ class Encoder
 
     protected static function appendEci(CharacterSetEci $eci, BitArray $bits)
     {
-        $bits->appendBits($eci->getBits(), 4);
-        $bits->appendBits($eci->getValue(), 8);
+        $mode = new Mode(Mode::ECI);
+        $bits->appendBits($mode->get(), 4);
+        $bits->appendBits($eci->get(), 8);
     }
 }
