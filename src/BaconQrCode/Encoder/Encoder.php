@@ -141,7 +141,7 @@ class Encoder
         return $qrCode;
     }
 
-    public static function getAlphanumericCode($code)
+    protected static function getAlphanumericCode($code)
     {
         $code = (is_string($code) ? ord($code) : $code);
 
@@ -152,7 +152,7 @@ class Encoder
         return -1;
     }
 
-    public static function chooseMode($content, $encoding = null)
+    protected static function chooseMode($content, $encoding = null)
     {
         if (strcasecmp($encoding, 'SHIFT-JIS') === 0) {
             return self::isOnlyDoubleByteKanji($content) ? new Mode(Mode::KANJI) : new Mode(Mode::BYTE);
