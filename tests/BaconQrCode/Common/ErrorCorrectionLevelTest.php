@@ -13,15 +13,24 @@ use PHPUnit_Framework_TestCase as TestCase;
 
 class ErrorCorrectionLevelTest extends TestCase
 {
-    public function testCreation()
+    public function testCreationThrowsNoException()
     {
-        // Should not throw any exceptions here
-        new ErrorCorrectionLevel(ErrorCorrectionLevel::H);
-        new ErrorCorrectionLevel(ErrorCorrectionLevel::L);
         new ErrorCorrectionLevel(ErrorCorrectionLevel::M);
+        new ErrorCorrectionLevel(ErrorCorrectionLevel::L);
+        new ErrorCorrectionLevel(ErrorCorrectionLevel::H);
         new ErrorCorrectionLevel(ErrorCorrectionLevel::Q);
+    }
 
-        // But now it should
+    public function testBitsMatchConstants()
+    {
+        $this->assertEquals(0x0, ErrorCorrectionLevel::M);
+        $this->assertEquals(0x1, ErrorCorrectionLevel::L);
+        $this->assertEquals(0x2, ErrorCorrectionLevel::H);
+        $this->assertEquals(0x3, ErrorCorrectionLevel::Q);
+    }
+
+    public function testInvalidErrorCorrectionLevelThrowsException()
+    {
         $this->setExpectedException(
             'BaconQrCode\Exception\UnexpectedValueException',
             'Value not a const in enum BaconQrCode\Common\ErrorCorrectionLevel'
