@@ -75,7 +75,7 @@ class Version
 
     public function getEcBlocksForLevel(ErrorCorrectionLevel $ecLevel)
     {
-        return $this->errorCorrectionBlocks[$ecLevel->getBits()];
+        return $this->errorCorrectionBlocks[$ecLevel->get()];
     }
 
     public static function getProvisionalVersionForDimension($dimension)
@@ -180,112 +180,411 @@ class Version
     {
         switch ($versionNumber) {
             case 1:
-                $patterns = SplFixedArray::fromArray(array());
-                $ecBlocks = SplFixedArray::fromArray(array(
+                $patterns = array();
+                $ecBlocks = array(
                     new EcBlocks(7, new EcBlock(1, 19)),
                     new EcBlocks(10, new EcBlock(1, 16)),
                     new EcBlocks(13, new EcBlock(1, 13)),
                     new EcBlocks(17, new EcBlock(1, 9)),
-                ));
+                );
                 break;
 
             case 2:
-                $patterns = SplFixedArray::fromArray(array(6, 18));
-                $ecBlocks = SplFixedArray::fromArray(array(
+                $patterns = array(6, 18);
+                $ecBlocks = array(
                     new EcBlocks(10, new EcBlock(1, 34)),
                     new EcBlocks(16, new EcBlock(1, 28)),
                     new EcBlocks(22, new EcBlock(1, 22)),
                     new EcBlocks(28, new EcBlock(1, 16)),
-                ));
+                );
                 break;
 
             case 3:
-                $patterns = SplFixedArray::fromArray(array(6, 22));
-                $ecBlocks = SplFixedArray::fromArray(array(
+                $patterns = array(6, 22);
+                $ecBlocks = array(
                     new EcBlocks(15, new EcBlock(1, 55)),
                     new EcBlocks(26, new EcBlock(1, 44)),
                     new EcBlocks(18, new EcBlock(2, 17)),
                     new EcBlocks(22, new EcBlock(2, 13)),
-                ));
+                );
                 break;
 
             case 4:
-                $patterns = SplFixedArray::fromArray(array(6, 26));
-                $ecBlocks = SplFixedArray::fromArray(array(
+                $patterns = array(6, 26);
+                $ecBlocks = array(
                     new EcBlocks(20, new EcBlock(1, 80)),
                     new EcBlocks(18, new EcBlock(2, 32)),
                     new EcBlocks(26, new EcBlock(3, 24)),
                     new EcBlocks(16, new EcBlock(4, 9)),
-                ));
+                );
                 break;
 
             case 5:
-                $patterns = SplFixedArray::fromArray(array(6, 30));
-                $ecBlocks = SplFixedArray::fromArray(array(
+                $patterns = array(6, 30);
+                $ecBlocks = array(
                     new EcBlocks(26, new EcBlock(1, 108)),
                     new EcBlocks(24, new EcBlock(2, 43)),
                     new EcBlocks(18, new EcBlock(2, 15), new EcBlock(2, 16)),
                     new EcBlocks(22, new EcBlock(2, 11), new EcBlock(2, 12)),
-                ));
+                );
                 break;
 
             case 6:
-                $patterns = SplFixedArray::fromArray(array(6, 34));
-                $ecBlocks = SplFixedArray::fromArray(array(
+                $patterns = array(6, 34);
+                $ecBlocks = array(
                     new EcBlocks(18, new EcBlock(2, 68)),
                     new EcBlocks(16, new EcBlock(4, 27)),
                     new EcBlocks(24, new EcBlock(4, 19)),
                     new EcBlocks(28, new EcBlock(4, 15)),
-                ));
+                );
                 break;
 
             case 7:
-                $patterns = SplFixedArray::fromArray(array(6, 22, 38));
-                $ecBlocks = SplFixedArray::fromArray(array(
+                $patterns = array(6, 22, 38);
+                $ecBlocks = array(
                     new EcBlocks(20, new EcBlock(2, 78)),
                     new EcBlocks(18, new EcBlock(4, 31)),
                     new EcBlocks(18, new EcBlock(2, 14), new EcBlock(4, 15)),
                     new EcBlocks(26, new EcBlock(4, 13)),
-                ));
+                );
                 break;
 
             case 8:
-                $patterns = SplFixedArray::fromArray(array(6, 24, 42));
-                $ecBlocks = SplFixedArray::fromArray(array(
+                $patterns = array(6, 24, 42);
+                $ecBlocks = array(
                     new EcBlocks(24, new EcBlock(2, 97)),
                     new EcBlocks(22, new EcBlock(2, 38), new EcBlock(2, 39)),
                     new EcBlocks(22, new EcBlock(4, 18), new EcBlock(2, 19)),
                     new EcBlocks(26, new EcBlock(4, 14), new EcBlock(2, 15)),
-                ));
+                );
                 break;
 
             case 9:
-                $patterns = SplFixedArray::fromArray(array(6, 26, 46));
-                $ecBlocks = SplFixedArray::fromArray(array(
+                $patterns = array(6, 26, 46);
+                $ecBlocks = array(
                     new EcBlocks(30, new EcBlock(2, 116)),
                     new EcBlocks(22, new EcBlock(3, 36), new EcBlock(2, 37)),
                     new EcBlocks(20, new EcBlock(4, 16), new EcBlock(4, 17)),
                     new EcBlocks(24, new EcBlock(4, 12), new EcBlock(4, 13)),
-                ));
+                );
                 break;
 
             case 10:
-                $patterns = SplFixedArray::fromArray(array(6, 28, 50));
-                $ecBlocks = SplFixedArray::fromArray(array(
+                $patterns = array(6, 28, 50);
+                $ecBlocks = array(
                     new EcBlocks(18, new EcBlock(2, 68), new EcBlock(2, 69)),
                     new EcBlocks(26, new EcBlock(4, 43), new EcBlock(1, 44)),
                     new EcBlocks(24, new EcBlock(6, 19), new EcBlock(2, 20)),
                     new EcBlocks(28, new EcBlock(6, 15), new EcBlock(2, 16)),
-                ));
+                );
                 break;
 
-            // @TODO Port Version 11 to 40
+            case 11:
+                $patterns = array(6, 30, 54);
+                $ecBlocks = array(
+                    new EcBlocks(20, new EcBlock(4, 81)),
+                    new EcBlocks(30, new EcBlock(1, 50), new EcBlock(4, 51)),
+                    new EcBlocks(28, new EcBlock(4, 22), new EcBlock(4, 23)),
+                    new EcBlocks(24, new EcBlock(3, 12), new EcBlock(8, 13)),
+                );
+                break;
+
+            case 12:
+                $patterns = array(6, 32, 58);
+                $ecBlocks = array(
+                    new EcBlocks(24, new EcBlock(2, 92), new EcBlock(2, 93)),
+                    new EcBlocks(22, new EcBlock(6, 36), new EcBlock(2, 37)),
+                    new EcBlocks(26, new EcBlock(4, 20), new EcBlock(6, 21)),
+                    new EcBlocks(28, new EcBlock(7, 14), new EcBlock(4, 15)),
+                );
+                break;
+
+            case 13:
+                $patterns = array(6, 34, 62);
+                $ecBlocks = array(
+                    new EcBlocks(26, new EcBlock(4, 107)),
+                    new EcBlocks(22, new EcBlock(8, 37), new EcBlock(1, 38)),
+                    new EcBlocks(24, new EcBlock(8, 20), new EcBlock(4, 21)),
+                    new EcBlocks(22, new EcBlock(12, 11), new EcBlock(4, 12)),
+                );
+                break;
+
+            case 14:
+                $patterns = array(6, 26, 46, 66);
+                $ecBlocks = array(
+                    new EcBlocks(30, new EcBlock(3, 115), new EcBlock(1, 116)),
+                    new EcBlocks(24, new EcBlock(4, 40), new EcBlock(5, 41)),
+                    new EcBlocks(20, new EcBlock(11, 16), new EcBlock(5, 17)),
+                    new EcBlocks(24, new EcBlock(11, 12), new EcBlock(5, 13)),
+                );
+                break;
+
+            case 15:
+                $patterns = array(6, 26, 48, 70);
+                $ecBlocks = array(
+                    new EcBlocks(22, new EcBlock(5, 87), new EcBlock(1, 88)),
+                    new EcBlocks(24, new EcBlock(5, 41), new EcBlock(5, 42)),
+                    new EcBlocks(30, new EcBlock(5, 24), new EcBlock(7, 25)),
+                    new EcBlocks(24, new EcBlock(11, 12), new EcBlock(7, 13)),
+                );
+                break;
+
+            case 16:
+                $patterns = array(6, 26, 50, 74);
+                $ecBlocks = array(
+                    new EcBlocks(24, new EcBlock(5, 98), new EcBlock(1, 99)),
+                    new EcBlocks(28, new EcBlock(7, 45), new EcBlock(3, 46)),
+                    new EcBlocks(24, new EcBlock(15, 19), new EcBlock(2, 20)),
+                    new EcBlocks(30, new EcBlock(3, 15), new EcBlock(13, 16)),
+                );
+                break;
+
+            case 17:
+                $patterns = array(6, 30, 54, 78);
+                $ecBlocks = array(
+                    new EcBlocks(28, new EcBlock(1, 107), new EcBlock(5, 108)),
+                    new EcBlocks(28, new EcBlock(10, 46), new EcBlock(1, 47)),
+                    new EcBlocks(28, new EcBlock(1, 22), new EcBlock(15, 23)),
+                    new EcBlocks(28, new EcBlock(2, 14), new EcBlock(17, 15)),
+                );
+                break;
+
+            case 18:
+                $patterns = array(6, 30, 56, 82);
+                $ecBlocks = array(
+                    new EcBlocks(30, new EcBlock(5, 120), new EcBlock(1, 121)),
+                    new EcBlocks(26, new EcBlock(9, 43), new EcBlock(4, 44)),
+                    new EcBlocks(28, new EcBlock(17, 22), new EcBlock(1, 23)),
+                    new EcBlocks(28, new EcBlock(2, 14), new EcBlock(19, 15)),
+                );
+                break;
+
+            case 19:
+                $patterns = array(6, 30, 58, 86);
+                $ecBlocks = array(
+                    new EcBlocks(28, new EcBlock(3, 113), new EcBlock(4, 114)),
+                    new EcBlocks(26, new EcBlock(3, 44), new EcBlock(11, 45)),
+                    new EcBlocks(26, new EcBlock(17, 21), new EcBlock(4, 22)),
+                    new EcBlocks(26, new EcBlock(9, 13), new EcBlock(16, 14)),
+                );
+                break;
+
+            case 20:
+                $patterns = array(6, 34, 62, 90);
+                $ecBlocks = array(
+                    new EcBlocks(28, new EcBlock(3, 107), new EcBlock(5, 108)),
+                    new EcBlocks(26, new EcBlock(3, 41), new EcBlock(13, 42)),
+                    new EcBlocks(30, new EcBlock(15, 24), new EcBlock(5, 25)),
+                    new EcBlocks(28, new EcBlock(15, 15), new EcBlock(10, 16)),
+                );
+                break;
+
+            case 21:
+                $patterns = array(6, 28, 50, 72, 94);
+                $ecBlocks = array(
+                    new EcBlocks(28, new EcBlock(4, 116), new EcBlock(4, 117)),
+                    new EcBlocks(26, new EcBlock(17, 42)),
+                    new EcBlocks(28, new EcBlock(17, 22), new EcBlock(6, 23)),
+                    new EcBlocks(30, new EcBlock(19, 16), new EcBlock(6, 17)),
+                );
+                break;
+
+            case 22:
+                $patterns = array(6, 26, 50, 74, 98);
+                $ecBlocks = array(
+                    new EcBlocks(28, new EcBlock(2, 111), new EcBlock(7, 112)),
+                    new EcBlocks(28, new EcBlock(17, 46)),
+                    new EcBlocks(30, new EcBlock(7, 24), new EcBlock(16, 25)),
+                    new EcBlocks(24, new EcBlock(34, 13)),
+                );
+                break;
+
+            case 23:
+                $patterns = array(6, 30, 54, 78, 102);
+                $ecBlocks = array(
+                    new EcBlocks(30, new EcBlock(4, 121), new EcBlock(5, 122)),
+                    new EcBlocks(28, new EcBlock(4, 47), new EcBlock(14, 48)),
+                    new EcBlocks(30, new EcBlock(11, 24), new EcBlock(14, 25)),
+                    new EcBlocks(30, new EcBlock(16, 15), new EcBlock(14, 16)),
+                );
+                break;
+
+            case 24:
+                $patterns = array(6, 28, 54, 80, 106);
+                $ecBlocks = array(
+                    new EcBlocks(30, new EcBlock(6, 117), new EcBlock(4, 118)),
+                    new EcBlocks(28, new EcBlock(6, 45), new EcBlock(14, 46)),
+                    new EcBlocks(30, new EcBlock(11, 24), new EcBlock(16, 25)),
+                    new EcBlocks(30, new EcBlock(30, 16), new EcBlock(2, 17)),
+                );
+                break;
+
+            case 25:
+                $patterns = array(6, 32, 58, 84, 110);
+                $ecBlocks = array(
+                    new EcBlocks(26, new EcBlock(8, 106), new EcBlock(4, 107)),
+                    new EcBlocks(28, new EcBlock(8, 47), new EcBlock(13, 48)),
+                    new EcBlocks(30, new EcBlock(7, 24), new EcBlock(22, 25)),
+                    new EcBlocks(30, new EcBlock(22, 15), new EcBlock(13, 16)),
+                );
+                break;
+
+            case 26:
+                $patterns = array(6, 30, 58, 86, 114);
+                $ecBlocks = array(
+                    new EcBlocks(28, new EcBlock(10, 114), new EcBlock(2, 115)),
+                    new EcBlocks(28, new EcBlock(19, 46), new EcBlock(4, 47)),
+                    new EcBlocks(28, new EcBlock(28, 22), new EcBlock(6, 23)),
+                    new EcBlocks(30, new EcBlock(33, 16), new EcBlock(4, 17)),
+                );
+                break;
+
+            case 27:
+                $patterns = array(6, 34, 62, 90, 118);
+                $ecBlocks = array(
+                    new EcBlocks(30, new EcBlock(8, 122), new EcBlock(4, 123)),
+                    new EcBlocks(28, new EcBlock(22, 45), new EcBlock(3, 46)),
+                    new EcBlocks(30, new EcBlock(8, 23), new EcBlock(26, 24)),
+                    new EcBlocks(30, new EcBlock(12, 15), new EcBlock(28, 16)),
+                );
+                break;
+
+            case 28:
+                $patterns = array(6, 26, 50, 74, 98, 122);
+                $ecBlocks = array(
+                    new EcBlocks(30, new EcBlock(3, 117), new EcBlock(10, 118)),
+                    new EcBlocks(28, new EcBlock(3, 45), new EcBlock(23, 46)),
+                    new EcBlocks(30, new EcBlock(4, 24), new EcBlock(31, 25)),
+                    new EcBlocks(30, new EcBlock(11, 15), new EcBlock(31, 16)),
+                );
+                break;
+
+            case 29:
+                $patterns = array(6, 30, 54, 78, 102, 126);
+                $ecBlocks = array(
+                    new EcBlocks(30, new EcBlock(7, 116), new EcBlock(7, 117)),
+                    new EcBlocks(28, new EcBlock(21, 45), new EcBlock(7, 46)),
+                    new EcBlocks(30, new EcBlock(1, 23), new EcBlock(37, 24)),
+                    new EcBlocks(30, new EcBlock(19, 15), new EcBlock(26, 16)),
+                );
+                break;
+
+            case 30:
+                $patterns = array(6, 26, 52, 78, 104, 130);
+                $ecBlocks = array(
+                    new EcBlocks(30, new EcBlock(5, 115), new EcBlock(10, 116)),
+                    new EcBlocks(28, new EcBlock(19, 47), new EcBlock(10, 48)),
+                    new EcBlocks(30, new EcBlock(15, 24), new EcBlock(25, 25)),
+                    new EcBlocks(30, new EcBlock(23, 15), new EcBlock(25, 16)),
+                );
+                break;
+
+            case 31:
+                $patterns = array(6, 30, 56, 82, 108, 134);
+                $ecBlocks = array(
+                    new EcBlocks(30, new EcBlock(13, 115), new EcBlock(3, 116)),
+                    new EcBlocks(28, new EcBlock(2, 46), new EcBlock(29, 47)),
+                    new EcBlocks(30, new EcBlock(42, 24), new EcBlock(1, 25)),
+                    new EcBlocks(30, new EcBlock(23, 15), new EcBlock(28, 16)),
+                );
+                break;
+
+            case 32:
+                $patterns = array(6, 34, 60, 86, 112, 138);
+                $ecBlocks = array(
+                    new EcBlocks(30, new EcBlock(17, 115)),
+                    new EcBlocks(28, new EcBlock(10, 46), new EcBlock(23, 47)),
+                    new EcBlocks(30, new EcBlock(10, 24), new EcBlock(35, 25)),
+                    new EcBlocks(30, new EcBlock(19, 15), new EcBlock(35, 16)),
+                );
+                break;
+
+            case 33:
+                $patterns = array(6, 30, 58, 86, 114, 142);
+                $ecBlocks = array(
+                    new EcBlocks(30, new EcBlock(17, 115), new EcBlock(1, 116)),
+                    new EcBlocks(28, new EcBlock(14, 46), new EcBlock(21, 47)),
+                    new EcBlocks(30, new EcBlock(29, 24), new EcBlock(19, 25)),
+                    new EcBlocks(30, new EcBlock(11, 15), new EcBlock(46, 16)),
+                );
+                break;
+
+            case 34:
+                $patterns = array(6, 34, 62, 90, 118, 146);
+                $ecBlocks = array(
+                    new EcBlocks(30, new EcBlock(13, 115), new EcBlock(6, 116)),
+                    new EcBlocks(28, new EcBlock(14, 46), new EcBlock(23, 47)),
+                    new EcBlocks(30, new EcBlock(44, 24), new EcBlock(7, 25)),
+                    new EcBlocks(30, new EcBlock(59, 16), new EcBlock(1, 17)),
+                );
+                break;
+
+            case 35:
+                $patterns = array(6, 30, 54, 78, 102, 126, 150);
+                $ecBlocks = array(
+                    new EcBlocks(30, new EcBlock(12, 121), new EcBlock(7, 122)),
+                    new EcBlocks(28, new EcBlock(12, 47), new EcBlock(26, 48)),
+                    new EcBlocks(30, new EcBlock(39, 24), new EcBlock(14, 25)),
+                    new EcBlocks(30, new EcBlock(22, 15), new EcBlock(41, 16)),
+                );
+                break;
+
+            case 36:
+                $patterns = array(6, 24, 50, 76, 102, 128, 154);
+                $ecBlocks = array(
+                    new EcBlocks(30, new EcBlock(6, 121), new EcBlock(14, 122)),
+                    new EcBlocks(28, new EcBlock(6, 47), new EcBlock(34, 48)),
+                    new EcBlocks(30, new EcBlock(46, 24), new EcBlock(10, 25)),
+                    new EcBlocks(30, new EcBlock(2, 15), new EcBlock(64, 16)),
+                );
+                break;
+
+            case 37:
+                $patterns = array(6, 28, 54, 80, 106, 132, 158);
+                $ecBlocks = array(
+                    new EcBlocks(30, new EcBlock(17, 122), new EcBlock(4, 123)),
+                    new EcBlocks(28, new EcBlock(29, 46), new EcBlock(14, 47)),
+                    new EcBlocks(30, new EcBlock(49, 24), new EcBlock(10, 25)),
+                    new EcBlocks(30, new EcBlock(24, 15), new EcBlock(46, 16)),
+                );
+                break;
+
+            case 38:
+                $patterns = array(6, 32, 58, 84, 110, 136, 162);
+                $ecBlocks = array(
+                    new EcBlocks(30, new EcBlock(4, 122), new EcBlock(18, 123)),
+                    new EcBlocks(28, new EcBlock(13, 46), new EcBlock(32, 47)),
+                    new EcBlocks(30, new EcBlock(48, 24), new EcBlock(14, 25)),
+                    new EcBlocks(30, new EcBlock(42, 15), new EcBlock(32, 16)),
+                );
+                break;
+
+            case 39:
+                $patterns = array(6, 26, 54, 82, 110, 138, 166);
+                $ecBlocks = array(
+                    new EcBlocks(30, new EcBlock(20, 117), new EcBlock(4, 118)),
+                    new EcBlocks(28, new EcBlock(40, 47), new EcBlock(7, 48)),
+                    new EcBlocks(30, new EcBlock(43, 24), new EcBlock(22, 25)),
+                    new EcBlocks(30, new EcBlock(10, 15), new EcBlock(67, 16)),
+                );
+                break;
+
+            case 40:
+                $patterns = array(6, 30, 58, 86, 114, 142, 170);
+                $ecBlocks = array(
+                    new EcBlocks(30, new EcBlock(19, 118), new EcBlock(6, 119)),
+                    new EcBlocks(28, new EcBlock(18, 47), new EcBlock(31, 48)),
+                    new EcBlocks(30, new EcBlock(34, 24), new EcBlock(34, 25)),
+                    new EcBlocks(30, new EcBlock(20, 15), new EcBlock(61, 16)),
+                );
+                break;
+
         }
 
         self::$versions[$versionNumber - 1] = new self(
             $versionNumber,
-            $patterns,
-            $ecBlocks
+            SplFixedArray::fromArray($patterns),
+            SplFixedArray::fromArray($ecBlocks)
         );
     }
 }
