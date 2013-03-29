@@ -15,6 +15,7 @@ use BaconQrCode\Common\ErrorCorrectionLevel;
 use BaconQrCode\Common\Mode;
 use BaconQrCode\Common\ReedSolomonCodec;
 use BaconQrCode\Common\Version;
+use BaconQrCode\Exception;
 use SplFixedArray;
 
 /**
@@ -97,7 +98,7 @@ class Encoder
         $bitsNeeded = $headerBits->getSize()
                     + $mode->getCharacterCountBits($provisionalVersion)
                     + $dataBits->getSize();
-        $version = $this->chooseVersion($bitsNeeded, $ecLevel);
+        $version = self::chooseVersion($bitsNeeded, $ecLevel);
 
         $headerAndDataBits = new BitArray();
         $headerAndDataBits->appendBitArray($headerBits);
@@ -129,7 +130,7 @@ class Encoder
 
         //Choose the mask pattern and set to "qrCode".
         $dimension   = $version->getDimensionForVersion();
-        $matrix      = new ByteMatrix($dimension[0], $dimension[1]);
+        $matrix      = new ByteMatrix($dimension, $dimension);
         $maskPattern = self::chooseMaskPattern($finalBits, $ecLevel, $version, $matrix);
         $qrCode->setMaskPattern($maskPattern);
 
@@ -140,8 +141,10 @@ class Encoder
         return $qrCode;
     }
 
-    protected static function getAlphanumericCode($code)
+    public static function getAlphanumericCode($code)
     {
+        $code = (is_string($code) ? ord($code) : $code);
+
         if (isset(self::$alphanumericTable[$code])) {
             return self::$alphanumericTable[$code];
         }
@@ -149,9 +152,9 @@ class Encoder
         return -1;
     }
 
-    protected static function chooseMode($content, $encoding = null)
+    public static function chooseMode($content, $encoding = null)
     {
-        if ($encoding === 'Shift_JIS') {
+        if (strcasecmp($encoding, 'SHIFT-JIS') === 0) {
             return self::isOnlyDoubleByteKanji($content) ? new Mode(Mode::KANJI) : new Mode(Mode::BYTE);
         }
 
@@ -164,7 +167,7 @@ class Encoder
 
             if (ctype_digit($char)) {
                 $hasNumeric = true;
-            } elseif (self::getAlphanumericCode(ord($char)) !== -1) {
+            } elseif (self::getAlphanumericCode($char) !== -1) {
                 $hasAlphanumeric = true;
             } else {
                 return new Mode(Mode::BYTE);
@@ -324,14 +327,13 @@ class Encoder
                 $i
             );
 
-            // @TODO decide a proper way to store bytes
-            $size      = $numDataBytesInBlock;
-            $dataBytes = $bits->toBytes(8 * $dataBytesOffset, $size);
-            $ecBytes   = self::generateEcBytes($dataBytes, $numEcBytesInBlock);
-            $blocks[]  = new BlockPair($dataBytes, $ecBytes);
+            $size       = $numDataBytesInBlock;
+            $dataBytes  = $bits->toBytes(8 * $dataBytesOffset, $size);
+            $ecBytes    = self::generateEcBytes($dataBytes, $numEcBytesInBlock);
+            $blocks[$i] = new BlockPair($dataBytes, $ecBytes);
 
             $maxNumDataBytes  = max($maxNumDataBytes, $size);
-            $maxNumEcBytes    = max($maxNumEcBytes, strlen($ecBytes));
+            $maxNumEcBytes    = max($maxNumEcBytes, count($ecBytes));
             $dataBytesOffset += $numDataBytesInBlock;
         }
 
@@ -345,7 +347,7 @@ class Encoder
             foreach ($blocks as $block) {
                 $dataBytes = $block->getDataBytes();
 
-                if ($i < strlen($dataBytes)) {
+                if ($i < count($dataBytes)) {
                     $result->appendBits($dataBytes[$i], 8);
                 }
             }
@@ -355,7 +357,7 @@ class Encoder
             foreach ($blocks as $block) {
                 $ecBytes = $block->getErrorCorrectionBytes();
 
-                if ($i < strlen($ecBytes)) {
+                if ($i < count($ecBytes)) {
                     $result->appendBits($ecBytes[$i], 8);
                 }
             }
@@ -370,7 +372,7 @@ class Encoder
 
     protected static function generateEcBytes($dataBytes, $numEcBytesInBlock)
     {
-        $numDataBytes = strlen($dataBytes);
+        $numDataBytes = count($dataBytes);
         $toEncode     = new SplFixedArray($numDataBytes + $numEcBytesInBlock);
 
         for ($i = 0; $i < $numDataBytes; $i++) {
@@ -388,7 +390,7 @@ class Encoder
     {
         $cacheId = $numDataBytes . '-' . $numEcBytesInBlock;
 
-        if (!self::$codecs[$cacheId]) {
+        if (!isset(self::$codecs[$cacheId])) {
             self::$codecs[$cacheId] = new ReedSolomonCodec(
                 8,
                 0x11d,
@@ -404,7 +406,7 @@ class Encoder
 
     protected static function appendModeInfo(Mode $mode, BitArray $bits)
     {
-        $bits->appendBits($mode->getBits(), 4);
+        $bits->appendBits($mode->get(), 4);
     }
 
     protected static function appendLengthInfo($numLetters, Version $version, Mode $mode, BitArray $bits)
@@ -475,12 +477,12 @@ class Encoder
         $i      = 0;
 
         while ($i < $length) {
-            if (-1 === ($code1 = self::getAlphanumericCode(ord($content[$i])))) {
+            if (-1 === ($code1 = self::getAlphanumericCode($content[$i]))) {
                 throw new Exception\WriterException('Invalid alphanumeric code');
             }
 
             if ($i + 1 < $length) {
-                if (-1 === ($code2 = self::getAlphanumericCode(ord($content[$i + 1])))) {
+                if (-1 === ($code2 = self::getAlphanumericCode($content[$i + 1]))) {
                     throw new Exception\WriterException('Invalid alphanumeric code');
                 }
 

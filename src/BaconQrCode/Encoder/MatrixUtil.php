@@ -12,6 +12,7 @@ namespace BaconQrCode\Encoder;
 use BaconQrCode\Common\BitArray;
 use BaconQrCode\Common\ErrorCorrectionLevel;
 use BaconQrCode\Common\Version;
+use BaconQrCode\Exception;
 
 /**
  * Matrix utility.
@@ -149,7 +150,7 @@ class MatrixUtil
 
     protected static function makeTypeInfoBits(ErrorCorrectionLevel $level, $maskPattern, BitArray $bits)
     {
-        $typeInfo = ($level->getBits() << 3) | $maskPattern;
+        $typeInfo = ($level->get() << 3) | $maskPattern;
         $bits->appendBits($typeInfo, 5);
 
         $bchCode = self::calculateBchCode($typeInfo, self::$typeInfoPoly);
@@ -157,7 +158,7 @@ class MatrixUtil
 
         $maskBits = new BitArray();
         $maskBits->appendBits(self::$typeInfoMaskPattern, 15);
-        $bits->xor($maskBits);
+        $bits->xorBits($maskBits);
 
         if ($bits->getSize() !== 15) {
             throw new \RuntimeException('Bit array resulted in invalid size: ' . $bits->getSize());
@@ -232,11 +233,11 @@ class MatrixUtil
 
     protected static function embedPositionDetectionPatternsAndSeparators(ByteMatrix $matrix)
     {
-        $pdtWidth = strlen(self::$positionDetectionPattern[0]);
+        $pdpWidth = count(self::$positionDetectionPattern[0]);
 
         self::embedPositionDetectionPattern(0, 0, $matrix);
-        self::embedPositionDetectionPattern($matrix->getWidth() - $pdtWidth, 0, $matrix);
-        self::embedPositionDetectionPattern(0, $matrix->getWidth() - $pdtWidth, $matrix);
+        self::embedPositionDetectionPattern($matrix->getWidth() - $pdpWidth, 0, $matrix);
+        self::embedPositionDetectionPattern(0, $matrix->getWidth() - $pdpWidth, $matrix);
 
         $hspWidth = 8;
 
@@ -288,7 +289,7 @@ class MatrixUtil
             throw new \RuntimeException();
         }
 
-        $matrix->set(8, $matrix->getHeight(), 1);
+        $matrix->set(8, $matrix->getHeight() - 8, 1);
     }
 
     protected static function maybeEmbedPositionAdjustmentPatterns(Version $version, ByteMatrix $matrix)
@@ -341,6 +342,74 @@ class MatrixUtil
             if ($matrix->get(6, $i) === null) {
                 $matrix->set(6, $i, $bit);
             }
+        }
+    }
+
+    /**
+     * Embeds "dataBits" using "getMaskPattern".
+     *
+     *  For debugging purposes, it skips masking process if "getMaskPattern" is
+     * -1. See 8.7 of JISX0510:2004 (p.38) for how to embed data bits.
+     *
+     * @param  BitArray   $dataBits
+     * @param  integer    $maskPattern
+     * @param  ByteMatrix $matrix
+     * @return void
+     * @throws Exception\WriterException
+     */
+    protected static function embedDataBits(BitArray $dataBits, $maskPattern, ByteMatrix $matrix)
+    {
+        $bitIndex  = 0;
+        $direction = -1;
+
+        // Start from the right bottom cell.
+        $x = $matrix->getWidth() - 1;
+        $y = $matrix->getHeight() - 1;
+
+        while ($x > 0) {
+            // Skip vertical timing pattern.
+            if ($x === 6) {
+                $x--;
+            }
+
+            while ($y >= 0 && $y < $matrix->getHeight()) {
+                for ($i = 0; $i < 2; $i++) {
+                    $xx = $x - $i;
+
+                    // Skip the cell if it's not empty.
+                    if ($matrix->get($xx, $y) !== null) {
+                        continue;
+                    }
+
+                    if ($bitIndex < $dataBits->getSize()) {
+                        $bit = $dataBits->get($bitIndex);
+                        $bitIndex++;
+                    } else {
+                        // Padding bit. If there is no bit left, we'll fill the
+                        // left cells with 0, as described in 8.4.9 of
+                        // JISX0510:2004 (p. 24).
+                        $bit = false;
+                    }
+
+                    // Skip masking if maskPattern is -1.
+                    if ($maskPattern !== -1 && MaskUtil::getDataMaskBit($maskPattern, $xx, $y)) {
+                        $bit = !$bit;
+                    }
+
+                    $matrix->set($xx, $y, $bit);
+                }
+
+                $y += $direction;
+            }
+
+            $direction  = -$direction;
+            $y         += $direction;
+            $x         -= 2;
+        }
+
+        // All bits should be consumed
+        if ($bitIndex !== $dataBits->getSize()) {
+            throw new Exception\WriterException('Not all bits consumed (' . $bitIndex . ' out of ' . $dataBits->getSize() .')');
         }
     }
 }

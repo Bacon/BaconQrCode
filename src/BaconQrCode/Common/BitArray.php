@@ -196,7 +196,7 @@ class BitArray
         $this->ensureCapacity($this->size + 1);
 
         if ($bit) {
-            $this->bits[$this->size >> 5] |= 1 << ($this->size & 0x1f);
+            $this->bits[$this->size >> 5] = $this->bits[$this->size >> 5] | (1 << ($this->size & 0x1f));
         }
 
         $this->size++;
@@ -235,7 +235,7 @@ class BitArray
         }
 
         for ($i = 0; $i < $bitsLength; $i++) {
-            $this->bits[$i] ^= $otherBits[$i];
+            $this->bits[$i] = $this->bits[$i] ^ $otherBits[$i];
         }
     }
 

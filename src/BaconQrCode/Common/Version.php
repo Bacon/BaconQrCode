@@ -168,6 +168,11 @@ class Version
         return $bitMatrix;
     }
 
+    public function __toString()
+    {
+        return (string) $this->versionNumber;
+    }
+
     /**
      * Build and cache a specific version.
      *

@@ -56,6 +56,6 @@ class Mode extends AbstractEnum
             $offset = 2;
         }
 
-        return $this->characterCountBitsForVersions[$this->value][$offset];
+        return self::$characterCountBitsForVersions[$this->value][$offset];
     }
 }

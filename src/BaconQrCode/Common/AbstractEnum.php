@@ -44,7 +44,7 @@ abstract class AbstractEnum
     protected $strict;
 
     /**
-     * Create a new enum.
+     * Creates a new enum.
      *
      * @param mixed   $initialValue
      * @param boolean $strict
@@ -56,7 +56,7 @@ abstract class AbstractEnum
     }
 
     /**
-     * Change the value of the enum.
+     * Changes the value of the enum.
      *
      * @param  mixed $value
      * @return void
@@ -71,7 +71,7 @@ abstract class AbstractEnum
     }
 
     /**
-     * Get current value.
+     * Gets current value.
      *
      * @return mixed
      */
@@ -81,7 +81,7 @@ abstract class AbstractEnum
     }
 
     /**
-     * Get all constants (possible values) as an array.
+     * Gets all constants (possible values) as an array.
      *
      * @param  boolean $includeDefault
      * @return array
@@ -101,5 +101,15 @@ abstract class AbstractEnum
         unset($constants['__default']);
 
         return $constants;
+    }
+
+    /**
+     * Gets the name of the enum.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return array_search($this->value, $this->getConstList());
     }
 }

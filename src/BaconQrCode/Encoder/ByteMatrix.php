@@ -43,6 +43,11 @@ class ByteMatrix
         return $this->width;
     }
 
+    public function getArray()
+    {
+        return $this->bytes;
+    }
+
     public function get($x, $y)
     {
         return $this->bytes[$y][$x];
@@ -60,5 +65,32 @@ class ByteMatrix
                 $this->bytes[$y][$x] = $value;
             }
         }
+    }
+
+    public function __toString()
+    {
+        $result = '';
+
+        for ($y = 0; $y < $this->height; $y++) {
+            for ($x = 0; $x < $this->width; $x++) {
+                switch ($this->bytes[$y][$x]) {
+                    case 0:
+                        $result .= ' 0';
+                        break;
+
+                    case 1:
+                        $result .= ' 1';
+                        break;
+
+                    default:
+                        $result .= '  ';
+                        break;
+                }
+            }
+
+            $result .= "\n";
+        }
+
+        return $result;
     }
 }

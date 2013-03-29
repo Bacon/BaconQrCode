@@ -10,6 +10,8 @@
 namespace BaconQrCode\Encoder;
 
 use BaconQrCode\Common\ErrorCorrectionLevel;
+use BaconQrCode\Common\Mode;
+use BaconQrCode\Common\Version;
 
 /**
  * QR code.
@@ -33,7 +35,7 @@ class QrCode
         return $this->mode;
     }
 
-    public function setMode($mode)
+    public function setMode(Mode $mode)
     {
         $this->mode = $mode;
     }
@@ -53,7 +55,7 @@ class QrCode
         return $this->version;
     }
 
-    public function setVersion($version)
+    public function setVersion(Version $version)
     {
         $this->version = $version;
     }
@@ -81,5 +83,25 @@ class QrCode
     public static function isValidMaskPattern($maskPattern)
     {
         return $maskPattern > 0 && $maskPattern < self::NUM_MASK_PATTERNS;
+    }
+
+    public function __toString()
+    {
+        $result = "<<\n"
+                . " mode: " . $this->mode . "\n"
+                . " ecLevel: " . $this->errorCorrectionLevel . "\n"
+                . " version: " . $this->version . "\n"
+                . " maskPattern: " . $this->maskPattern . "\n";
+
+        if ($this->matrix === null) {
+            $result .= " matrix: null\n";
+        } else {
+            $result .= " matrix:\n";
+            $result .= $this->matrix;
+        }
+
+        $result .= ">>\n";
+
+        return $result;
     }
 }
