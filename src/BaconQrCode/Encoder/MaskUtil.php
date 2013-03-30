@@ -35,8 +35,10 @@ class MaskUtil
      */
     public static function applyMaskPenaltyRule1(ByteMatrix $matrix)
     {
-        return self::applyMaskPenaltyRule1Internal($matrix, true)
-            + self::applyMaskPenaltyRule1Internal($matrix, false);
+        return (
+            self::applyMaskPenaltyRule1Internal($matrix, true)
+            + self::applyMaskPenaltyRule1Internal($matrix, false)
+        );
     }
 
     /**
@@ -179,11 +181,11 @@ class MaskUtil
             }
         }
 
-        $numTotalCells        = $height * $width;
-        $darkRatio            = $numDarkCells / $numTotalCells;
-        $fixedPercentVariance = (int) (abs($darkRatio - 0.5) * 20);
+        $numTotalCells         = $height * $width;
+        $darkRatio             = $numDarkCells / $numTotalCells;
+        $fixedPercentVariances = (int) (abs($darkRatio - 0.5) * 20);
 
-        return $fixedPercentVariance * self::N4;
+        return $fixedPercentVariances * self::N4;
     }
 
     /**
@@ -278,7 +280,7 @@ class MaskUtil
                 }
             }
 
-            if ($numSameBitCells > 5) {
+            if ($numSameBitCells >= 5) {
                 $penalty += self::N1 + ($numSameBitCells - 5);
             }
         }

@@ -128,7 +128,7 @@ class Encoder
         $qrCode->setMode($mode);
         $qrCode->setVersion($version);
 
-        //Choose the mask pattern and set to "qrCode".
+        // Choose the mask pattern and set to "qrCode".
         $dimension   = $version->getDimensionForVersion();
         $matrix      = new ByteMatrix($dimension, $dimension);
         $maskPattern = self::chooseMaskPattern($finalBits, $ecLevel, $version, $matrix);

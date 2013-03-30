@@ -55,7 +55,7 @@ class ByteMatrix
 
     public function set($x, $y, $value)
     {
-        $this->bytes[$y][$x] = $value;
+        $this->bytes[$y][$x] = (int) $value;
     }
 
     public function clear($value)

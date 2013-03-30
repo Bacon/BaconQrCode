@@ -90,9 +90,7 @@ class EncoderTest extends TestCase
 
     public function testEncode()
     {
-        $this->markTestSkipped();
-
-        $qrCode = Encoder::encode('ABCDEF', new ErrorCorrectionLevel(ErrorCorrectionLevel::H));
+        $qrCode   = Encoder::encode('ABCDEF', new ErrorCorrectionLevel(ErrorCorrectionLevel::H));
         $expected = "<<\n"
                   . " mode: ALPHANUMERIC\n"
                   . " ecLevel: H\n"
@@ -120,6 +118,41 @@ class EncoderTest extends TestCase
                   . " 1 0 1 1 1 0 1 0 1 0 0 0 1 0 1 0 1 1 1 0 1\n"
                   . " 1 0 0 0 0 0 1 0 0 1 1 0 1 1 0 1 0 0 0 1 1\n"
                   . " 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 1 0 1 0 1\n"
+                  . ">>\n";
+
+        $this->assertEquals($expected, $qrCode->__toString());
+    }
+
+    public function testSimpleUtf8Eci()
+    {
+        $qrCode   = Encoder::encode('hello', new ErrorCorrectionLevel(ErrorCorrectionLevel::H), 'utf-8');
+        $expected = "<<\n"
+                  . " mode: BYTE\n"
+                  . " ecLevel: H\n"
+                  . " version: 1\n"
+                  . " maskPattern: 3\n"
+                  . " matrix:\n"
+                  . " 1 1 1 1 1 1 1 0 0 0 0 0 0 0 1 1 1 1 1 1 1\n"
+                  . " 1 0 0 0 0 0 1 0 0 0 1 0 1 0 1 0 0 0 0 0 1\n"
+                  . " 1 0 1 1 1 0 1 0 0 1 0 1 0 0 1 0 1 1 1 0 1\n"
+                  . " 1 0 1 1 1 0 1 0 0 1 1 0 1 0 1 0 1 1 1 0 1\n"
+                  . " 1 0 1 1 1 0 1 0 1 0 1 0 1 0 1 0 1 1 1 0 1\n"
+                  . " 1 0 0 0 0 0 1 0 0 0 0 0 1 0 1 0 0 0 0 0 1\n"
+                  . " 1 1 1 1 1 1 1 0 1 0 1 0 1 0 1 1 1 1 1 1 1\n"
+                  . " 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 0 0 0 0 0 0\n"
+                  . " 0 0 1 1 0 0 1 1 1 1 0 0 0 1 1 0 1 0 0 0 0\n"
+                  . " 0 0 1 1 1 0 0 0 0 0 1 1 0 0 0 1 0 1 1 1 0\n"
+                  . " 0 1 0 1 0 1 1 1 0 1 0 1 0 0 0 0 0 1 1 1 1\n"
+                  . " 1 1 0 0 1 0 0 1 1 0 0 1 1 1 1 0 1 0 1 1 0\n"
+                  . " 0 0 0 0 1 0 1 1 1 1 0 0 0 0 0 1 0 0 1 0 0\n"
+                  . " 0 0 0 0 0 0 0 0 1 1 1 1 0 0 1 1 1 0 0 0 1\n"
+                  . " 1 1 1 1 1 1 1 0 1 1 1 0 1 0 1 1 0 0 1 0 0\n"
+                  . " 1 0 0 0 0 0 1 0 0 0 1 0 0 1 1 1 1 1 1 0 1\n"
+                  . " 1 0 1 1 1 0 1 0 0 1 0 0 0 0 1 1 0 0 0 0 0\n"
+                  . " 1 0 1 1 1 0 1 0 1 1 1 0 1 0 0 0 1 1 0 0 0\n"
+                  . " 1 0 1 1 1 0 1 0 1 1 0 0 0 1 0 0 1 0 0 0 0\n"
+                  . " 1 0 0 0 0 0 1 0 0 0 0 1 1 0 1 0 1 0 1 1 0\n"
+                  . " 1 1 1 1 1 1 1 0 0 1 0 1 1 1 0 1 1 0 0 0 0\n"
                   . ">>\n";
 
         $this->assertEquals($expected, $qrCode->__toString());

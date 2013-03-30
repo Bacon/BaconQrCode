@@ -271,7 +271,7 @@ class BitArray
 
         for ($i = 0; $i < $this->size; $i++) {
             if ($this->get($this->size - $i - 1)) {
-                $newBits[$i >> 5] |= 1 << ($i & 0x1f);
+                $newBits[$i >> 5] = $newBits[$i >> 5] | (1 << ($i & 0x1f));
             }
         }
 

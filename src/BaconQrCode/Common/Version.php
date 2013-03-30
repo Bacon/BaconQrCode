@@ -75,7 +75,7 @@ class Version
 
     public function getEcBlocksForLevel(ErrorCorrectionLevel $ecLevel)
     {
-        return $this->errorCorrectionBlocks[$ecLevel->get()];
+        return $this->errorCorrectionBlocks[$ecLevel->getOrdinal()];
     }
 
     public static function getProvisionalVersionForDimension($dimension)
@@ -137,14 +137,14 @@ class Version
         // Bottom left finder pattern + separator + format
         $bitMatrix->setRegion(0, $dimension - 8, 9, 8);
 
+        // Alignment patterns
         $max = count($this->alignmentPatternCenters);
 
-        // Alignment patterns
         for ($x = 0; $x < $max; $x++) {
             $i = $this->alignmentPatternCenters[$x] - 2;
 
             for ($y = 0; $y < $max; $y++) {
-                if (($x === 0 && ($y === 0 || $y === $max - 1)) || ($x === $max -1 && $y === 0)) {
+                if (($x === 0 && ($y === 0 || $y === $max - 1)) || ($x === $max - 1 && $y === 0)) {
                     // No alignment patterns near the three finder paterns
                     continue;
                 }
@@ -162,7 +162,7 @@ class Version
             // Version info, top right
             $bitMatrix->setRegion($dimension - 11, 0, 3, 6);
             // Version info, bottom left
-            $bitMatrix->setRegion(0, $dimension -11, 6, 3);
+            $bitMatrix->setRegion(0, $dimension - 11, 6, 3);
         }
 
         return $bitMatrix;

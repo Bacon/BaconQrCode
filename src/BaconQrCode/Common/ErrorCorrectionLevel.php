@@ -33,4 +33,30 @@ class ErrorCorrectionLevel extends AbstractEnum
      * Level H, ~30% correction
      */
     const H = 0x2;
+
+    /**
+     * Gets the ordinal of this enumeration constant.
+     *
+     * @return integer
+     */
+    public function getOrdinal()
+    {
+        switch ($this->value) {
+            case self::L:
+                return 0;
+                break;
+
+            case self::M:
+                return 1;
+                break;
+
+            case self::Q:
+                return 2;
+                break;
+
+            case self::H:
+                return 3;
+                break;
+        }
+    }
 }
