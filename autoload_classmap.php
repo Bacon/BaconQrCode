@@ -7,6 +7,8 @@ return array(
     'BaconQrCode\Encoder\MaskUtil'                   => __DIR__ . '/src/BaconQrCode/Encoder/MaskUtil.php',
     'BaconQrCode\Encoder\ByteMatrix'                 => __DIR__ . '/src/BaconQrCode/Encoder/ByteMatrix.php',
     'BaconQrCode\Encoder\BlockPair'                  => __DIR__ . '/src/BaconQrCode/Encoder/BlockPair.php',
+    'BaconQrCode\Renderer\RendererInterface'         => __DIR__ . '/src/BaconQrCode/Renderer/RendererInterface.php',
+    'BaconQrCode\Renderer\Image'                     => __DIR__ . '/src/BaconQrCode/Renderer/Image.php',
     'BaconQrCode\Common\BitMatrix'                   => __DIR__ . '/src/BaconQrCode/Common/BitMatrix.php',
     'BaconQrCode\Common\BitUtils'                    => __DIR__ . '/src/BaconQrCode/Common/BitUtils.php',
     'BaconQrCode\Common\ReedSolomonCodec'            => __DIR__ . '/src/BaconQrCode/Common/ReedSolomonCodec.php',
@@ -26,4 +28,5 @@ return array(
     'BaconQrCode\Exception\WriterException'          => __DIR__ . '/src/BaconQrCode/Exception/WriterException.php',
     'BaconQrCode\Exception\RuntimeException'         => __DIR__ . '/src/BaconQrCode/Exception/RuntimeException.php',
     'BaconQrCode\Exception\OutOfBoundsException'     => __DIR__ . '/src/BaconQrCode/Exception/OutOfBoundsException.php',
+    'BaconQrCode\Writer'                             => __DIR__ . '/src/BaconQrCode/Writer.php',
 );
