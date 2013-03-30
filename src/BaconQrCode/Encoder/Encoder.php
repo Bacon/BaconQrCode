@@ -307,7 +307,7 @@ class Encoder
         }
     }
 
-    protected function interleaveWithEcBytes(BitArray $bits, $numTotalBytes, $numDataBytes, $numRsBlocks)
+    protected static function interleaveWithEcBytes(BitArray $bits, $numTotalBytes, $numDataBytes, $numRsBlocks)
     {
         if ($bits->getSizeInBytes() !== $numDataBytes) {
             throw new Exception\WriterException('Number of bits and data bytes does not match');
@@ -370,13 +370,13 @@ class Encoder
         return $result;
     }
 
-    protected static function generateEcBytes($dataBytes, $numEcBytesInBlock)
+    protected static function generateEcBytes(SplFixedArray $dataBytes, $numEcBytesInBlock)
     {
         $numDataBytes = count($dataBytes);
         $toEncode     = new SplFixedArray($numDataBytes + $numEcBytesInBlock);
 
         for ($i = 0; $i < $numDataBytes; $i++) {
-            $toEncode[$i] = ord($dataBytes[$i]) & 0xff;
+            $toEncode[$i] = $dataBytes[$i] & 0xff;
         }
 
         $ecBytes = new SplFixedArray($numEcBytesInBlock);
@@ -512,27 +512,30 @@ class Encoder
 
     protected static function appendKanjiBytes($content, BitArray $bits)
     {
-        if (false === ($bytes = @iconv('utf-8', 'shift-jis', $content))) {
-            throw new Exception\WriterException('Could not encode content to shift-jis');
+        if (strlen($content) % 2 > 0) {
+            // We just do a simple length check here. The for loop will check
+            // individual characters.
+            throw new Exception\WriterException('Content does not seem to be encoded in SHIFT-JIS');
         }
 
-        $length = strlen($bytes);
+        $length = strlen($content);
 
         for ($i = 0; $i < $length; $i += 2) {
-            $byte1 = ord($bytes[$i]) & 0xff;
-            $byte2 = ord($bytes[$i + 1]) & 0xff;
+            $byte1 = ord($content[$i]) & 0xff;
+            $byte2 = ord($content[$i + 1]) & 0xff;
             $code  = ($byte1 << 8) | $byte2;
 
             if ($code >= 0x8140 && $code <= 0x9ffc) {
-                $substracted = $code - 0x8140;
+                $subtracted = $code - 0x8140;
             } elseif ($code >= 0xe040 && $code <= 0xebbf) {
-                $substracted = $code - 0xc140;
+                $subtracted = $code - 0xc140;
             } else {
                 throw new Exception\WriterException('Invalid byte sequence');
             }
 
-            $encoded = (($substracted >> 8) * 0xc0) + ($substracted & 0xff);
-            $bits->appendBit($encoded, 13);
+            $encoded = (($subtracted >> 8) * 0xc0) + ($subtracted & 0xff);
+
+            $bits->appendBits($encoded, 13);
         }
     }
 
