@@ -25,6 +25,13 @@ class Writer
     const QUIET_ZONE_SIZE = 4;
 
     /**
+     * Renderer instance.
+     *
+     * @var RendererInterface
+     */
+    protected $renderer;
+
+    /**
      * Create a new writer with a specific renderer.
      *
      * @param RendererInterface $renderer
@@ -47,12 +54,16 @@ class Writer
      * "ecLevel":  the error correction level. Default: ErrorCorrectionLevel::L
      * "margin":   the quiet zone around the QR code. Default: 4
      *
+     * The return value depends on whether a filename is supplied. If a filename
+     * is supplied, nothing will be returned. Else the return value depends
+     * on the chosen renderer.
+     *
      * @param  string  $content
      * @param  integer $width
      * @param  integer $height
      * @param  string  $filename
      * @param  array   $hints
-     * @return void
+     * @return mixed
      * @throws Exception\InvalidArgumentException
      */
     public function write(

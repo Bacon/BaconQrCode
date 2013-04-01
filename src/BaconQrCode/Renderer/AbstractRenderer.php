@@ -12,10 +12,31 @@ namespace BaconQrCode\Renderer;
 use BaconQrCode\Encoder\QrCode;
 
 /**
- * Image renderer.
+ * Bitmap renderer.
  */
-class Image implements RendererInterface
+abstract class AbstractRenderer implements RendererInterface
 {
+    /**
+     * Width of the resulting drawing.
+     *
+     * @var integer
+     */
+    protected $width;
+
+    /**
+     * Heigth of the resulting drawing.
+     *
+     * @var integer
+     */
+    protected $height;
+
+    /**
+     * Size of each individual block.
+     *
+     * @var integer
+     */
+    protected $blockSize;
+
     /**
      * render(): defined by RendererInterface.
      *
@@ -46,25 +67,46 @@ class Image implements RendererInterface
         $leftPadding = (int) (($outputWidth - ($inputWidth * $multiple)) / 2);
         $topPadding  = (int) (($outputHeight - ($inputHeight * $multiple)) / 2);
 
-        $image = imagecreatetruecolor($outputWidth, $outputHeight);
-        $white = imagecolorallocate($image, 255, 255, 255);
-        $black = imagecolorallocate($image, 0, 0, 0);
+        $this->width     = $outputWidth;
+        $this->height    = $outputHeight;
+        $this->blockSize = $multiple;
 
-        imagefill($image, 0, 0, $white);
+        $this->initDrawing();
 
         for ($inputY = 0, $outputY = $topPadding; $inputY < $inputHeight; $inputY++, $outputY += $multiple) {
             for ($inputX = 0, $outputX = $leftPadding; $inputX < $inputWidth; $inputX++, $outputX += $multiple) {
                 if ($input->get($inputX, $inputY) === 1) {
-                    imagefilledrectangle($image, $outputX, $outputY, $outputX + $multiple, $outputY + $multiple, $black);
+                    $this->drawSquare($outputX, $outputY, $multiple);
                 }
             }
         }
 
-        if ($filename !== null) {
-            imagepng($image, $filename);
-            imagedestroy($image);
-        } else {
-            return $image;
-        }
+        return $this->finishDrawing($filename);
     }
+
+    /**
+     * Initiate drawing.
+     *
+     * @return void
+     */
+    abstract protected function initDrawing();
+
+    /**
+     * Draw a square at given position.
+     *
+     * @param  integer $x
+     * @param  integer $y
+     * @return void
+     */
+    abstract protected function drawSquare($x, $y);
+
+    /**
+     * Finish drawing.
+     *
+     * When filename is given, write result to the file, else return it.
+     *
+     * @param  string|null $filename
+     * @return mixed
+     */
+    abstract protected function finishDrawing($filename = null);
 }
