@@ -16,6 +16,11 @@ use SplFixedArray;
  */
 class Version
 {
+    /**
+     * Version decode information.
+     *
+     * @var array
+     */
     protected static $versionDecodeInfo = array(
         0x07c94, 0x085bc, 0x09a99, 0x0a4d3, 0x0bbf6, 0x0c762, 0x0d847, 0x0e60d,
         0x0f928, 0x10b78, 0x1145d, 0x12a17, 0x13532, 0x149a6, 0x15683, 0x168c9,
@@ -24,16 +29,48 @@ class Version
         0x27541, 0x28c69
     );
 
+    /**
+     * Cached version instances.
+     *
+     * @var array
+     */
     protected static $versions = array();
 
+    /**
+     * Version number of this version.
+     *
+     * @var integer
+     */
     protected $versionNumber;
 
+    /**
+     * Alignment pattern centers.
+     *
+     * @var SplFixedArray
+     */
     protected $alignmentPatternCenters;
 
+    /**
+     * Error correction blocks.
+     *
+     * @var SplFixedArray
+     */
     protected $errorCorrectionBlocks;
 
+    /**
+     * Total number of codewords.
+     *
+     * @var integer
+     */
     protected $totalCodewords;
 
+    /**
+     * Creates a new version.
+     *
+     * @param integer       $versionNumber
+     * @param SplFixedArray $alignmentPatternCenters
+     * @param SplFixedArray $ecBlocks
+     */
     protected function __construct(
         $versionNumber,
         SplFixedArray $alignmentPatternCenters,
@@ -53,31 +90,64 @@ class Version
         $this->totalCodewords = $totalCodewords;
     }
 
+    /**
+     * Gets the version number.
+     *
+     * @return integer
+     */
     public function getVersionNumber()
     {
         return $this->versionNumber;
     }
 
+    /**
+     * Gets the alignment pattern centers.
+     *
+     * @return SplFixedArray
+     */
     public function getAlignmentPatternCenters()
     {
         return $this->alignmentPatternCenters;
     }
 
+    /**
+     * Gets the total number of codewords.
+     *
+     * @return integer
+     */
     public function getTotalCodewords()
     {
         return $this->totalCodewords;
     }
 
+    /**
+     * Gets the dimension for the current version.
+     *
+     * @return integer
+     */
     public function getDimensionForVersion()
     {
         return 17 + 4 * $this->versionNumber;
     }
 
+    /**
+     * Gets the number of EC blocks for a specific EC level.
+     *
+     * @param  ErrorCorrectionLevel $ecLevel
+     * @return integer
+     */
     public function getEcBlocksForLevel(ErrorCorrectionLevel $ecLevel)
     {
         return $this->errorCorrectionBlocks[$ecLevel->getOrdinal()];
     }
 
+    /**
+     * Gets a provisional version number for a specific dimension.
+     *
+     * @param  integer $dimension
+     * @return Version
+     * @throws Exception\InvalidArgumentException
+     */
     public static function getProvisionalVersionForDimension($dimension)
     {
         if ($dimension % 4 !== 1) {
@@ -87,6 +157,13 @@ class Version
         return self::getVersionForNumber(($dimension - 17) >> 2);
     }
 
+    /**
+     * Gets a version instance for a specific version number.
+     *
+     * @param  integer $versionNumber
+     * @return Version
+     * @throws Exception\InvalidArgumentException
+     */
     public static function getVersionForNumber($versionNumber)
     {
         if ($versionNumber < 1 || $versionNumber > 40) {
@@ -100,6 +177,12 @@ class Version
         return self::$versions[$versionNumber - 1];
     }
 
+    /**
+     * Decodes version information from an integer and returns the version.
+     *
+     * @param  integer $versionBits
+     * @return Version|null
+     */
     public static function decodeVersionInformation($versionBits)
     {
         $bestDifference = PHP_INT_MAX;
@@ -125,6 +208,11 @@ class Version
         return null;
     }
 
+    /**
+     * Builds the function pattern for the current version.
+     *
+     * @return BitMatrix
+     */
     public function buildFunctionPattern()
     {
         $dimension = $this->getDimensionForVersion();
@@ -168,6 +256,11 @@ class Version
         return $bitMatrix;
     }
 
+    /**
+     * Returns a string representation for the version.
+     *
+     * @return string
+     */
     public function __toString()
     {
         return (string) $this->versionNumber;

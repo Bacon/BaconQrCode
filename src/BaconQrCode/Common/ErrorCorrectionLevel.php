@@ -15,22 +15,22 @@ namespace BaconQrCode\Common;
 class ErrorCorrectionLevel extends AbstractEnum
 {
     /**
-     * Level L, ~7% correction
+     * Level L, ~7% correction.
      */
     const L = 0x1;
 
     /**
-     * Level M, ~15% correction
+     * Level M, ~15% correction.
      */
     const M = 0x0;
 
     /**
-     * Level Q, ~25% correction
+     * Level Q, ~25% correction.
      */
     const Q = 0x3;
 
     /**
-     * Level H, ~30% correction
+     * Level H, ~30% correction.
      */
     const H = 0x2;
 

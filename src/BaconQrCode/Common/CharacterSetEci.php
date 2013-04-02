@@ -15,6 +15,9 @@ namespace BaconQrCode\Common;
  */
 class CharacterSetEci extends AbstractEnum
 {
+    /**#@+
+     * Character set constants.
+     */
     const CP437                = 0;
     const ISO8859_1            = 1;
     const ISO8859_2            = 4;
@@ -43,7 +46,13 @@ class CharacterSetEci extends AbstractEnum
     const BIG5                 = 28;
     const GB18030              = 29;
     const EUC_KR               = 30;
+    /**#@-*/
 
+    /**
+     * Map between character names and their ECI values.
+     *
+     * @var array
+     */
     protected static $nameToEci = array(
         'ISO-8859-1'   => self::ISO8859_1,
         'ISO-8859-2'   => self::ISO8859_2,
@@ -73,6 +82,11 @@ class CharacterSetEci extends AbstractEnum
         'EUC-KR'       => self::EUC_KR,
     );
 
+    /**
+     * Additional possible values for character sets.
+     *
+     * @var array
+     */
     protected $additionalValues = array(
         self::CP437 => 2,
         self::ASCII => 170,

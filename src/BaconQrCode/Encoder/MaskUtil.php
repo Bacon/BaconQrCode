@@ -16,13 +16,14 @@ use BaconQrCode\Common\BitUtils;
  */
 class MaskUtil
 {
-    /**
+    /**#@+
      * Penalty weights from section 6.8.2.1
      */
     const N1 = 3;
     const N2 = 3;
     const N3 = 40;
     const N4 = 10;
+    /**#@-*/
 
     /**
      * Applies mask penalty rule 1 and returns the penalty.

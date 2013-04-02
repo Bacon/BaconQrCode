@@ -50,7 +50,7 @@ class Encoder
     protected static $codecs = array();
 
     /**
-     * Encode "content" with the error correction level "ecLevel".
+     * Encodes "content" with the error correction level "ecLevel".
      *
      * @param  string               $content
      * @param  ErrorCorrectionLevel $ecLevel
@@ -141,6 +141,12 @@ class Encoder
         return $qrCode;
     }
 
+    /**
+     * Gets the alphanumeric code for a byte.
+     *
+     * @param  string|integer $code
+     * @return integer
+     */
     protected static function getAlphanumericCode($code)
     {
         $code = (is_string($code) ? ord($code) : $code);
@@ -152,6 +158,13 @@ class Encoder
         return -1;
     }
 
+    /**
+     * Chooses the best mode for a given content.
+     *
+     * @param  string $content
+     * @param  string $encoding
+     * @return Mode
+     */
     protected static function chooseMode($content, $encoding = null)
     {
         if (strcasecmp($encoding, 'SHIFT-JIS') === 0) {
@@ -183,6 +196,12 @@ class Encoder
         return new Mode(Mode::BYTE);
     }
 
+    /**
+     * Calculates the mask penalty for a matrix.
+     *
+     * @param  ByteMatrix $matrix
+     * @return integer
+     */
     protected static function calculateMaskPenalty(ByteMatrix $matrix)
     {
         return (
@@ -193,6 +212,15 @@ class Encoder
         );
     }
 
+    /**
+     * Chooses the best mask pattern for a matrix.
+     *
+     * @param  BitArray             $bits
+     * @param  ErrorCorrectionLevel $ecLevel
+     * @param  Version              $version
+     * @param  ByteMatrix           $matrix
+     * @return integer
+     */
     protected static function chooseMaskPattern(
         BitArray $bits,
         ErrorCorrectionLevel $ecLevel,
@@ -215,6 +243,14 @@ class Encoder
         return $bestMaskPattern;
     }
 
+    /**
+     * Chooses the best version for the input.
+     *
+     * @param  integer              $numInputBits
+     * @param  ErrorCorrectionLevel $ecLevel
+     * @return Version
+     * @throws Exception\WriterException
+     */
     protected static function chooseVersion($numInputBits, ErrorCorrectionLevel $ecLevel)
     {
         for ($versionNum = 1; $versionNum <= 40; $versionNum++) {
@@ -235,6 +271,13 @@ class Encoder
         throw new Exception\WriterException('Data too big');
     }
 
+    /**
+     * Terminates the bits in a bit array.
+     *
+     * @param  integer  $numDataBytes
+     * @param  BitArray $bits
+     * @throws Exception\WriterException
+     */
     protected static function terminateBits($numDataBytes, BitArray $bits)
     {
         $capacity = $numDataBytes << 3;
@@ -266,6 +309,16 @@ class Encoder
         }
     }
 
+    /**
+     * Gets number of data- and EC bytes for a block ID.
+     *
+     * @param  integer $numTotalBytes
+     * @param  integer $numDataBytes
+     * @param  integer $numRsBlocks
+     * @param  integer $blockId
+     * @return array
+     * @throws Exception\WriterException
+     */
     protected static function getNumDataBytesAndNumEcBytesForBlockId(
         $numTotalBytes,
         $numDataBytes,
@@ -307,6 +360,16 @@ class Encoder
         }
     }
 
+    /**
+     * Interleaves data with EC bytes.
+     *
+     * @param  BitArray $bits
+     * @param  integer  $numTotalBytes
+     * @param  integer  $numDataBytes
+     * @param  integer  $numRsBlocks
+     * @return BitArray
+     * @throws Exception\WriterException
+     */
     protected static function interleaveWithEcBytes(BitArray $bits, $numTotalBytes, $numDataBytes, $numRsBlocks)
     {
         if ($bits->getSizeInBytes() !== $numDataBytes) {
@@ -370,6 +433,13 @@ class Encoder
         return $result;
     }
 
+    /**
+     * Generates EC bytes for given data.
+     *
+     * @param  SplFixedArray $dataBytes
+     * @param  integer       $numEcBytesInBlock
+     * @return SplFixedArray
+     */
     protected static function generateEcBytes(SplFixedArray $dataBytes, $numEcBytesInBlock)
     {
         $numDataBytes = count($dataBytes);
@@ -386,6 +456,13 @@ class Encoder
         return $ecBytes;
     }
 
+    /**
+     * Gets an RS codec and caches it.
+     *
+     * @param  integer $numDataBytes
+     * @param  integer $numEcBytesInBlock
+     * @return ReedSolomonCodec
+     */
     protected static function getCodec($numDataBytes, $numEcBytesInBlock)
     {
         $cacheId = $numDataBytes . '-' . $numEcBytesInBlock;
@@ -404,11 +481,28 @@ class Encoder
         return self::$codecs[$cacheId];
     }
 
+    /**
+     * Appends mode information to a bit array.
+     *
+     * @param  Mode     $mode
+     * @param  BitArray $bits
+     * @return void
+     */
     protected static function appendModeInfo(Mode $mode, BitArray $bits)
     {
         $bits->appendBits($mode->get(), 4);
     }
 
+    /**
+     * Appends length information to a bit array.
+     *
+     * @param  integer  $numLetters
+     * @param  Version  $version
+     * @param  Mode     $mode
+     * @param  BitArray $bits
+     * @return void
+     * @throws Exception\WriterException
+     */
     protected static function appendLengthInfo($numLetters, Version $version, Mode $mode, BitArray $bits)
     {
         $numBits = $mode->getCharacterCountBits($version);
@@ -420,6 +514,16 @@ class Encoder
         $bits->appendBits($numLetters, $numBits);
     }
 
+    /**
+     * Appends bytes to a bit array in a specific mode.
+     *
+     * @param  stirng   $content
+     * @param  Mode     $mode
+     * @param  BitArray $bits
+     * @param  string   $encoding
+     * @return void
+     * @throws Exception\WriterException
+     */
     protected static function appendBytes($content, Mode $mode, BitArray $bits, $encoding)
     {
         switch ($mode->get()) {
@@ -444,6 +548,13 @@ class Encoder
         }
     }
 
+    /**
+     * Appends numeric bytes to a bit array.
+     *
+     * @param  string   $content
+     * @param  BitArray $bits
+     * @return void
+     */
     protected static function appendNumericBytes($content, BitArray $bits)
     {
         $length = strlen($content);
@@ -471,6 +582,13 @@ class Encoder
         }
     }
 
+    /**
+     * Appends alpha-numeric bytes to a bit array.
+     *
+     * @param  string   $content
+     * @param  BitArray $bits
+     * @return void
+     */
     protected static function appendAlphanumericBytes($content, BitArray $bits)
     {
         $length = strlen($content);
@@ -497,6 +615,13 @@ class Encoder
         }
     }
 
+    /**
+     * Appends regular 8-bit bytes to a bit array.
+     *
+     * @param  string   $content
+     * @param  BitArray $bits
+     * @return void
+     */
     protected static function append8BitBytes($content, BitArray $bits, $encoding)
     {
         if (false === ($bytes = @iconv('utf-8', $encoding, $content))) {
@@ -510,6 +635,13 @@ class Encoder
         }
     }
 
+    /**
+     * Appends KANJI bytes to a bit array.
+     *
+     * @param  string   $content
+     * @param  BitArray $bits
+     * @return void
+     */
     protected static function appendKanjiBytes($content, BitArray $bits)
     {
         if (strlen($content) % 2 > 0) {
@@ -539,6 +671,13 @@ class Encoder
         }
     }
 
+    /**
+     * Appends ECI information to a bit array.
+     *
+     * @param  CharacterSetEci $eci
+     * @param  BitArray        $bits
+     * @return void
+     */
     protected static function appendEci(CharacterSetEci $eci, BitArray $bits)
     {
         $mode = new Mode(Mode::ECI);

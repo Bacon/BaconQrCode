@@ -19,6 +19,11 @@ use BaconQrCode\Exception;
  */
 class MatrixUtil
 {
+    /**
+     * Position detection pattern.
+     *
+     * @var array
+     */
     protected static $positionDetectionPattern = array(
         array(1, 1, 1, 1, 1, 1, 1),
         array(1, 0, 0, 0, 0, 0, 1),
@@ -29,6 +34,11 @@ class MatrixUtil
         array(1, 1, 1, 1, 1, 1, 1),
     );
 
+    /**
+     * Position adjustment pattern.
+     *
+     * @var array
+     */
     protected static $positionAdjustmentPattern = array(
         array(1, 1, 1, 1, 1),
         array(1, 0, 0, 0, 1),
@@ -37,6 +47,11 @@ class MatrixUtil
         array(1, 1, 1, 1, 1),
     );
 
+    /**
+     * Coordinates for position adjustment patterns for each version.
+     *
+     * @var array
+     */
     protected static $positionAdjustmentPatternCoordinateTable = array(
         array(null, null, null, null, null, null, null), // Version 1
         array(   6,   18, null, null, null, null, null), // Version 2
@@ -80,6 +95,11 @@ class MatrixUtil
         array(   6,   30,   58,   86,  114,  142,  170), // Version 40
     );
 
+    /**
+     * Type information coordinates.
+     *
+     * @var array
+     */
     protected static $typeInfoCoordinates = array(
         array(8, 0),
         array(8, 1),
@@ -98,15 +118,48 @@ class MatrixUtil
         array(0, 8),
     );
 
+    /**
+     * Version information polynomial.
+     *
+     * @var integer
+     */
     protected static $versionInfoPoly = 0x1f25;
+
+    /**
+     * Type information polynomial.
+     *
+     * @var integer
+     */
     protected static $typeInfoPoly = 0x537;
+
+    /**
+     * Type information mask pattern.
+     *
+     * @var integer
+     */
     protected static $typeInfoMaskPattern = 0x5412;
 
+    /**
+     * Clears a given matrix.
+     *
+     * @param  ByteMatrix $matrix
+     * @return void
+     */
     public static function clearMatrix(ByteMatrix $matrix)
     {
         $matrix->clear(-1);
     }
 
+    /**
+     * Builds a complete matrix.
+     *
+     * @param  BitArray             $dataBits
+     * @param  ErrorCorrectionLevel $level
+     * @param  Version              $version
+     * @param  integer              $maskPattern
+     * @param  ByteMatrix           $matrix
+     * @return void
+     */
     public static function buildMatrix(
         BitArray $dataBits,
         ErrorCorrectionLevel $level,
@@ -121,6 +174,14 @@ class MatrixUtil
         self::embedDataBits($dataBits, $maskPattern, $matrix);
     }
 
+    /**
+     * Embeds type information into a matrix.
+     *
+     * @param  ErrorCorrectionLevel $level
+     * @param  integer              $maskPattern
+     * @param  ByteMatrix           $matrix
+     * @return void
+     */
     protected static function embedTypeInfo(ErrorCorrectionLevel $level, $maskPattern, ByteMatrix $matrix)
     {
         $typeInfoBits = new BitArray();
@@ -148,6 +209,15 @@ class MatrixUtil
         }
     }
 
+    /**
+     * Generates type information bits and appends them to a bit array.
+     *
+     * @param  ErrorCorrectionLevel $level
+     * @param  integer $maskPattern
+     * @param  BitArray $bits
+     * @return void
+     * @throws Exception\RuntimeException
+     */
     protected static function makeTypeInfoBits(ErrorCorrectionLevel $level, $maskPattern, BitArray $bits)
     {
         $typeInfo = ($level->get() << 3) | $maskPattern;
@@ -161,10 +231,17 @@ class MatrixUtil
         $bits->xorBits($maskBits);
 
         if ($bits->getSize() !== 15) {
-            throw new \RuntimeException('Bit array resulted in invalid size: ' . $bits->getSize());
+            throw new Exception\RuntimeException('Bit array resulted in invalid size: ' . $bits->getSize());
         }
     }
 
+    /**
+     * Embeds version information if required.
+     *
+     * @param  Version    $version
+     * @param  ByteMatrix $matrix
+     * @return void
+     */
     protected static function maybeEmbedVersionInfo(Version $version, ByteMatrix $matrix)
     {
         if ($version->getVersionNumber() < 7) {
@@ -187,6 +264,14 @@ class MatrixUtil
         }
     }
 
+    /**
+     * Generates version information bits and appends them to a bit array.
+     *
+     * @param  Version  $version
+     * @param  BitArray $bits
+     * @return void
+     * @throws Exception\RuntimeException
+     */
     protected static function makeVersionInfoBits(Version $version, BitArray $bits)
     {
         $bits->appendBits($version->getVersionNumber(), 6);
@@ -195,10 +280,17 @@ class MatrixUtil
         $bits->appendBits($bchCode, 12);
 
         if ($bits->getSize() !== 18) {
-            throw new \RuntimeException('Bit array resulted in invalid size: ' . $bits->getSize());
+            throw new Exception\RuntimeException('Bit array resulted in invalid size: ' . $bits->getSize());
         }
     }
 
+    /**
+     * Calculates the BHC code for a value and a polynomial.
+     *
+     * @param  integer $value
+     * @param  integer $poly
+     * @return integer
+     */
     protected static function calculateBchCode($value, $poly)
     {
         $msbSetInPoly   = self::findMsbSet($poly);
@@ -211,6 +303,12 @@ class MatrixUtil
         return $value;
     }
 
+    /**
+     * Finds and MSB set.
+     *
+     * @param  integer $value
+     * @return integer
+     */
     protected static function findMsbSet($value)
     {
         $numDigits = 0;
@@ -223,6 +321,13 @@ class MatrixUtil
         return $numDigits;
     }
 
+    /**
+     * Embeds basic patterns into a matrix.
+     *
+     * @param  Version    $version
+     * @param  ByteMatrix $matrix
+     * @return void
+     */
     protected static function embedBasicPatterns(Version $version, ByteMatrix $matrix)
     {
         self::embedPositionDetectionPatternsAndSeparators($matrix);
@@ -231,6 +336,12 @@ class MatrixUtil
         self::embedTimingPatterns($matrix);
     }
 
+    /**
+     * Embeds position detection patterns and separators into a byte matrix.
+     *
+     * @param  ByteMatrix $matrix
+     * @return void
+     */
     protected static function embedPositionDetectionPatternsAndSeparators(ByteMatrix $matrix)
     {
         $pdpWidth = count(self::$positionDetectionPattern[0]);
@@ -252,6 +363,14 @@ class MatrixUtil
         self::embedVerticalSeparationPattern($vspSize, $matrix->getHeight() - $vspSize, $matrix);
     }
 
+    /**
+     * Embeds a single position detection pattern into a byte matrix.
+     *
+     * @param  integer    $xStart
+     * @param  integer    $yStart
+     * @param  ByteMatrix $matrix
+     * @return void
+     */
     protected static function embedPositionDetectionPattern($xStart, $yStart, ByteMatrix $matrix)
     {
         for ($y = 0; $y < 7; $y++) {
@@ -261,6 +380,15 @@ class MatrixUtil
         }
     }
 
+    /**
+     * Embeds a single horizontal separation pattern.
+     *
+     * @param  integer    $xStart
+     * @param  integer    $yStart
+     * @param  ByteMatrix $matrix
+     * @return void
+     * @throws Exception\RuntimeException
+     */
     protected static function embedHorizontalSeparationPattern($xStart, $yStart, ByteMatrix $matrix)
     {
         for ($x = 0; $x < 8; $x++) {
@@ -272,6 +400,15 @@ class MatrixUtil
         }
     }
 
+    /**
+     * Embeds a single vertical separation pattern.
+     *
+     * @param  integer    $xStart
+     * @param  integer    $yStart
+     * @param  ByteMatrix $matrix
+     * @return void
+     * @throws Exception\RuntimeException
+     */
     protected static function embedVerticalSeparationPattern($xStart, $yStart, ByteMatrix $matrix)
     {
         for ($y = 0; $y < 7; $y++) {
@@ -283,6 +420,13 @@ class MatrixUtil
         }
     }
 
+    /**
+     * Embeds a dot at the left bottom corner.
+     *
+     * @param  ByteMatrix $matrix
+     * @return void
+     * @throws Exception\RuntimeException
+     */
     protected static function embedDarkDotAtLeftBottomCorner(ByteMatrix $matrix)
     {
         if ($matrix->get(8, $matrix->getHeight() - 8) === 0) {
@@ -292,6 +436,13 @@ class MatrixUtil
         $matrix->set(8, $matrix->getHeight() - 8, 1);
     }
 
+    /**
+     * Embeds position adjustment patterns if required.
+     *
+     * @param  Version    $version
+     * @param  ByteMatrix $matrix
+     * @return void
+     */
     protected static function maybeEmbedPositionAdjustmentPatterns(Version $version, ByteMatrix $matrix)
     {
         if ($version->getVersionNumber() < 2) {
@@ -319,6 +470,14 @@ class MatrixUtil
         }
     }
 
+    /**
+     * Embeds a single position adjustment pattern.
+     *
+     * @param  integer    $xStart
+     * @param  intger     $yStart
+     * @param  ByteMatrix $matrix
+     * @return void
+     */
     protected static function embedPositionAdjustmentPattern($xStart, $yStart, ByteMatrix $matrix)
     {
         for ($y = 0; $y < 5; $y++) {
@@ -328,6 +487,12 @@ class MatrixUtil
         }
     }
 
+    /**
+     * Embeds timing patterns into a matrix.
+     *
+     * @param  ByteMatrix $matrix
+     * @return void
+     */
     protected static function embedTimingPatterns(ByteMatrix $matrix)
     {
         $matrixWidth = $matrix->getWidth();

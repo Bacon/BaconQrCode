@@ -15,8 +15,18 @@ namespace BaconQrCode\Common;
  */
 class FormatInformation
 {
-    const FORMAT_INFOR_MASK_QR = 0x5412;
+    /**
+     * Mask for format information.
+     */
+    const FORMAT_INFO_MASK_QR = 0x5412;
 
+    /**
+     * Lookup table for decoding format information.
+     *
+     * See ISO 18004:2006, Annex C, Table C.1
+     *
+     * @var array
+     */
     protected static $formatInfoDecodeLookup = array(
         array(0x5412, 0x00),
         array(0x5125, 0x01),
@@ -52,17 +62,45 @@ class FormatInformation
         array(0x2bed, 0x1f),
     );
 
+    /**
+     * Offset i holds the number of 1 bits in the binary representation of i.
+     *
+     * @var array
+     */
     protected static $bitsSetInHalfByte = array(0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4);
 
+    /**
+     * Error correction level.
+     *
+     * @var ErrorCorrectionLevel
+     */
     protected $ecLevel;
+
+    /**
+     * Data mask.
+     *
+     * @var integer
+     */
     protected $dataMask;
 
+    /**
+     * Creates a new format information instance.
+     *
+     * @param integer $formatInfo
+     */
     protected function __construct($formatInfo)
     {
         $this->ecLevel  = new ErrorCorrectionLevel(($formatInfo >> 3) & 0x3);
         $this->dataMask = $formatInfo & 0x7;
     }
 
+    /**
+     * Checks how many bits are different between two integers.
+     *
+     * @param  integer $a
+     * @param  integer $b
+     * @return integer
+     */
     public static function numBitsDiffering($a, $b)
     {
         $a ^= $b;
@@ -79,6 +117,13 @@ class FormatInformation
         );
     }
 
+    /**
+     * Decodes format information.
+     *
+     * @param  integer $maskedFormatInfo1
+     * @param  integer $maskedFormatInfo2
+     * @return FormatInformation|null
+     */
     public static function decodeFormatInformation($maskedFormatInfo1, $maskedFormatInfo2)
     {
         $formatInfo = self::doDecodeFormatInformation($maskedFormatInfo1, $maskedFormatInfo2);
@@ -90,11 +135,18 @@ class FormatInformation
         // Should return null, but, some QR codes apparently do not mask this
         // info. Try again by actually masking the pattern first.
         return self::doDecodeFormatInformation(
-            $maskedFormatInfo1 ^ self::FORMAT_INFOR_MASK_QR,
-            $maskedFormatInfo2 ^ self::FORMAT_INFOR_MASK_QR
+            $maskedFormatInfo1 ^ self::FORMAT_INFO_MASK_QR,
+            $maskedFormatInfo2 ^ self::FORMAT_INFO_MASK_QR
         );
     }
 
+    /**
+     * Internal method for decoding format information.
+     *
+     * @param  integer $maskedFormatInfo1
+     * @param  integer $maskedFormatInfo2
+     * @return FormatInformation|null
+     */
     protected static function doDecodeFormatInformation($maskedFormatInfo1, $maskedFormatInfo2)
     {
         $bestDifference = PHP_INT_MAX;
@@ -135,21 +187,42 @@ class FormatInformation
         return null;
     }
 
+    /**
+     * Gets the error correction level.
+     *
+     * @return ErrorCorrectionLevel
+     */
     public function getErrorCorrectionLevel()
     {
         return $this->ecLevel;
     }
 
+    /**
+     * Gets the data mask.
+     *
+     * @return integer
+     */
     public function getDataMask()
     {
         return $this->dataMask;
     }
 
+    /**
+     * Hashes the code of the EC level.
+     *
+     * @return integer
+     */
     public function hashCode()
     {
         return ($this->ecLevel->get() << 3) | $this->dataMask;
     }
 
+    /**
+     * Verifies if this instance equals another one.
+     *
+     * @param  mixed $other
+     * @return boolean
+     */
     public function equals($other) {
         if (!$other instanceof self) {
             return false;

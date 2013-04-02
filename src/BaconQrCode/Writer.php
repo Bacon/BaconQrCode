@@ -32,7 +32,7 @@ class Writer
     protected $renderer;
 
     /**
-     * Create a new writer with a specific renderer.
+     * Creates a new writer with a specific renderer.
      *
      * @param RendererInterface $renderer
      */
@@ -42,7 +42,7 @@ class Writer
     }
 
     /**
-     * Write QR code into a string.
+     * Writes QR code into a string or file.
      *
      * Content is a string which *should* be encoded in UTF-8, in case there are
      * non ASCII-characters present.

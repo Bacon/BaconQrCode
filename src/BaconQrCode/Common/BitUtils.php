@@ -18,7 +18,7 @@ namespace BaconQrCode\Common;
 class BitUtils
 {
     /**
-     * Perform an unsigned right shift.
+     * Performs an unsigned right shift.
      *
      * This is the same as the unsigned right shift operator ">>>" in other
      * languages.
@@ -37,7 +37,7 @@ class BitUtils
     }
 
     /**
-     * Get the number of trailing zeros.
+     * Gets the number of trailing zeros.
      *
      * @param  integer $i
      * @return integer

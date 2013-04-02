@@ -14,6 +14,9 @@ namespace BaconQrCode\Common;
  */
 class Mode extends AbstractEnum
 {
+    /**#@+
+     * Mode constants.
+     */
     const TERMINATOR           = 0x0;
     const NUMERIC              = 0x1;
     const ALPHANUMERIC         = 0x2;
@@ -24,7 +27,13 @@ class Mode extends AbstractEnum
     const FNC1_FIRST_POSITION  = 0x5;
     const FNC1_SECOND_POSITION = 0x9;
     const HANZI                = 0xd;
+    /**#@-*/
 
+    /**
+     * Character count bits for each version.
+     *
+     * @var array
+     */
     protected static $characterCountBitsForVersions = array(
         self::TERMINATOR           => array(0, 0, 0),
         self::NUMERIC              => array(10, 12, 14),
@@ -39,7 +48,7 @@ class Mode extends AbstractEnum
     );
 
     /**
-     * Get the number of bits used in a specific QR code version.
+     * Gets the number of bits used in a specific QR code version.
      *
      * @param  Version $version
      * @return integer

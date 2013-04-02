@@ -9,26 +9,54 @@
 
 namespace BaconQrCode\Encoder;
 
+use SplFixedArray;
+
 /**
  * Block pair.
  */
 class BlockPair
 {
+    /**
+     * Data bytes in the block.
+     *
+     * @var SplFixedArray
+     */
     protected $dataBytes;
 
+    /**
+     * Error correction bytes in the block.
+     *
+     * @var SplFixedArray
+     */
     protected $errorCorrectionBytes;
 
-    public function __construct($data, $errorCorrection)
+    /**
+     * Creates a new block pair.
+     *
+     * @param SplFixedArray $data
+     * @param SplFixedArray $errorCorrection
+     */
+    public function __construct(SplFixedArray $data, SplFixedArray $errorCorrection)
     {
         $this->dataBytes            = $data;
         $this->errorCorrectionBytes = $errorCorrection;
     }
 
+    /**
+     * Gets the data bytes.
+     *
+     * @return SplFixedArray
+     */
     public function getDataBytes()
     {
         return $this->dataBytes;
     }
 
+    /**
+     * Gets the error correction bytes.
+     *
+     * @return SplFixedArray
+     */
     public function getErrorCorrectionBytes()
     {
         return $this->errorCorrectionBytes;

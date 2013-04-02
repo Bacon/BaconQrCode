@@ -16,12 +16,33 @@ use SplFixedArray;
  */
 class ByteMatrix
 {
+    /**
+     * Bytes in the matrix, represented as array.
+     *
+     * @var SplFixedArray
+     */
     protected $bytes;
 
-    protected $height;
-
+    /**
+     * Width of the matrix.
+     *
+     * @var integer
+     */
     protected $width;
 
+    /**
+     * Height of the matrix.
+     *
+     * @var integer
+     */
+    protected $height;
+
+    /**
+     * Creates a new byte matrix.
+     *
+     * @param  integer $width
+     * @param  integer $height
+     */
     public function __construct($width, $height)
     {
         $this->height = $height;
@@ -33,31 +54,67 @@ class ByteMatrix
         }
     }
 
-    public function getHeight()
-    {
-        return $this->height;
-    }
-
+    /**
+     * Gets the width of the matrix.
+     *
+     * @return integer
+     */
     public function getWidth()
     {
         return $this->width;
     }
 
+    /**
+     * Gets the height of the matrix.
+     *
+     * @return integer
+     */
+    public function getHeight()
+    {
+        return $this->height;
+    }
+
+    /**
+     * Gets the internal representation of the matrix.
+     *
+     * @return SplFixedArray
+     */
     public function getArray()
     {
         return $this->bytes;
     }
 
+    /**
+     * Gets the byte for a specific position.
+     *
+     * @param  integer $x
+     * @param  integer $y
+     * @return integer
+     */
     public function get($x, $y)
     {
         return $this->bytes[$y][$x];
     }
 
+    /**
+     * Sets the byte for a specific position.
+     *
+     * @param  integer $x
+     * @param  integer $y
+     * @param  integer $value
+     * @return void
+     */
     public function set($x, $y, $value)
     {
         $this->bytes[$y][$x] = (int) $value;
     }
 
+    /**
+     * Clears the matrix with a specific value.
+     *
+     * @param  integer $value
+     * @return void
+     */
     public function clear($value)
     {
         for ($y = 0; $y < $this->height; $y++) {
@@ -67,6 +124,11 @@ class ByteMatrix
         }
     }
 
+    /**
+     * Returns a string representation of the matrix.
+     *
+     * @return string
+     */
     public function __toString()
     {
         $result = '';

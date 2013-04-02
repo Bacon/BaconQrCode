@@ -20,13 +20,36 @@ use SplFixedArray;
  */
 class BitMatrix
 {
+    /**
+     * Width of the bit matrix.
+     *
+     * @var integer
+     */
     protected $width;
+
+    /**
+     * Height of the bit matrix.
+     *
+     * @var integer
+     */
     protected $height;
+
+    /**
+     * Size in bits of each individual row.
+     *
+     * @var integer
+     */
     protected $rowSize;
+
+    /**
+     * Bits representation.
+     *
+     * @var SplFixedArray
+     */
     protected $bits;
 
     /**
-     * Create a new bit matrix with given dimensions.
+     * Creates a new bit matrix with given dimensions.
      *
      * @param  integer      $width
      * @param  integer|null $height
@@ -49,7 +72,7 @@ class BitMatrix
     }
 
     /**
-     * Get the requested bit, where true means black.
+     * Gets the requested bit, where true means black.
      *
      * @param  integer $x
      * @param  integer $y
@@ -62,7 +85,7 @@ class BitMatrix
     }
 
     /**
-     * Set the given bit to true.
+     * Sets the given bit to true.
      *
      * @param  integer $x
      * @param  integer $y
@@ -75,7 +98,7 @@ class BitMatrix
     }
 
     /**
-     * Flip the given bit.
+     * Flips the given bit.
      *
      * @param  integer $x
      * @param  integer $y
@@ -88,7 +111,7 @@ class BitMatrix
     }
 
     /**
-     * Clear all bits (set to false).
+     * Clears all bits (set to false).
      *
      * @return void
      */
@@ -102,7 +125,7 @@ class BitMatrix
     }
 
     /**
-     * Set a square region of the bit matrix to true.
+     * Sets a square region of the bit matrix to true.
      *
      * @param  integer $left
      * @param  integer $top
@@ -160,9 +183,9 @@ class BitMatrix
     }
 
     /**
-     * Set a row of data from a BitArray.
+     * Sets a row of data from a BitArray.
      *
-     * @param  integer $y
+     * @param  integer  $y
      * @param  BitArray $row
      * @return void
      */
@@ -238,6 +261,8 @@ class BitMatrix
     }
 
     /**
+     * Gets the most top left set bit.
+     *
      * This is useful in detecting a corner of a 'pure' barcode.
      *
      * @return SplFixedArray
@@ -270,6 +295,8 @@ class BitMatrix
     }
 
     /**
+     * Gets the most bottom right set bit.
+     *
      * This is useful in detecting a corner of a 'pure' barcode.
      *
      * @return SplFixedArray
@@ -302,7 +329,7 @@ class BitMatrix
     }
 
     /**
-     * Get the width of the matrix,
+     * Gets the width of the matrix,
      *
      * @return integer
      */
@@ -312,7 +339,7 @@ class BitMatrix
     }
 
     /**
-     * Get the height of the matrix.
+     * Gets the height of the matrix.
      *
      * @return integer
      */
