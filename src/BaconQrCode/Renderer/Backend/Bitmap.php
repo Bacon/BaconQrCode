@@ -10,7 +10,7 @@
 namespace BaconQrCode\Renderer\Backend;
 
 use BaconQrCode\Exception;
-use BaconQrCode\Renderer\Color\Rgb;
+use BaconQrCode\Renderer\Color\ColorInterface;
 
 /**
  * Bitmap backend.
@@ -57,19 +57,18 @@ class Bitmap implements BackendInterface
      * addColor(): defined by BackendInterface.
      *
      * @see    BackendInterface::addColor()
-     * @param  string $id
-     * @param  Rgb    $color
+     * @param  string         $id
+     * @param  ColorInterface $color
      * @return void
-     * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
      */
-    public function addColor($id, $color)
+    public function addColor($id, ColorInterface $color)
     {
-        if (!$color instanceof Rgb) {
-            throw new Exception\InvalidArgumentException('Only RGB color allowed in bitmap renderer');
-        } elseif ($this->image === null) {
+        if ($this->image === null) {
             throw new Exception\RuntimeException('Colors can only be added after init');
         }
+
+        $color = $color->toRgb();
 
         $this->colors[$id] = imagecolorallocate(
             $this->image,

@@ -11,7 +11,7 @@ namespace BaconQrCode\Renderer;
 
 use BaconQrCode\Encoder\QrCode;
 use BaconQrCode\Renderer\Backend;
-use BaconQrCode\Renderer\Color\Rgb;
+use BaconQrCode\Renderer\Color;
 
 /**
  * Default renderer.
@@ -26,6 +26,20 @@ class Renderer implements RendererInterface
     protected $backend;
 
     /**
+     * Background color.
+     *
+     * @var Color\ColorInterface
+     */
+    protected $backgroundColor;
+
+    /**
+     * Foreground color.
+     *
+     * @var Color\ColorInterface
+     */
+    protected $foregroundColor;
+
+    /**
      * Creates a new renderer with a given backend.
      *
      * @param Backend\BackendInterface $backend
@@ -33,6 +47,56 @@ class Renderer implements RendererInterface
     public function __construct(Backend\BackendInterface $backend)
     {
         $this->backend = $backend;
+    }
+
+    /**
+     * Sets background color.
+     *
+     * @param  Color\ColorInterface $color
+     * @return void
+     */
+    public function setBackgroundColor(Color\ColorInterface $color)
+    {
+        $this->backgroundColor = $color;
+    }
+
+    /**
+     * Gets background color.
+     *
+     * @return Color\ColorInterface
+     */
+    public function getBackgroundColor()
+    {
+        if ($this->backgroundColor === null) {
+            $this->backgroundColor = new Color\Gray(100);
+        }
+
+        return $this->backgroundColor;
+    }
+
+    /**
+     * Sets background color.
+     *
+     * @param  Color\ColorInterface $color
+     * @return void
+     */
+    public function setForegroundColor(Color\ColorInterface $color)
+    {
+        $this->foregroundColor = $color;
+    }
+
+    /**
+     * Gets foreground color.
+     *
+     * @return Color\ColorInterface
+     */
+    public function getForegroundColor()
+    {
+        if ($this->foregroundColor === null) {
+            $this->foregroundColor = new Color\Gray(0);
+        }
+
+        return $this->foregroundColor;
     }
 
     /**
@@ -65,8 +129,8 @@ class Renderer implements RendererInterface
         $topPadding  = (int) (($outputHeight - ($inputHeight * $multiple)) / 2);
 
         $this->backend->init($outputWidth, $outputHeight, $multiple);
-        $this->backend->addColor('background', new Rgb(255, 255, 255));
-        $this->backend->addColor('foreground', new Rgb(0, 0, 0));
+        $this->backend->addColor('background', $this->getBackgroundColor());
+        $this->backend->addColor('foreground', $this->getForegroundColor());
         $this->backend->drawBackground('background');
 
         for ($inputY = 0, $outputY = $topPadding; $inputY < $inputHeight; $inputY++, $outputY += $multiple) {

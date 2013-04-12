@@ -14,7 +14,7 @@ use BaconQrCode\Exception;
 /**
  * RGB color.
  */
-class Rgb
+class Rgb implements ColorInterface
 {
     /**
      * Red value.
@@ -101,5 +101,48 @@ class Rgb
     public function __toString()
     {
         return sprintf('%02x%02x%02x', $this->red, $this->green, $this->blue);
+    }
+
+    /**
+     * toRgb(): defined by ColorInterface.
+     *
+     * @see    ColorInterface::toRgb()
+     * @return Rgb
+     */
+    public function toRgb()
+    {
+        return new $this;
+    }
+
+    /**
+     * toCmyk(): defined by ColorInterface.
+     *
+     * @see    ColorInterface::toCmyk()
+     * @return Cmyk
+     */
+    public function toCmyk()
+    {
+        $c = 1 - ($this->red / 255);
+        $m = 1 - ($this->green / 255);
+        $y = 1 - ($this->blue / 255);
+        $k = min($c, $m, $y);
+
+        return new Cmyk(
+            100 * ($c - $k) / (1 - $k),
+            100 * ($m - $k) / (1 - $k),
+            100 * ($y - $k) / (1 - $k),
+            100 * $k
+        );
+    }
+
+    /**
+     * toGray(): defined by ColorInterface.
+     *
+     * @see    ColorInterface::toGray()
+     * @return Gray
+     */
+    public function toGray()
+    {
+        return new Gray(($this->red * 0.21 + $this->green * 0.71 + $this->blue * 0.07) / 2.55);
     }
 }

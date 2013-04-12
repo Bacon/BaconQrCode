@@ -9,6 +9,8 @@
 
 namespace BaconQrCode\Renderer\Backend;
 
+use BaconQrCode\Renderer\Color\ColorInterface;
+
 /**
  * Backend interface.
  */
@@ -27,11 +29,11 @@ interface BackendInterface
     /**
      * Adds a color to the drawing area.
      *
-     * @param  string $id
-     * @param  mixed  $color
+     * @param  string         $id
+     * @param  ColorInterface $color
      * @return void
      */
-    public function addColor($id, $color);
+    public function addColor($id, ColorInterface $color);
 
     /**
      * Draws the background.

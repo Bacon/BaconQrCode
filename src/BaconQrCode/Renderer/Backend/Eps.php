@@ -9,8 +9,10 @@
 
 namespace BaconQrCode\Renderer\Backend;
 
-use BaconQrCode\Exception;
-use BaconQrCode\Renderer\Color;
+use BaconQrCode\Renderer\Color\ColorInterface;
+use BaconQrCode\Renderer\Color\Rgb;
+use BaconQrCode\Renderer\Color\Cmyk;
+use BaconQrCode\Renderer\Color\Gray;
 
 /**
  * EPS backend.
@@ -84,12 +86,20 @@ class Eps implements BackendInterface
      * addColor(): defined by BackendInterface.
      *
      * @see    BackendInterface::addColor()
-     * @param  string $id
-     * @param  mixed  $color
+     * @param  string         $id
+     * @param  ColorInterface $color
      * @return void
      */
-    public function addColor($id, $color)
+    public function addColor($id, ColorInterface $color)
     {
+        if (
+            !$color instanceof Rgb
+            && !$color instanceof Cmyk
+            && !$color instanceof Gray
+        ) {
+            $color = $color->toCmyk();
+        }
+
         $this->colors[$id] = $color;
     }
 
@@ -143,14 +153,14 @@ class Eps implements BackendInterface
         if ($colorId !== $this->currentColor) {
             $color = $this->colors[$colorId];
 
-            if ($color instanceof Color\Rgb) {
+            if ($color instanceof Rgb) {
                 $this->eps .= sprintf(
                     "%F %F %F setrgbcolor\n",
                     $color->getRed() / 100,
                     $color->getGreen() / 100,
                     $color->getBlue() / 100
                 );
-            } elseif ($color instanceof Color\Cmyk) {
+            } elseif ($color instanceof Cmyk) {
                 $this->eps .= sprintf(
                     "%F %F %F %F setcmykcolor\n",
                     $color->getCyan() / 100,
@@ -158,13 +168,11 @@ class Eps implements BackendInterface
                     $color->getYellow() / 100,
                     $color->getBlack() / 100
                 );
-            } elseif ($color instanceof Color\Gray) {
+            } elseif ($color instanceof Gray) {
                 $this->eps .= sprintf(
                     "%F setgray\n",
                     $color->getGray() / 100
                 );
-            } else {
-                throw new Exception\RuntimeException('Color is neither RGB, CMYK nor gray');
             }
 
             $this->currentColor = $colorId;

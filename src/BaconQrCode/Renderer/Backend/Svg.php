@@ -10,7 +10,7 @@
 namespace BaconQrCode\Renderer\Backend;
 
 use BaconQrCode\Exception;
-use BaconQrCode\Renderer\Color\Rgb;
+use BaconQrCode\Renderer\Color\ColorInterface;
 use SimpleXMLElement;
 
 /**
@@ -89,18 +89,14 @@ class Svg implements BackendInterface
      * addColor(): defined by BackendInterface.
      *
      * @see    BackendInterface::addColor()
-     * @param  string $id
-     * @param  Rgb    $color
+     * @param  string         $id
+     * @param  ColorInterface $color
      * @return void
      * @throws Exception\InvalidArgumentException
      */
-    public function addColor($id, $color)
+    public function addColor($id, ColorInterface $color)
     {
-        if (!$color instanceof Rgb) {
-            throw new Exception\InvalidArgumentException('Only RGB color allowed in bitmap renderer');
-        }
-
-        $this->colors[$id] = (string) $color;
+        $this->colors[$id] = (string) $color->toRgb();
     }
 
     /**
