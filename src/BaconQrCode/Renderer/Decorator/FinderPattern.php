@@ -157,8 +157,10 @@ class FinderPattern implements DecoratorInterface
         $backend->addColor('finder-inner', $this->getInnerColor());
 
         foreach (self::$outerPositionDetectionPattern as $y => $row) {
-            foreach ($row as $x => $isSet) {
-                if ($isSet) {
+            foreach ($row as $x => $isOuterSet) {
+                $isInnerSet = self::$innerPositionDetectionPattern[$y][$x];
+
+                if ($isOuterSet) {
                     foreach ($positions as $position) {
                         $backend->drawBlock(
                             $leftPadding + $x * $multiple + $position[0] * $multiple,
@@ -167,12 +169,8 @@ class FinderPattern implements DecoratorInterface
                         );
                     }
                 }
-            }
-        }
 
-        foreach (self::$innerPositionDetectionPattern as $y => $row) {
-            foreach ($row as $x => $isSet) {
-                if ($isSet) {
+                if ($isInnerSet) {
                     foreach ($positions as $position) {
                         $backend->drawBlock(
                             $leftPadding + $x * $multiple + $position[0] * $multiple,
