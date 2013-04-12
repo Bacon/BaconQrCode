@@ -111,7 +111,7 @@ class Rgb implements ColorInterface
      */
     public function toRgb()
     {
-        return new $this;
+        return $this;
     }
 
     /**

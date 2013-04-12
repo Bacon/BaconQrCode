@@ -12,6 +12,7 @@ namespace BaconQrCode\Renderer;
 use BaconQrCode\Encoder\QrCode;
 use BaconQrCode\Renderer\Backend;
 use BaconQrCode\Renderer\Color;
+use BaconQrCode\Renderer\Decorator\DecoratorInterface;
 
 /**
  * Default renderer.
@@ -38,6 +39,13 @@ class Renderer implements RendererInterface
      * @var Color\ColorInterface
      */
     protected $foregroundColor;
+
+    /**
+     * Decorators used on QR codes.
+     *
+     * @var array
+     */
+    protected $decorators = array();
 
     /**
      * Creates a new renderer with a given backend.
@@ -75,7 +83,7 @@ class Renderer implements RendererInterface
     }
 
     /**
-     * Sets background color.
+     * Sets foreground color.
      *
      * @param  Color\ColorInterface $color
      * @return void
@@ -97,6 +105,17 @@ class Renderer implements RendererInterface
         }
 
         return $this->foregroundColor;
+    }
+
+    /**
+     * Adds a decorator to the renderer.
+     *
+     * @param  DecoratorInterface $decorator
+     * @return void
+     */
+    public function addDecorator(DecoratorInterface $decorator)
+    {
+        $this->decorators[] = $decorator;
     }
 
     /**
@@ -133,12 +152,28 @@ class Renderer implements RendererInterface
         $this->backend->addColor('foreground', $this->getForegroundColor());
         $this->backend->drawBackground('background');
 
+        foreach ($this->decorators as $decorator) {
+            $decorator->preProcess($qrCode);
+        }
+
         for ($inputY = 0, $outputY = $topPadding; $inputY < $inputHeight; $inputY++, $outputY += $multiple) {
             for ($inputX = 0, $outputX = $leftPadding; $inputX < $inputWidth; $inputX++, $outputX += $multiple) {
                 if ($input->get($inputX, $inputY) === 1) {
                     $this->backend->drawBlock($outputX, $outputY, 'foreground');
                 }
             }
+        }
+
+        foreach ($this->decorators as $decorator) {
+            $decorator->postProcess(
+                $qrCode,
+                $this->backend,
+                $outputWidth,
+                $outputHeight,
+                $leftPadding,
+                $topPadding,
+                $multiple
+            );
         }
 
         return $this->backend->getByteStream();
