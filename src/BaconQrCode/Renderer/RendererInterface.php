@@ -26,8 +26,7 @@ interface RendererInterface
      * @param  integer     $width
      * @param  integer     $height
      * @param  integer     $margin
-     * @param  string|null $filename
      * @return mixed
      */
-    public function render(QrCode $qrCode, $width, $height, $margin, $filename = null);
+    public function render(QrCode $qrCode, $width, $height, $margin);
 }
