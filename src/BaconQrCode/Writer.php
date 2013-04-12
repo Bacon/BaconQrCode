@@ -63,7 +63,7 @@ class Writer
      * @param  integer $height
      * @param  string  $filename
      * @param  array   $hints
-     * @return mixed
+     * @return string|null
      * @throws Exception\InvalidArgumentException
      */
     public function write(
@@ -86,6 +86,12 @@ class Writer
         $margin   = (isset($hints['margin']) ? $hints['margin'] : self::QUIET_ZONE_SIZE);
         $qrCode   = Encoder::encode($content, $ecLevel, $encoding);
 
-        return $this->renderer->render($qrCode, $width, $height, $margin, $filename);
+        $byteStream = $this->renderer->render($qrCode, $width, $height, $margin, $filename);
+
+        if ($filename !== null) {
+            file_put_contents($filename, $byteStream);
+        } else {
+            return $byteStream;
+        }
     }
 }

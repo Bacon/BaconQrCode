@@ -10,32 +10,30 @@
 namespace BaconQrCode\Renderer;
 
 use BaconQrCode\Encoder\QrCode;
+use BaconQrCode\Renderer\Backend;
+use BaconQrCode\Renderer\Color\Rgb;
 
 /**
- * Bitmap renderer.
+ * Default renderer.
  */
-abstract class AbstractRenderer implements RendererInterface
+class Renderer implements RendererInterface
 {
     /**
-     * Width of the resulting drawing.
+     * Backend to use for creating the bytestream.
      *
-     * @var integer
+     * @var Backend\BackendInterface
      */
-    protected $width;
+    protected $backend;
 
     /**
-     * Heigth of the resulting drawing.
+     * Creates a new renderer with a given backend.
      *
-     * @var integer
+     * @param Backend\BackendInterface $backend
      */
-    protected $height;
-
-    /**
-     * Size of each individual block.
-     *
-     * @var integer
-     */
-    protected $blockSize;
+    public function __construct(Backend\BackendInterface $backend)
+    {
+        $this->backend = $backend;
+    }
 
     /**
      * render(): defined by RendererInterface.
@@ -45,10 +43,9 @@ abstract class AbstractRenderer implements RendererInterface
      * @param  integer     $width
      * @param  integer     $height
      * @param  integer     $margin
-     * @param  string|null $filename
      * @return mixed
      */
-    public function render(QrCode $qrCode, $width, $height, $margin, $filename = null)
+    public function render(QrCode $qrCode, $width, $height, $margin)
     {
         $input        = $qrCode->getMatrix();
         $inputWidth   = $input->getWidth();
@@ -67,46 +64,19 @@ abstract class AbstractRenderer implements RendererInterface
         $leftPadding = (int) (($outputWidth - ($inputWidth * $multiple)) / 2);
         $topPadding  = (int) (($outputHeight - ($inputHeight * $multiple)) / 2);
 
-        $this->width     = $outputWidth;
-        $this->height    = $outputHeight;
-        $this->blockSize = $multiple;
-
-        $this->initDrawing();
+        $this->backend->init($outputWidth, $outputHeight, $multiple);
+        $this->backend->addColor('background', new Rgb(255, 255, 255));
+        $this->backend->addColor('foreground', new Rgb(0, 0, 0));
+        $this->backend->drawBackground('background');
 
         for ($inputY = 0, $outputY = $topPadding; $inputY < $inputHeight; $inputY++, $outputY += $multiple) {
             for ($inputX = 0, $outputX = $leftPadding; $inputX < $inputWidth; $inputX++, $outputX += $multiple) {
                 if ($input->get($inputX, $inputY) === 1) {
-                    $this->drawSquare($outputX, $outputY, $multiple);
+                    $this->backend->drawBlock($outputX, $outputY, 'foreground');
                 }
             }
         }
 
-        return $this->finishDrawing($filename);
+        return $this->backend->getByteStream();
     }
-
-    /**
-     * Initiate drawing.
-     *
-     * @return void
-     */
-    abstract protected function initDrawing();
-
-    /**
-     * Draw a square at given position.
-     *
-     * @param  integer $x
-     * @param  integer $y
-     * @return void
-     */
-    abstract protected function drawSquare($x, $y);
-
-    /**
-     * Finish drawing.
-     *
-     * When filename is given, write result to the file, else return it.
-     *
-     * @param  string|null $filename
-     * @return mixed
-     */
-    abstract protected function finishDrawing($filename = null);
 }
