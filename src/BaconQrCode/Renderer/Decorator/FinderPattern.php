@@ -1,0 +1,187 @@
+<?php
+/**
+ * BaconQrCode
+ *
+ * @link      http://github.com/Bacon/BaconQrCode For the canonical source repository
+ * @copyright 2013 Ben 'DASPRiD' Scholzen
+ * @license   http://opensource.org/licenses/BSD-2-Clause Simplified BSD License
+ */
+
+namespace BaconQrCode\Renderer\Decorator;
+
+use BaconQrCode\Encoder\QrCode;
+use BaconQrCode\Renderer\Backend\BackendInterface;
+use BaconQrCode\Renderer\Color;
+
+/**
+ * Finder pattern decorator.
+ */
+class FinderPattern implements DecoratorInterface
+{
+    /**
+     * Outer position detection pattern.
+     *
+     * @var array
+     */
+    protected static $outerPositionDetectionPattern = array(
+        array(1, 1, 1, 1, 1, 1, 1),
+        array(1, 0, 0, 0, 0, 0, 1),
+        array(1, 0, 0, 0, 0, 0, 1),
+        array(1, 0, 0, 0, 0, 0, 1),
+        array(1, 0, 0, 0, 0, 0, 1),
+        array(1, 0, 0, 0, 0, 0, 1),
+        array(1, 1, 1, 1, 1, 1, 1),
+    );
+
+    /**
+     * Inner position detection pattern.
+     *
+     * @var array
+     */
+    protected static $innerPositionDetectionPattern = array(
+        array(0, 0, 0, 0, 0, 0, 0),
+        array(0, 0, 0, 0, 0, 0, 0),
+        array(0, 0, 1, 1, 1, 0, 0),
+        array(0, 0, 1, 1, 1, 0, 0),
+        array(0, 0, 1, 1, 1, 0, 0),
+        array(0, 0, 0, 0, 0, 0, 0),
+        array(0, 0, 0, 0, 0, 0, 0),
+    );
+
+    /**
+     * Sets outer color.
+     *
+     * @param  Color\ColorInterface $color
+     * @return void
+     */
+    public function setOuterColor(Color\ColorInterface $color)
+    {
+        $this->outerColor = $color;
+    }
+
+    /**
+     * Gets outer color.
+     *
+     * @return Color\ColorInterface
+     */
+    public function getOuterColor()
+    {
+        if ($this->outerColor === null) {
+            $this->outerColor = new Color\Gray(100);
+        }
+
+        return $this->outerColor;
+    }
+
+    /**
+     * Sets inner color.
+     *
+     * @param  Color\ColorInterface $color
+     * @return void
+     */
+    public function setInnerColor(Color\ColorInterface $color)
+    {
+        $this->innerColor = $color;
+    }
+
+    /**
+     * Gets inner color.
+     *
+     * @return Color\ColorInterface
+     */
+    public function getInnerColor()
+    {
+        if ($this->innerColor === null) {
+            $this->innerColor = new Color\Gray(0);
+        }
+
+        return $this->innerColor;
+    }
+
+    /**
+     * preProcess(): defined by DecoratorInterface.
+     *
+     * @see    DecoratorInterface::preProcess()
+     * @param  QrCode $qrCode
+     * @return void
+     */
+    public function preProcess(QrCode $qrCode)
+    {
+        $matrix    = $qrCode->getMatrix();
+        $positions = array(
+            array(0, 0),
+            array($matrix->getWidth() - 7, 0),
+            array(0, $matrix->getHeight() - 7),
+        );
+
+        foreach (self::$outerPositionDetectionPattern as $y => $row) {
+            foreach ($row as $x => $isSet) {
+                foreach ($positions as $position) {
+                    $matrix->set($x + $position[0], $y + $position[1], 0);
+                }
+            }
+        }
+    }
+
+    /**
+     * postProcess(): defined by DecoratorInterface.
+     *
+     * @see    DecoratorInterface::postProcess()
+     *
+     * @param  QrCode           $qrCode
+     * @param  BackendInterface $backend
+     * @param  integer          $outputWidth
+     * @param  integer          $outputHeight
+     * @param  integer          $leftPadding
+     * @param  integer          $topPadding
+     * @param  integer          $multiple
+     * @return void
+     */
+    public function postProcess(
+        QrCode $qrCode,
+        BackendInterface $backend,
+        $outputWidth,
+        $outputHeight,
+        $leftPadding,
+        $topPadding,
+        $multiple
+    ) {
+        $matrix    = $qrCode->getMatrix();
+        $positions = array(
+            array(0, 0),
+            array($matrix->getWidth() - 7, 0),
+            array(0, $matrix->getHeight() - 7),
+        );
+
+        $backend->addColor('finder-outer', $this->getOuterColor());
+        $backend->addColor('finder-inner', $this->getInnerColor());
+
+        foreach (self::$outerPositionDetectionPattern as $y => $row) {
+            foreach ($row as $x => $isSet) {
+                if ($isSet) {
+                    foreach ($positions as $position) {
+                        $backend->drawBlock(
+                            $leftPadding + $x * $multiple + $position[0] * $multiple,
+                            $topPadding + $y * $multiple + $position[1] * $multiple,
+                            'finder-outer'
+                        );
+                    }
+                }
+            }
+        }
+
+        foreach (self::$innerPositionDetectionPattern as $y => $row) {
+            foreach ($row as $x => $isSet) {
+                if ($isSet) {
+                    foreach ($positions as $position) {
+                        $backend->drawBlock(
+                            $leftPadding + $x * $multiple + $position[0] * $multiple,
+                            $topPadding + $y * $multiple + $position[1] * $multiple,
+                            'finder-inner'
+                        );
+                    }
+                }
+            }
+        }
+    }
+}
