@@ -78,7 +78,11 @@ class Text implements BackendInterface
      * @param  integer $blockSize
      * @return void
      */
-    public function init($width, $height, $blockSize){}
+    public function init($width, $height, $blockSize)
+    {
+        $this->matrixWidth = $this->matrixHeight = 0;
+        $this->matrix = array();
+    }
 
     /**
      * addColor(): defined by BackendInterface.
