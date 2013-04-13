@@ -84,7 +84,7 @@ class Writer
             throw new Exception\InvalidArgumentException('Found empty contents');
         }
 
-        $qrCode     = Encoder::encode($content, $ecLevel, $encoding);
+        $qrCode     = Encoder::encode($content, new ErrorCorrectionLevel($ecLevel), $encoding);
         $byteStream = $this->getRenderer()->render($qrCode);
 
         if ($filename !== null) {

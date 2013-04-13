@@ -252,7 +252,15 @@ class ImageRenderer implements RendererInterface
         $this->backend->drawBackground('background');
 
         foreach ($this->decorators as $decorator) {
-            $decorator->preProcess($qrCode);
+            $decorator->preProcess(
+                $qrCode,
+                $this->backend,
+                $outputWidth,
+                $outputHeight,
+                $leftPadding,
+                $topPadding,
+                $multiple
+            );
         }
 
         for ($inputY = 0, $outputY = $topPadding; $inputY < $inputHeight; $inputY++, $outputY += $multiple) {
