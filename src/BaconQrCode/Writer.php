@@ -20,11 +20,6 @@ use BaconQrCode\Renderer\RendererInterface;
 class Writer
 {
     /**
-     * Default quiet zone around QR codes.
-     */
-    const QUIET_ZONE_SIZE = 4;
-
-    /**
      * Renderer instance.
      *
      * @var RendererInterface
@@ -42,25 +37,37 @@ class Writer
     }
 
     /**
+     * Sets the renderer used to create a byte stream.
+     *
+     * @param  RendererInterface $renderer
+     * @return void
+     */
+    public function setRenderer(RendererInterface $renderer)
+    {
+        $this->renderer = $renderer;
+    }
+
+    /**
+     * Gets the renderer used to create a byte stream.
+     *
+     * @return RendererInterface
+     */
+    public function getRenderer()
+    {
+        return $this->renderer;
+    }
+
+    /**
      * Writes QR code into a string or file.
      *
      * Content is a string which *should* be encoded in UTF-8, in case there are
      * non ASCII-characters present.
      *
-     * Hints is an array containing additional options for the writer. These can
-     * be:
-     *
-     * "encoding": the encoding used in byte mode. Default: ISO-8859-1
-     * "ecLevel":  the error correction level. Default: ErrorCorrectionLevel::L
-     * "margin":   the quiet zone around the QR code. Default: 4
-     *
      * The return value depends on whether a filename is supplied. If a filename
-     * is supplied, nothing will be returned. Else the return value depends
-     * on the chosen renderer.
+     * is supplied, nothing will be returned. Else the byte stream of the
+     * renderer will be returned
      *
      * @param  string  $content
-     * @param  integer $width
-     * @param  integer $height
      * @param  string  $filename
      * @param  array   $hints
      * @return string|null
@@ -68,25 +75,16 @@ class Writer
      */
     public function write(
         $content,
-        $width,
-        $height,
         $filename = null,
-        array $hints = array()
+        $encoding = Encoder::DEFAULT_BYTE_MODE_ECODING,
+        $ecLevel = ErrorCorrectionLevel::L
     ) {
         if (strlen($content) === 0) {
             throw new Exception\InvalidArgumentException('Found empty contents');
         }
 
-        if ($width < 0 || $height < 0) {
-            throw new Exception\InvalidArgumentException('Requested dimensions are too small');
-        }
-
-        $encoding = (isset($hints['encoding']) ? $hints['encoding'] : Encoder::DEFAULT_BYTE_MODE_ECODING);
-        $ecLevel  = new ErrorCorrectionLevel(isset($hints['ecLevel']) ? $hints['ecLevel'] : ErrorCorrectionLevel::L);
-        $margin   = (isset($hints['margin']) ? $hints['margin'] : self::QUIET_ZONE_SIZE);
-        $qrCode   = Encoder::encode($content, $ecLevel, $encoding);
-
-        $byteStream = $this->renderer->render($qrCode, $width, $height, $margin, $filename);
+        $qrCode     = Encoder::encode($content, $ecLevel, $encoding);
+        $byteStream = $this->getRenderer()->render($qrCode);
 
         if ($filename !== null) {
             file_put_contents($filename, $byteStream);
