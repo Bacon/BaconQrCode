@@ -10,7 +10,7 @@ return array(
     'BaconQrCode\Renderer\Backend\Eps'                  => __DIR__ . '/src/BaconQrCode/Renderer/Backend/Eps.php',
     'BaconQrCode\Renderer\Backend\BackendInterface'     => __DIR__ . '/src/BaconQrCode/Renderer/Backend/BackendInterface.php',
     'BaconQrCode\Renderer\Backend\Svg'                  => __DIR__ . '/src/BaconQrCode/Renderer/Backend/Svg.php',
-    'BaconQrCode\Renderer\Backend\Bitmap'               => __DIR__ . '/src/BaconQrCode/Renderer/Backend/Bitmap.php',
+    'BaconQrCode\Renderer\Backend\Png'                  => __DIR__ . '/src/BaconQrCode/Renderer/Backend/Png.php',
     'BaconQrCode\Renderer\RendererInterface'            => __DIR__ . '/src/BaconQrCode/Renderer/RendererInterface.php',
     'BaconQrCode\Renderer\Decorator\FinderPattern'      => __DIR__ . '/src/BaconQrCode/Renderer/Decorator/FinderPattern.php',
     'BaconQrCode\Renderer\Decorator\DecoratorInterface' => __DIR__ . '/src/BaconQrCode/Renderer/Decorator/DecoratorInterface.php',

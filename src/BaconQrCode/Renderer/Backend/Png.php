@@ -13,9 +13,9 @@ use BaconQrCode\Exception;
 use BaconQrCode\Renderer\Color\ColorInterface;
 
 /**
- * Bitmap backend.
+ * Png backend.
  */
-class Bitmap implements BackendInterface
+class Png implements BackendInterface
 {
     /**
      * Image resource used when drawing.
