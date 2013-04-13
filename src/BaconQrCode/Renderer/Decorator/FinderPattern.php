@@ -52,11 +52,12 @@ class FinderPattern implements DecoratorInterface
      * Sets outer color.
      *
      * @param  Color\ColorInterface $color
-     * @return void
+     * @return FinderPattern
      */
     public function setOuterColor(Color\ColorInterface $color)
     {
         $this->outerColor = $color;
+        return $this;
     }
 
     /**
@@ -77,11 +78,12 @@ class FinderPattern implements DecoratorInterface
      * Sets inner color.
      *
      * @param  Color\ColorInterface $color
-     * @return void
+     * @return FinderPattern
      */
     public function setInnerColor(Color\ColorInterface $color)
     {
         $this->innerColor = $color;
+        return $this;
     }
 
     /**

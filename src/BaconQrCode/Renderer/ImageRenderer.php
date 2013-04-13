@@ -82,7 +82,7 @@ class ImageRenderer implements RendererInterface
      * Sets the margin around the QR code.
      *
      * @param  integer $margin
-     * @return void
+     * @return ImageRenderer
      * @throws Exception\InvalidArgumentException
      */
     public function setMargin($margin)
@@ -92,6 +92,7 @@ class ImageRenderer implements RendererInterface
         }
 
         $this->margin = (int) $margin;
+        return $this;
     }
 
     /**
@@ -111,11 +112,12 @@ class ImageRenderer implements RendererInterface
      * will automatically use that as the width instead of the specified one.
      *
      * @param  integer $width
-     * @return void
+     * @return ImageRenderer
      */
     public function setWidth($width)
     {
         $this->width = (int) $width;
+        return $this;
     }
 
     /**
@@ -136,11 +138,12 @@ class ImageRenderer implements RendererInterface
      * specified one.
      *
      * @param  integer $height
-     * @return void
+     * @return ImageRenderer
      */
     public function setHeight($height)
     {
         $this->height = (int) $height;
+        return $this;
     }
 
     /**
@@ -157,11 +160,12 @@ class ImageRenderer implements RendererInterface
      * Sets background color.
      *
      * @param  Color\ColorInterface $color
-     * @return void
+     * @return ImageRenderer
      */
     public function setBackgroundColor(Color\ColorInterface $color)
     {
         $this->backgroundColor = $color;
+        return $this;
     }
 
     /**
@@ -182,11 +186,12 @@ class ImageRenderer implements RendererInterface
      * Sets foreground color.
      *
      * @param  Color\ColorInterface $color
-     * @return void
+     * @return ImageRenderer
      */
     public function setForegroundColor(Color\ColorInterface $color)
     {
         $this->foregroundColor = $color;
+        return $this;
     }
 
     /**
@@ -207,11 +212,12 @@ class ImageRenderer implements RendererInterface
      * Adds a decorator to the renderer.
      *
      * @param  DecoratorInterface $decorator
-     * @return void
+     * @return ImageRenderer
      */
     public function addDecorator(DecoratorInterface $decorator)
     {
         $this->decorators[] = $decorator;
+        return $this;
     }
 
     /**

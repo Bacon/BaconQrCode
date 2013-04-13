@@ -40,11 +40,12 @@ class Writer
      * Sets the renderer used to create a byte stream.
      *
      * @param  RendererInterface $renderer
-     * @return void
+     * @return Writer
      */
     public function setRenderer(RendererInterface $renderer)
     {
         $this->renderer = $renderer;
+        return $this;
     }
 
     /**
