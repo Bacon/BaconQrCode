@@ -52,11 +52,12 @@ class FinderPattern implements DecoratorInterface
      * Sets outer color.
      *
      * @param  Color\ColorInterface $color
-     * @return void
+     * @return FinderPattern
      */
     public function setOuterColor(Color\ColorInterface $color)
     {
         $this->outerColor = $color;
+        return $this;
     }
 
     /**
@@ -77,11 +78,12 @@ class FinderPattern implements DecoratorInterface
      * Sets inner color.
      *
      * @param  Color\ColorInterface $color
-     * @return void
+     * @return FinderPattern
      */
     public function setInnerColor(Color\ColorInterface $color)
     {
         $this->innerColor = $color;
+        return $this;
     }
 
     /**
@@ -102,11 +104,24 @@ class FinderPattern implements DecoratorInterface
      * preProcess(): defined by DecoratorInterface.
      *
      * @see    DecoratorInterface::preProcess()
-     * @param  QrCode $qrCode
+     * @param  QrCode           $qrCode
+     * @param  BackendInterface $backend
+     * @param  integer          $outputWidth
+     * @param  integer          $outputHeight
+     * @param  integer          $leftPadding
+     * @param  integer          $topPadding
+     * @param  integer          $multiple
      * @return void
      */
-    public function preProcess(QrCode $qrCode)
-    {
+    public function preProcess(
+        QrCode $qrCode,
+        BackendInterface $backend,
+        $outputWidth,
+        $outputHeight,
+        $leftPadding,
+        $topPadding,
+        $multiple
+    ) {
         $matrix    = $qrCode->getMatrix();
         $positions = array(
             array(0, 0),

@@ -17,16 +17,10 @@ use BaconQrCode\Encoder\QrCode;
 interface RendererInterface
 {
     /**
-     * Render a QR code.
+     * Renders a QR code.
      *
-     * If filename is set to null, return the result, else write to the
-     * specified file.
-     *
-     * @param  QrCode      $qrCode
-     * @param  integer     $width
-     * @param  integer     $height
-     * @param  integer     $margin
-     * @return mixed
+     * @param  QrCode $qrCode
+     * @return string
      */
-    public function render(QrCode $qrCode, $width, $height, $margin);
+    public function render(QrCode $qrCode);
 }

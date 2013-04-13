@@ -15,9 +15,9 @@ use BaconQrCode\Renderer\Color;
 use BaconQrCode\Renderer\Decorator\DecoratorInterface;
 
 /**
- * Default renderer.
+ * Image renderer, supporting multiple backends.
  */
-class Renderer implements RendererInterface
+class ImageRenderer implements RendererInterface
 {
     /**
      * Backend to use for creating the bytestream.
@@ -25,6 +25,27 @@ class Renderer implements RendererInterface
      * @var Backend\BackendInterface
      */
     protected $backend;
+
+    /**
+     * Margin around the QR code, also known as quiet zone.
+     *
+     * @var integer
+     */
+    protected $margin = 4;
+
+    /**
+     * Width of the rendered image.
+     *
+     * @var integer
+     */
+    protected $width = 0;
+
+    /**
+     * Height of the rendered image.
+     *
+     * @var integer
+     */
+    protected $height = 0;
 
     /**
      * Background color.
@@ -58,14 +79,93 @@ class Renderer implements RendererInterface
     }
 
     /**
+     * Sets the margin around the QR code.
+     *
+     * @param  integer $margin
+     * @return ImageRenderer
+     * @throws Exception\InvalidArgumentException
+     */
+    public function setMargin($margin)
+    {
+        if ($margin < 0) {
+            throw new Exception\InvalidArgumentException('Margin must be equal to greater than 0');
+        }
+
+        $this->margin = (int) $margin;
+        return $this;
+    }
+
+    /**
+     * Gets the margin around the QR code.
+     *
+     * @return integer
+     */
+    public function getMargin()
+    {
+        return $this->margin;
+    }
+
+    /**
+     * Sets the height around the renderd image.
+     *
+     * If the width is smaller than the matrix width plus padding, the renderer
+     * will automatically use that as the width instead of the specified one.
+     *
+     * @param  integer $width
+     * @return ImageRenderer
+     */
+    public function setWidth($width)
+    {
+        $this->width = (int) $width;
+        return $this;
+    }
+
+    /**
+     * Gets the width of the rendered image.
+     *
+     * @return integer
+     */
+    public function getWidth()
+    {
+        return $this->width;
+    }
+
+    /**
+     * Sets the height around the renderd image.
+     *
+     * If the height is smaller than the matrix height plus padding, the
+     * renderer will automatically use that as the height instead of the
+     * specified one.
+     *
+     * @param  integer $height
+     * @return ImageRenderer
+     */
+    public function setHeight($height)
+    {
+        $this->height = (int) $height;
+        return $this;
+    }
+
+    /**
+     * Gets the height around the rendered image.
+     *
+     * @return integer
+     */
+    public function getHeight()
+    {
+        return $this->height;
+    }
+
+    /**
      * Sets background color.
      *
      * @param  Color\ColorInterface $color
-     * @return void
+     * @return ImageRenderer
      */
     public function setBackgroundColor(Color\ColorInterface $color)
     {
         $this->backgroundColor = $color;
+        return $this;
     }
 
     /**
@@ -86,11 +186,12 @@ class Renderer implements RendererInterface
      * Sets foreground color.
      *
      * @param  Color\ColorInterface $color
-     * @return void
+     * @return ImageRenderer
      */
     public function setForegroundColor(Color\ColorInterface $color)
     {
         $this->foregroundColor = $color;
+        return $this;
     }
 
     /**
@@ -111,32 +212,30 @@ class Renderer implements RendererInterface
      * Adds a decorator to the renderer.
      *
      * @param  DecoratorInterface $decorator
-     * @return void
+     * @return ImageRenderer
      */
     public function addDecorator(DecoratorInterface $decorator)
     {
         $this->decorators[] = $decorator;
+        return $this;
     }
 
     /**
      * render(): defined by RendererInterface.
      *
      * @see    RendererInterface::render()
-     * @param  QrCode      $qrCode
-     * @param  integer     $width
-     * @param  integer     $height
-     * @param  integer     $margin
-     * @return mixed
+     * @param  QrCode $qrCode
+     * @return string
      */
-    public function render(QrCode $qrCode, $width, $height, $margin)
+    public function render(QrCode $qrCode)
     {
         $input        = $qrCode->getMatrix();
         $inputWidth   = $input->getWidth();
         $inputHeight  = $input->getHeight();
-        $qrWidth      = $inputWidth + ($margin << 1);
-        $qrHeight     = $inputHeight + ($margin << 1);
-        $outputWidth  = max($width, $qrWidth);
-        $outputHeight = max($height, $qrHeight);
+        $qrWidth      = $inputWidth + ($this->getMargin() << 1);
+        $qrHeight     = $inputHeight + ($this->getMargin() << 1);
+        $outputWidth  = max($this->getWidth(), $qrWidth);
+        $outputHeight = max($this->getHeight(), $qrHeight);
         $multiple     = (int) min($outputWidth / $qrWidth, $outputHeight / $qrHeight);
 
         // Padding includes both the quiet zone and the extra white pixels to
@@ -153,7 +252,15 @@ class Renderer implements RendererInterface
         $this->backend->drawBackground('background');
 
         foreach ($this->decorators as $decorator) {
-            $decorator->preProcess($qrCode);
+            $decorator->preProcess(
+                $qrCode,
+                $this->backend,
+                $outputWidth,
+                $outputHeight,
+                $leftPadding,
+                $topPadding,
+                $multiple
+            );
         }
 
         for ($inputY = 0, $outputY = $topPadding; $inputY < $inputHeight; $inputY++, $outputY += $multiple) {
