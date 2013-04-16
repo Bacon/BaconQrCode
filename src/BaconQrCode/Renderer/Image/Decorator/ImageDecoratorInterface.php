@@ -10,7 +10,7 @@
 namespace BaconQrCode\Renderer\Decorator;
 
 use BaconQrCode\Encoder\QrCode;
-use BaconQrCode\Renderer\ImageRendererInterface;
+use BaconQrCode\Renderer\Image\RendererInterface;
 
 /**
  * Decorator interface.
@@ -20,18 +20,18 @@ interface ImageDecoratorInterface
     /**
      * Pre-process a QR code.
      *
-     * @param  QrCode                 $qrCode
-     * @param  ImageRendererInterface $backend
-     * @param  integer                $outputWidth
-     * @param  integer                $outputHeight
-     * @param  integer                $leftPadding
-     * @param  integer                $topPadding
-     * @param  integer                $multiple
+     * @param  QrCode            $qrCode
+     * @param  RendererInterface $backend
+     * @param  integer           $outputWidth
+     * @param  integer           $outputHeight
+     * @param  integer           $leftPadding
+     * @param  integer           $topPadding
+     * @param  integer           $multiple
      * @return void
      */
     public function preProcess(
         QrCode $qrCode,
-        ImageRendererInterface $backend,
+        RendererInterface $backend,
         $outputWidth,
         $outputHeight,
         $leftPadding,
@@ -42,18 +42,18 @@ interface ImageDecoratorInterface
     /**
      * Post-process a QR code.
      *
-     * @param  QrCode                 $qrCode
-     * @param  ImageRendererInterface $backend
-     * @param  integer                $outputWidth
-     * @param  integer                $outputHeight
-     * @param  integer                $leftPadding
-     * @param  integer                $topPadding
-     * @param  integer                $multiple
+     * @param  QrCode            $qrCode
+     * @param  RendererInterface $backend
+     * @param  integer           $outputWidth
+     * @param  integer           $outputHeight
+     * @param  integer           $leftPadding
+     * @param  integer           $topPadding
+     * @param  integer           $multiple
      * @return void
      */
     public function postProcess(
         QrCode $qrCode,
-        ImageRendererInterface $backend,
+        RendererInterface $backend,
         $outputWidth,
         $outputHeight,
         $leftPadding,

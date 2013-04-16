@@ -10,7 +10,7 @@
 namespace BaconQrCode\Renderer\Decorator;
 
 use BaconQrCode\Encoder\QrCode;
-use BaconQrCode\Renderer\ImageRendererInterface;
+use BaconQrCode\Renderer\Image\RendererInterface;
 use BaconQrCode\Renderer\Color;
 
 /**
@@ -104,18 +104,18 @@ class FinderPattern implements ImageDecoratorInterface
      * preProcess(): defined by ImageDecoratorInterface.
      *
      * @see    DecoratorInterface::preProcess()
-     * @param  QrCode           $qrCode
-     * @param  BackendInterface $backend
-     * @param  integer          $outputWidth
-     * @param  integer          $outputHeight
-     * @param  integer          $leftPadding
-     * @param  integer          $topPadding
-     * @param  integer          $multiple
+     * @param  QrCode            $qrCode
+     * @param  RendererInterface $backend
+     * @param  integer           $outputWidth
+     * @param  integer           $outputHeight
+     * @param  integer           $leftPadding
+     * @param  integer           $topPadding
+     * @param  integer           $multiple
      * @return void
      */
     public function preProcess(
         QrCode $qrCode,
-        ImageRendererInterface $backend,
+        RendererInterface $backend,
         $outputWidth,
         $outputHeight,
         $leftPadding,
@@ -143,18 +143,18 @@ class FinderPattern implements ImageDecoratorInterface
      *
      * @see    DecoratorInterface::postProcess()
      *
-     * @param  QrCode           $qrCode
-     * @param  BackendInterface $backend
-     * @param  integer          $outputWidth
-     * @param  integer          $outputHeight
-     * @param  integer          $leftPadding
-     * @param  integer          $topPadding
-     * @param  integer          $multiple
+     * @param  QrCode            $qrCode
+     * @param  RendererInterface $backend
+     * @param  integer           $outputWidth
+     * @param  integer           $outputHeight
+     * @param  integer           $leftPadding
+     * @param  integer           $topPadding
+     * @param  integer           $multiple
      * @return void
      */
     public function postProcess(
         QrCode $qrCode,
-        ImageRendererInterface $backend,
+        RendererInterface $backend,
         $outputWidth,
         $outputHeight,
         $leftPadding,

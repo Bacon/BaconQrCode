@@ -7,10 +7,9 @@
  * @license   http://opensource.org/licenses/BSD-2-Clause Simplified BSD License
  */
 
-namespace BaconQrCode\Renderer\Backend;
+namespace BaconQrCode\Renderer\Image;
 
 use BaconQrCode\Exception;
-use BaconQrCode\Renderer\AbstractImageRenderer;
 use BaconQrCode\Renderer\Color\ColorInterface;
 use SimpleXMLElement;
 
@@ -62,9 +61,9 @@ class Svg extends AbstractImageRenderer
     protected $prototypeIds = array();
 
     /**
-     * init(): defined by BackendInterface.
+     * init(): defined by RendererInterface.
      *
-     * @see    BackendInterface::init()
+     * @see    ImageRendererInterface::init()
      * @param  integer $width
      * @param  integer $height
      * @param  integer $blockSize
@@ -87,9 +86,9 @@ class Svg extends AbstractImageRenderer
     }
 
     /**
-     * addColor(): defined by BackendInterface.
+     * addColor(): defined by RendererInterface.
      *
-     * @see    BackendInterface::addColor()
+     * @see    ImageRendererInterface::addColor()
      * @param  string         $id
      * @param  ColorInterface $color
      * @return void
@@ -101,9 +100,9 @@ class Svg extends AbstractImageRenderer
     }
 
     /**
-     * drawBackground(): defined by BackendInterface.
+     * drawBackground(): defined by RendererInterface.
      *
-     * @see    BackendInterface::drawBackground()
+     * @see    ImageRendererInterface::drawBackground()
      * @param  string $colorId
      * @return void
      */
@@ -118,9 +117,9 @@ class Svg extends AbstractImageRenderer
     }
 
     /**
-     * drawBlock(): defined by BackendInterface.
+     * drawBlock(): defined by RendererInterface.
      *
-     * @see    BackendInterface::drawBlock()
+     * @see    ImageRendererInterface::drawBlock()
      * @param  integer $x
      * @param  integer $y
      * @param  string  $colorId
@@ -139,9 +138,9 @@ class Svg extends AbstractImageRenderer
     }
 
     /**
-     * getByteStream(): defined by BackendInterface.
+     * getByteStream(): defined by RendererInterface.
      *
-     * @see    BackendInterface::getByteStream()
+     * @see    ImageRendererInterface::getByteStream()
      * @return string
      */
     public function getByteStream()

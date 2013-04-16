@@ -7,24 +7,17 @@
  * @license   http://opensource.org/licenses/BSD-2-Clause Simplified BSD License
  */
 
-namespace BaconQrCode\Renderer;
+namespace BaconQrCode\Renderer\Image;
 
 use BaconQrCode\Encoder\QrCode;
 use BaconQrCode\Renderer\Color\ColorInterface;
+use BaconQrCode\Renderer\RendererInterface as GeneralRendererInterface;
 
 /**
  * Renderer interface.
  */
-interface ImageRendererInterface
+interface RendererInterface extends GeneralRendererInterface
 {
-    /**
-     * Renders a QR code.
-     *
-     * @param  QrCode $qrCode
-     * @return string
-     */
-    public function render(QrCode $qrCode);
-
     /**
      * Initiates the drawing area.
      *
