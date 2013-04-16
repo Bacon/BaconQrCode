@@ -68,11 +68,13 @@ class Writer
      * is supplied, nothing will be returned. Else the byte stream of the
      * renderer will be returned
      *
-     * @param  string  $content
-     * @param  string  $filename
-     * @param  array   $hints
-     * @return string|null
+     * @param  string $content
+     * @param  string $filename
+     * @param  string  $encoding
+     * @param  int     $ecLevel
      * @throws Exception\InvalidArgumentException
+     * @internal param array $hints
+     * @return string|null
      */
     public function write(
         $content,
