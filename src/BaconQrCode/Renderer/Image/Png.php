@@ -15,7 +15,7 @@ use BaconQrCode\Renderer\Color\ColorInterface;
 /**
  * PNG backend.
  */
-class Png extends AbstractImageRenderer
+class Png extends AbstractRenderer
 {
     /**
      * Image resource used when drawing.

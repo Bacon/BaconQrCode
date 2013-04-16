@@ -7,7 +7,7 @@
  * @license   http://opensource.org/licenses/BSD-2-Clause Simplified BSD License
  */
 
-namespace BaconQrCode\Renderer\Decorator;
+namespace BaconQrCode\Renderer\Image\Decorator;
 
 use BaconQrCode\Encoder\QrCode;
 use BaconQrCode\Renderer\Image\RendererInterface;
@@ -16,8 +16,18 @@ use BaconQrCode\Renderer\Color;
 /**
  * Finder pattern decorator.
  */
-class FinderPattern implements ImageDecoratorInterface
+class FinderPattern implements DecoratorInterface
 {
+    /**
+     * @var Color\ColorInterface
+     */
+    protected $innerColor;
+
+    /**
+     * @varColor\ColorInterface
+     */
+    protected $outerColor;
+
     /**
      * Outer position detection pattern.
      *
@@ -101,7 +111,7 @@ class FinderPattern implements ImageDecoratorInterface
     }
 
     /**
-     * preProcess(): defined by ImageDecoratorInterface.
+     * preProcess(): defined by DecoratorInterface.
      *
      * @see    DecoratorInterface::preProcess()
      * @param  QrCode            $qrCode
@@ -139,7 +149,7 @@ class FinderPattern implements ImageDecoratorInterface
     }
 
     /**
-     * postProcess(): defined by ImageDecoratorInterface.
+     * postProcess(): defined by DecoratorInterface.
      *
      * @see    DecoratorInterface::postProcess()
      *

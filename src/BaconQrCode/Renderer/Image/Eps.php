@@ -17,7 +17,7 @@ use BaconQrCode\Renderer\Color\Gray;
 /**
  * EPS backend.
  */
-class Eps extends AbstractImageRenderer
+class Eps extends AbstractRenderer
 {
     /**
      * EPS string.
@@ -60,6 +60,11 @@ class Eps extends AbstractImageRenderer
      * @var string
      */
     protected $currentColor;
+
+    /**
+     * @var resource
+     */
+    protected $image;
 
     /**
      * init(): defined by RendererInterface.

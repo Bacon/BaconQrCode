@@ -7,7 +7,7 @@
  * @license   http://opensource.org/licenses/BSD-2-Clause Simplified BSD License
  */
 
-namespace BaconQrCode\Renderer\Decorator;
+namespace BaconQrCode\Renderer\Image\Decorator;
 
 use BaconQrCode\Encoder\QrCode;
 use BaconQrCode\Renderer\Image\RendererInterface;
@@ -15,7 +15,7 @@ use BaconQrCode\Renderer\Image\RendererInterface;
 /**
  * Decorator interface.
  */
-interface ImageDecoratorInterface
+interface DecoratorInterface
 {
     /**
      * Pre-process a QR code.

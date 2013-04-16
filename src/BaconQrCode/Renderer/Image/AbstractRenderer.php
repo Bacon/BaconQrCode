@@ -18,7 +18,7 @@ use BaconQrCode\Exception;
 /**
  * Image renderer, supporting multiple backends.
  */
-abstract class AbstractImageRenderer implements RendererInterface
+abstract class AbstractRenderer implements RendererInterface
 {
     /**
      * Margin around the QR code, also known as quiet zone.
@@ -66,7 +66,7 @@ abstract class AbstractImageRenderer implements RendererInterface
      * Sets the margin around the QR code.
      *
      * @param  integer $margin
-     * @return AbstractImageRenderer
+     * @return AbstractRenderer
      * @throws Exception\InvalidArgumentException
      */
     public function setMargin($margin)
@@ -96,7 +96,7 @@ abstract class AbstractImageRenderer implements RendererInterface
      * will automatically use that as the width instead of the specified one.
      *
      * @param  integer $width
-     * @return AbstractImageRenderer
+     * @return AbstractRenderer
      */
     public function setWidth($width)
     {
@@ -122,7 +122,7 @@ abstract class AbstractImageRenderer implements RendererInterface
      * specified one.
      *
      * @param  integer $height
-     * @return AbstractImageRenderer
+     * @return AbstractRenderer
      */
     public function setHeight($height)
     {
@@ -144,7 +144,7 @@ abstract class AbstractImageRenderer implements RendererInterface
      * Sets background color.
      *
      * @param  Color\ColorInterface $color
-     * @return AbstractImageRenderer
+     * @return AbstractRenderer
      */
     public function setBackgroundColor(Color\ColorInterface $color)
     {
@@ -170,7 +170,7 @@ abstract class AbstractImageRenderer implements RendererInterface
      * Sets foreground color.
      *
      * @param  Color\ColorInterface $color
-     * @return AbstractImageRenderer
+     * @return AbstractRenderer
      */
     public function setForegroundColor(Color\ColorInterface $color)
     {
@@ -196,7 +196,7 @@ abstract class AbstractImageRenderer implements RendererInterface
      * Adds a decorator to the renderer.
      *
      * @param  ImageDecoratorInterface $decorator
-     * @return AbstractImageRenderer
+     * @return AbstractRenderer
      */
     public function addDecorator(ImageDecoratorInterface $decorator)
     {

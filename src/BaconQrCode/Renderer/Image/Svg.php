@@ -16,7 +16,7 @@ use SimpleXMLElement;
 /**
  * SVG backend.
  */
-class Svg extends AbstractImageRenderer
+class Svg extends AbstractRenderer
 {
     /**
      * SVG resource.
