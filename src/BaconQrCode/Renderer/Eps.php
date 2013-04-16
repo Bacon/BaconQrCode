@@ -9,6 +9,7 @@
 
 namespace BaconQrCode\Renderer\Backend;
 
+use BaconQrCode\Renderer\AbstractImageRenderer;
 use BaconQrCode\Renderer\Color\ColorInterface;
 use BaconQrCode\Renderer\Color\Rgb;
 use BaconQrCode\Renderer\Color\Cmyk;
@@ -17,7 +18,7 @@ use BaconQrCode\Renderer\Color\Gray;
 /**
  * EPS backend.
  */
-class Eps implements BackendInterface
+class Eps extends AbstractImageRenderer
 {
     /**
      * EPS string.

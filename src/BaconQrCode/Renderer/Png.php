@@ -10,12 +10,13 @@
 namespace BaconQrCode\Renderer\Backend;
 
 use BaconQrCode\Exception;
+use BaconQrCode\Renderer\AbstractImageRenderer;
 use BaconQrCode\Renderer\Color\ColorInterface;
 
 /**
  * PNG backend.
  */
-class Png implements BackendInterface
+class Png extends AbstractImageRenderer
 {
     /**
      * Image resource used when drawing.

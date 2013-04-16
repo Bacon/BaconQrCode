@@ -10,13 +10,13 @@
 namespace BaconQrCode\Renderer\Decorator;
 
 use BaconQrCode\Encoder\QrCode;
-use BaconQrCode\Renderer\Backend\BackendInterface;
+use BaconQrCode\Renderer\ImageRendererInterface;
 use BaconQrCode\Renderer\Color;
 
 /**
  * Finder pattern decorator.
  */
-class FinderPattern implements DecoratorInterface
+class FinderPattern implements ImageDecoratorInterface
 {
     /**
      * Outer position detection pattern.
@@ -101,7 +101,7 @@ class FinderPattern implements DecoratorInterface
     }
 
     /**
-     * preProcess(): defined by DecoratorInterface.
+     * preProcess(): defined by ImageDecoratorInterface.
      *
      * @see    DecoratorInterface::preProcess()
      * @param  QrCode           $qrCode
@@ -115,7 +115,7 @@ class FinderPattern implements DecoratorInterface
      */
     public function preProcess(
         QrCode $qrCode,
-        BackendInterface $backend,
+        ImageRendererInterface $backend,
         $outputWidth,
         $outputHeight,
         $leftPadding,
@@ -139,7 +139,7 @@ class FinderPattern implements DecoratorInterface
     }
 
     /**
-     * postProcess(): defined by DecoratorInterface.
+     * postProcess(): defined by ImageDecoratorInterface.
      *
      * @see    DecoratorInterface::postProcess()
      *
@@ -154,7 +154,7 @@ class FinderPattern implements DecoratorInterface
      */
     public function postProcess(
         QrCode $qrCode,
-        BackendInterface $backend,
+        ImageRendererInterface $backend,
         $outputWidth,
         $outputHeight,
         $leftPadding,

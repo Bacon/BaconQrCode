@@ -12,20 +12,14 @@ namespace BaconQrCode\Renderer;
 use BaconQrCode\Encoder\QrCode;
 use BaconQrCode\Renderer\Backend;
 use BaconQrCode\Renderer\Color;
-use BaconQrCode\Renderer\Decorator\DecoratorInterface;
+use BaconQrCode\Renderer\Decorator\ImageDecoratorInterface;
+use BaconQrCode\Exception;
 
 /**
  * Image renderer, supporting multiple backends.
  */
-class ImageRenderer implements RendererInterface
+abstract class AbstractImageRenderer implements ImageRendererInterface, RendererInterface
 {
-    /**
-     * Backend to use for creating the bytestream.
-     *
-     * @var Backend\BackendInterface
-     */
-    protected $backend;
-
     /**
      * Margin around the QR code, also known as quiet zone.
      *
@@ -69,20 +63,10 @@ class ImageRenderer implements RendererInterface
     protected $decorators = array();
 
     /**
-     * Creates a new renderer with a given backend.
-     *
-     * @param Backend\BackendInterface $backend
-     */
-    public function __construct(Backend\BackendInterface $backend)
-    {
-        $this->backend = $backend;
-    }
-
-    /**
      * Sets the margin around the QR code.
      *
      * @param  integer $margin
-     * @return ImageRenderer
+     * @return AbstractImageRenderer
      * @throws Exception\InvalidArgumentException
      */
     public function setMargin($margin)
@@ -112,7 +96,7 @@ class ImageRenderer implements RendererInterface
      * will automatically use that as the width instead of the specified one.
      *
      * @param  integer $width
-     * @return ImageRenderer
+     * @return AbstractImageRenderer
      */
     public function setWidth($width)
     {
@@ -138,7 +122,7 @@ class ImageRenderer implements RendererInterface
      * specified one.
      *
      * @param  integer $height
-     * @return ImageRenderer
+     * @return AbstractImageRenderer
      */
     public function setHeight($height)
     {
@@ -160,7 +144,7 @@ class ImageRenderer implements RendererInterface
      * Sets background color.
      *
      * @param  Color\ColorInterface $color
-     * @return ImageRenderer
+     * @return AbstractImageRenderer
      */
     public function setBackgroundColor(Color\ColorInterface $color)
     {
@@ -186,7 +170,7 @@ class ImageRenderer implements RendererInterface
      * Sets foreground color.
      *
      * @param  Color\ColorInterface $color
-     * @return ImageRenderer
+     * @return AbstractImageRenderer
      */
     public function setForegroundColor(Color\ColorInterface $color)
     {
@@ -211,10 +195,10 @@ class ImageRenderer implements RendererInterface
     /**
      * Adds a decorator to the renderer.
      *
-     * @param  DecoratorInterface $decorator
-     * @return ImageRenderer
+     * @param  ImageDecoratorInterface $decorator
+     * @return AbstractImageRenderer
      */
-    public function addDecorator(DecoratorInterface $decorator)
+    public function addDecorator(ImageDecoratorInterface $decorator)
     {
         $this->decorators[] = $decorator;
         return $this;
@@ -246,15 +230,15 @@ class ImageRenderer implements RendererInterface
         $leftPadding = (int) (($outputWidth - ($inputWidth * $multiple)) / 2);
         $topPadding  = (int) (($outputHeight - ($inputHeight * $multiple)) / 2);
 
-        $this->backend->init($outputWidth, $outputHeight, $multiple);
-        $this->backend->addColor('background', $this->getBackgroundColor());
-        $this->backend->addColor('foreground', $this->getForegroundColor());
-        $this->backend->drawBackground('background');
+        $this->init($outputWidth, $outputHeight, $multiple);
+        $this->addColor('background', $this->getBackgroundColor());
+        $this->addColor('foreground', $this->getForegroundColor());
+        $this->drawBackground('background');
 
         foreach ($this->decorators as $decorator) {
             $decorator->preProcess(
                 $qrCode,
-                $this->backend,
+                $this,
                 $outputWidth,
                 $outputHeight,
                 $leftPadding,
@@ -266,7 +250,7 @@ class ImageRenderer implements RendererInterface
         for ($inputY = 0, $outputY = $topPadding; $inputY < $inputHeight; $inputY++, $outputY += $multiple) {
             for ($inputX = 0, $outputX = $leftPadding; $inputX < $inputWidth; $inputX++, $outputX += $multiple) {
                 if ($input->get($inputX, $inputY) === 1) {
-                    $this->backend->drawBlock($outputX, $outputY, 'foreground');
+                    $this->drawBlock($outputX, $outputY, 'foreground');
                 }
             }
         }
@@ -274,7 +258,7 @@ class ImageRenderer implements RendererInterface
         foreach ($this->decorators as $decorator) {
             $decorator->postProcess(
                 $qrCode,
-                $this->backend,
+                $this,
                 $outputWidth,
                 $outputHeight,
                 $leftPadding,
@@ -283,6 +267,51 @@ class ImageRenderer implements RendererInterface
             );
         }
 
-        return $this->backend->getByteStream();
+        return $this->getByteStream();
     }
+
+    /**
+     * Initiates the drawing area.
+     *
+     * @param  integer $width
+     * @param  integer $height
+     * @param  integer $blockSize
+     * @return void
+     */
+    public function init($width, $height, $blockSize){}
+
+    /**
+     * Adds a color to the drawing area.
+     *
+     * @param  string         $id
+     * @param  ColorInterface $color
+     * @return void
+     */
+    public function addColor($id, ColorInterface $color){}
+
+    /**
+     * Draws the background.
+     *
+     * @param  string $colorId
+     * @return void
+     */
+    public function drawBackground($colorId){}
+
+    /**
+     * Draws a block at a specified position.
+     *
+     * @param  integer $x
+     * @param  integer $y
+     * @param  string  $colorId
+     * @return void
+     */
+    public function drawBlock($x, $y, $colorId){}
+
+    /**
+     * Returns the byte stream representing the QR code.
+     *
+     * @return string
+     */
+    public function getByteStream(){}
+
 }

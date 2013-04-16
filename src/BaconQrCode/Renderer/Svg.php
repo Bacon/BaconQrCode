@@ -10,13 +10,14 @@
 namespace BaconQrCode\Renderer\Backend;
 
 use BaconQrCode\Exception;
+use BaconQrCode\Renderer\AbstractImageRenderer;
 use BaconQrCode\Renderer\Color\ColorInterface;
 use SimpleXMLElement;
 
 /**
  * SVG backend.
  */
-class Svg implements BackendInterface
+class Svg extends AbstractImageRenderer
 {
     /**
      * SVG resource.
