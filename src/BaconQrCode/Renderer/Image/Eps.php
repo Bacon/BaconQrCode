@@ -7,7 +7,7 @@
  * @license   http://opensource.org/licenses/BSD-2-Clause Simplified BSD License
  */
 
-namespace BaconQrCode\Renderer\Backend;
+namespace BaconQrCode\Renderer\Image;
 
 use BaconQrCode\Renderer\Color\ColorInterface;
 use BaconQrCode\Renderer\Color\Rgb;
@@ -17,7 +17,7 @@ use BaconQrCode\Renderer\Color\Gray;
 /**
  * EPS backend.
  */
-class Eps implements BackendInterface
+class Eps extends AbstractRenderer
 {
     /**
      * EPS string.
@@ -62,9 +62,14 @@ class Eps implements BackendInterface
     protected $currentColor;
 
     /**
-     * init(): defined by BackendInterface.
+     * @var resource
+     */
+    protected $image;
+
+    /**
+     * init(): defined by RendererInterface.
      *
-     * @see    BackendInterface::init()
+     * @see    ImageRendererInterface::init()
      * @param  integer $width
      * @param  integer $height
      * @param  integer $blockSize
@@ -83,9 +88,9 @@ class Eps implements BackendInterface
     }
 
     /**
-     * addColor(): defined by BackendInterface.
+     * addColor(): defined by RendererInterface.
      *
-     * @see    BackendInterface::addColor()
+     * @see    ImageRendererInterface::addColor()
      * @param  string         $id
      * @param  ColorInterface $color
      * @return void
@@ -104,9 +109,9 @@ class Eps implements BackendInterface
     }
 
     /**
-     * drawBackground(): defined by BackendInterface.
+     * drawBackground(): defined by RendererInterface.
      *
-     * @see    BackendInterface::drawBackground()
+     * @see    ImageRendererInterface::drawBackground()
      * @param  string $colorId
      * @return void
      */
@@ -117,9 +122,9 @@ class Eps implements BackendInterface
     }
 
     /**
-     * drawBlock(): defined by BackendInterface.
+     * drawBlock(): defined by RendererInterface.
      *
-     * @see    BackendInterface::drawBlock()
+     * @see    ImageRendererInterface::drawBlock()
      * @param  integer $x
      * @param  integer $y
      * @param  string  $colorId
@@ -132,9 +137,9 @@ class Eps implements BackendInterface
     }
 
     /**
-     * getByteStream(): defined by BackendInterface.
+     * getByteStream(): defined by RendererInterface.
      *
-     * @see    BackendInterface::getByteStream()
+     * @see    ImageRendererInterface::getByteStream()
      * @return string
      */
     public function getByteStream()

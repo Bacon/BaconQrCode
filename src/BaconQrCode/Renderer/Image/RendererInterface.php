@@ -7,14 +7,16 @@
  * @license   http://opensource.org/licenses/BSD-2-Clause Simplified BSD License
  */
 
-namespace BaconQrCode\Renderer\Backend;
+namespace BaconQrCode\Renderer\Image;
 
+use BaconQrCode\Encoder\QrCode;
 use BaconQrCode\Renderer\Color\ColorInterface;
+use BaconQrCode\Renderer\RendererInterface as GeneralRendererInterface;
 
 /**
- * Backend interface.
+ * Renderer interface.
  */
-interface BackendInterface
+interface RendererInterface extends GeneralRendererInterface
 {
     /**
      * Initiates the drawing area.
@@ -59,4 +61,5 @@ interface BackendInterface
      * @return string
      */
     public function getByteStream();
+
 }
