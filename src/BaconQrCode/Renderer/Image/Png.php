@@ -25,13 +25,6 @@ class Png extends AbstractRenderer
     protected $image;
 
     /**
-     * Block size.
-     *
-     * @var integer
-     */
-    protected $blockSize;
-
-    /**
      * Colors used for drawing.
      *
      * @var array
@@ -42,15 +35,11 @@ class Png extends AbstractRenderer
      * init(): defined by RendererInterface.
      *
      * @see    ImageRendererInterface::init()
-     * @param  integer $width
-     * @param  integer $height
-     * @param  integer $blockSize
      * @return void
      */
-    public function init($width, $height, $blockSize)
+    public function init()
     {
-        $this->image     = imagecreatetruecolor($width, $height);
-        $this->blockSize = $blockSize;
+        $this->image = imagecreatetruecolor($this->finalWidth, $this->finalHeight);
     }
 
     /**

@@ -10,9 +10,8 @@
 namespace BaconQrCode\Renderer\Image;
 
 use BaconQrCode\Encoder\QrCode;
-use BaconQrCode\Renderer\Backend;
 use BaconQrCode\Renderer\Color;
-use BaconQrCode\Renderer\Decorator\ImageDecoratorInterface;
+use BaconQrCode\Renderer\Image\Decorator\DecoratorInterface;
 use BaconQrCode\Exception;
 
 /**
@@ -28,18 +27,39 @@ abstract class AbstractRenderer implements RendererInterface
     protected $margin = 4;
 
     /**
-     * Width of the rendered image.
+     * Requested width of the rendered image.
      *
      * @var integer
      */
     protected $width = 0;
 
     /**
-     * Height of the rendered image.
+     * Requested height of the rendered image.
      *
      * @var integer
      */
     protected $height = 0;
+
+    /**
+     * Final width of the image.
+     *
+     * @var integer
+     */
+    protected $finalWidth;
+
+    /**
+     * Final height of the image.
+     *
+     * @var integer
+     */
+    protected $finalHeight;
+
+    /**
+     * Size of each individual block.
+     *
+     * @var integer
+     */
+    protected $blockSize;
 
     /**
      * Background color.
@@ -195,10 +215,10 @@ abstract class AbstractRenderer implements RendererInterface
     /**
      * Adds a decorator to the renderer.
      *
-     * @param  ImageDecoratorInterface $decorator
+     * @param  DecoratorInterface $decorator
      * @return AbstractRenderer
      */
-    public function addDecorator(ImageDecoratorInterface $decorator)
+    public function addDecorator(DecoratorInterface $decorator)
     {
         $this->decorators[] = $decorator;
         return $this;
@@ -230,7 +250,12 @@ abstract class AbstractRenderer implements RendererInterface
         $leftPadding = (int) (($outputWidth - ($inputWidth * $multiple)) / 2);
         $topPadding  = (int) (($outputHeight - ($inputHeight * $multiple)) / 2);
 
-        $this->init($outputWidth, $outputHeight, $multiple);
+        // Store calculated parameters
+        $this->finalWidth  = $outputWidth;
+        $this->finalHeight = $outputHeight;
+        $this->blockSize   = $multiple;
+
+        $this->init();
         $this->addColor('background', $this->getBackgroundColor());
         $this->addColor('foreground', $this->getForegroundColor());
         $this->drawBackground('background');

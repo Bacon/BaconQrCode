@@ -9,7 +9,6 @@
 
 namespace BaconQrCode\Renderer\Image;
 
-use BaconQrCode\Encoder\QrCode;
 use BaconQrCode\Renderer\Color\ColorInterface;
 use BaconQrCode\Renderer\RendererInterface as GeneralRendererInterface;
 
@@ -21,12 +20,9 @@ interface RendererInterface extends GeneralRendererInterface
     /**
      * Initiates the drawing area.
      *
-     * @param  integer $width
-     * @param  integer $height
-     * @param  integer $blockSize
      * @return void
      */
-    public function init($width, $height, $blockSize);
+    public function init();
 
     /**
      * Adds a color to the drawing area.

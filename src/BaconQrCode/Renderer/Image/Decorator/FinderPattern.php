@@ -115,7 +115,7 @@ class FinderPattern implements DecoratorInterface
      *
      * @see    DecoratorInterface::preProcess()
      * @param  QrCode            $qrCode
-     * @param  RendererInterface $backend
+     * @param  RendererInterface $renderer
      * @param  integer           $outputWidth
      * @param  integer           $outputHeight
      * @param  integer           $leftPadding
@@ -125,7 +125,7 @@ class FinderPattern implements DecoratorInterface
      */
     public function preProcess(
         QrCode $qrCode,
-        RendererInterface $backend,
+        RendererInterface $renderer,
         $outputWidth,
         $outputHeight,
         $leftPadding,
@@ -154,7 +154,7 @@ class FinderPattern implements DecoratorInterface
      * @see    DecoratorInterface::postProcess()
      *
      * @param  QrCode            $qrCode
-     * @param  RendererInterface $backend
+     * @param  RendererInterface $renderer
      * @param  integer           $outputWidth
      * @param  integer           $outputHeight
      * @param  integer           $leftPadding
@@ -164,7 +164,7 @@ class FinderPattern implements DecoratorInterface
      */
     public function postProcess(
         QrCode $qrCode,
-        RendererInterface $backend,
+        RendererInterface $renderer,
         $outputWidth,
         $outputHeight,
         $leftPadding,
@@ -178,8 +178,8 @@ class FinderPattern implements DecoratorInterface
             array(0, $matrix->getHeight() - 7),
         );
 
-        $backend->addColor('finder-outer', $this->getOuterColor());
-        $backend->addColor('finder-inner', $this->getInnerColor());
+        $renderer->addColor('finder-outer', $this->getOuterColor());
+        $renderer->addColor('finder-inner', $this->getInnerColor());
 
         foreach (self::$outerPositionDetectionPattern as $y => $row) {
             foreach ($row as $x => $isOuterSet) {
@@ -187,7 +187,7 @@ class FinderPattern implements DecoratorInterface
 
                 if ($isOuterSet) {
                     foreach ($positions as $position) {
-                        $backend->drawBlock(
+                        $renderer->drawBlock(
                             $leftPadding + $x * $multiple + $position[0] * $multiple,
                             $topPadding + $y * $multiple + $position[1] * $multiple,
                             'finder-outer'
@@ -197,7 +197,7 @@ class FinderPattern implements DecoratorInterface
 
                 if ($isInnerSet) {
                     foreach ($positions as $position) {
-                        $backend->drawBlock(
+                        $renderer->drawBlock(
                             $leftPadding + $x * $multiple + $position[0] * $multiple,
                             $topPadding + $y * $multiple + $position[1] * $multiple,
                             'finder-inner'

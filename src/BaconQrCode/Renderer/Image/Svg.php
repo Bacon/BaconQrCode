@@ -26,27 +26,6 @@ class Svg extends AbstractRenderer
     protected $svg;
 
     /**
-     * Width of the SVG.
-     *
-     * @var integer
-     */
-    protected $width;
-
-    /**
-     * Height of the SVG.
-     *
-     * @var integer
-     */
-    protected $height;
-
-    /**
-     * Block size.
-     *
-     * @var integer
-     */
-    protected $blockSize;
-
-    /**
      * Colors used for drawing.
      *
      * @var array
@@ -64,25 +43,18 @@ class Svg extends AbstractRenderer
      * init(): defined by RendererInterface.
      *
      * @see    ImageRendererInterface::init()
-     * @param  integer $width
-     * @param  integer $height
-     * @param  integer $blockSize
      * @return void
      */
-    public function init($width, $height, $blockSize)
+    public function init()
     {
         $this->svg = new SimpleXMLElement(
             '<?xml version="1.0" encoding="UTF-8"?>'
             . '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"/>'
         );
         $this->svg->addAttribute('version', '1.1');
-        $this->svg->addAttribute('width', $width . 'px');
-        $this->svg->addAttribute('height', $height . 'px');
+        $this->svg->addAttribute('width', $this->finalWidth . 'px');
+        $this->svg->addAttribute('height', $this->finalHeight . 'px');
         $this->svg->addChild('defs');
-
-        $this->width     = $width;
-        $this->height    = $height;
-        $this->blockSize = $blockSize;
     }
 
     /**
@@ -111,8 +83,8 @@ class Svg extends AbstractRenderer
         $rect = $this->svg->addChild('rect');
         $rect->addAttribute('x', 0);
         $rect->addAttribute('y', 0);
-        $rect->addAttribute('width', $this->width);
-        $rect->addAttribute('height', $this->height);
+        $rect->addAttribute('width', $this->finalWidth);
+        $rect->addAttribute('height', $this->finalHeight);
         $rect->addAttribute('fill', '#' . $this->colors[$colorId]);
     }
 

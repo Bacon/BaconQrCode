@@ -27,27 +27,6 @@ class Eps extends AbstractRenderer
     protected $eps;
 
     /**
-     * Width of the EPS.
-     *
-     * @var integer
-     */
-    protected $width;
-
-    /**
-     * Height of the EPS.
-     *
-     * @var integer
-     */
-    protected $height;
-
-    /**
-     * Block size.
-     *
-     * @var integer
-     */
-    protected $blockSize;
-
-    /**
      * Colors used for drawing.
      *
      * @var array
@@ -62,29 +41,16 @@ class Eps extends AbstractRenderer
     protected $currentColor;
 
     /**
-     * @var resource
-     */
-    protected $image;
-
-    /**
      * init(): defined by RendererInterface.
      *
      * @see    ImageRendererInterface::init()
-     * @param  integer $width
-     * @param  integer $height
-     * @param  integer $blockSize
      * @return void
      */
-    public function init($width, $height, $blockSize)
+    public function init()
     {
         $this->eps = "%!PS-Adobe-3.0 EPSF-3.0\n"
-                   . "%%BoundingBox: 0 0 " . $width . " " . $height . "\n"
+                   . "%%BoundingBox: 0 0 " . $this->finalWidth . " " . $this->finalHeight . "\n"
                    . "/F { rectfill } def\n";
-
-        $this->image     = imagecreatetruecolor($width, $height);
-        $this->width     = $width;
-        $this->height    = $height;
-        $this->blockSize = $blockSize;
     }
 
     /**
@@ -118,7 +84,7 @@ class Eps extends AbstractRenderer
     public function drawBackground($colorId)
     {
         $this->setColor($colorId);
-        $this->eps .= "0 0 " . $this->width . " " . $this->height . " F\n";
+        $this->eps .= "0 0 " . $this->finalWidth . " " . $this->finalHeight . " F\n";
     }
 
     /**
@@ -133,7 +99,7 @@ class Eps extends AbstractRenderer
     public function drawBlock($x, $y, $colorId)
     {
         $this->setColor($colorId);
-        $this->eps .= $x . " " . ($this->height - $y) . " " . $this->blockSize . " " . $this->blockSize . " F\n";
+        $this->eps .= $x . " " . ($this->finalHeight - $y) . " " . $this->blockSize . " " . $this->blockSize . " F\n";
     }
 
     /**
