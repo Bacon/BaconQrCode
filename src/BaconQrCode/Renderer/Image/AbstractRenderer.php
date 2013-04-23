@@ -41,6 +41,13 @@ abstract class AbstractRenderer implements RendererInterface
     protected $height = 0;
 
     /**
+     * Whether dimensions should be rounded down.
+     *
+     * @var boolean
+     */
+    protected $roundDimensions = true;
+
+    /**
      * Final width of the image.
      *
      * @var integer
@@ -161,6 +168,28 @@ abstract class AbstractRenderer implements RendererInterface
     }
 
     /**
+     * Sets whether dimensions should be rounded down.
+     *
+     * @param  boolean $flag
+     * @return AbstractRenderer
+     */
+    public function setRoundDimensions($flag)
+    {
+        $this->floorToClosestDimension = $flag;
+        return $this;
+    }
+
+    /**
+     * Gets whether dimensions should be rounded down.
+     *
+     * @return boolean
+     */
+    public function shouldRoundDimensions()
+    {
+        return $this->floorToClosestDimension;
+    }
+
+    /**
      * Sets background color.
      *
      * @param  Color\ColorInterface $color
@@ -241,6 +270,11 @@ abstract class AbstractRenderer implements RendererInterface
         $outputWidth  = max($this->getWidth(), $qrWidth);
         $outputHeight = max($this->getHeight(), $qrHeight);
         $multiple     = (int) min($outputWidth / $qrWidth, $outputHeight / $qrHeight);
+
+        if ($this->shouldRoundDimensions()) {
+            $outputWidth  -= $outputWidth % $multiple;
+            $outputHeight -= $outputHeight % $multiple;
+        }
 
         // Padding includes both the quiet zone and the extra white pixels to
         // accommodate the requested dimensions. For example, if input is 25x25
