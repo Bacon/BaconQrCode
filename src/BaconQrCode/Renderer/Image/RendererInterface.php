@@ -7,24 +7,22 @@
  * @license   http://opensource.org/licenses/BSD-2-Clause Simplified BSD License
  */
 
-namespace BaconQrCode\Renderer\Backend;
+namespace BaconQrCode\Renderer\Image;
 
 use BaconQrCode\Renderer\Color\ColorInterface;
+use BaconQrCode\Renderer\RendererInterface as GeneralRendererInterface;
 
 /**
- * Backend interface.
+ * Renderer interface.
  */
-interface BackendInterface
+interface RendererInterface extends GeneralRendererInterface
 {
     /**
      * Initiates the drawing area.
      *
-     * @param  integer $width
-     * @param  integer $height
-     * @param  integer $blockSize
      * @return void
      */
-    public function init($width, $height, $blockSize);
+    public function init();
 
     /**
      * Adds a color to the drawing area.
@@ -59,4 +57,5 @@ interface BackendInterface
      * @return string
      */
     public function getByteStream();
+
 }

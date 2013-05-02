@@ -7,7 +7,7 @@
  * @license   http://opensource.org/licenses/BSD-2-Clause Simplified BSD License
  */
 
-namespace BaconQrCode\Renderer\Backend;
+namespace BaconQrCode\Renderer\Image;
 
 use BaconQrCode\Exception;
 use BaconQrCode\Renderer\Color\ColorInterface;
@@ -15,7 +15,7 @@ use BaconQrCode\Renderer\Color\ColorInterface;
 /**
  * PNG backend.
  */
-class Png implements BackendInterface
+class Png extends AbstractRenderer
 {
     /**
      * Image resource used when drawing.
@@ -25,13 +25,6 @@ class Png implements BackendInterface
     protected $image;
 
     /**
-     * Block size.
-     *
-     * @var integer
-     */
-    protected $blockSize;
-
-    /**
      * Colors used for drawing.
      *
      * @var array
@@ -39,24 +32,20 @@ class Png implements BackendInterface
     protected $colors = array();
 
     /**
-     * init(): defined by BackendInterface.
+     * init(): defined by RendererInterface.
      *
-     * @see    BackendInterface::init()
-     * @param  integer $width
-     * @param  integer $height
-     * @param  integer $blockSize
+     * @see    ImageRendererInterface::init()
      * @return void
      */
-    public function init($width, $height, $blockSize)
+    public function init()
     {
-        $this->image     = imagecreatetruecolor($width, $height);
-        $this->blockSize = $blockSize;
+        $this->image = imagecreatetruecolor($this->finalWidth, $this->finalHeight);
     }
 
     /**
-     * addColor(): defined by BackendInterface.
+     * addColor(): defined by RendererInterface.
      *
-     * @see    BackendInterface::addColor()
+     * @see    ImageRendererInterface::addColor()
      * @param  string         $id
      * @param  ColorInterface $color
      * @return void
@@ -79,9 +68,9 @@ class Png implements BackendInterface
     }
 
     /**
-     * drawBackground(): defined by BackendInterface.
+     * drawBackground(): defined by RendererInterface.
      *
-     * @see    BackendInterface::drawBackground()
+     * @see    ImageRendererInterface::drawBackground()
      * @param  string $colorId
      * @return void
      */
@@ -91,9 +80,9 @@ class Png implements BackendInterface
     }
 
     /**
-     * drawBlock(): defined by BackendInterface.
+     * drawBlock(): defined by RendererInterface.
      *
-     * @see    BackendInterface::drawBlock()
+     * @see    ImageRendererInterface::drawBlock()
      * @param  integer $x
      * @param  integer $y
      * @param  string  $colorId
@@ -112,9 +101,9 @@ class Png implements BackendInterface
     }
 
     /**
-     * getByteStream(): defined by BackendInterface.
+     * getByteStream(): defined by RendererInterface.
      *
-     * @see    BackendInterface::getByteStream()
+     * @see    ImageRendererInterface::getByteStream()
      * @return string
      */
     public function getByteStream()

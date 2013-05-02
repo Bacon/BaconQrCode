@@ -7,7 +7,7 @@
  * @license   http://opensource.org/licenses/BSD-2-Clause Simplified BSD License
  */
 
-namespace BaconQrCode\Renderer\Backend;
+namespace BaconQrCode\Renderer\Image;
 
 use BaconQrCode\Renderer\Color\ColorInterface;
 use BaconQrCode\Renderer\Color\Rgb;
@@ -17,7 +17,7 @@ use BaconQrCode\Renderer\Color\Gray;
 /**
  * EPS backend.
  */
-class Eps implements BackendInterface
+class Eps extends AbstractRenderer
 {
     /**
      * EPS string.
@@ -25,27 +25,6 @@ class Eps implements BackendInterface
      * @var string
      */
     protected $eps;
-
-    /**
-     * Width of the EPS.
-     *
-     * @var integer
-     */
-    protected $width;
-
-    /**
-     * Height of the EPS.
-     *
-     * @var integer
-     */
-    protected $height;
-
-    /**
-     * Block size.
-     *
-     * @var integer
-     */
-    protected $blockSize;
 
     /**
      * Colors used for drawing.
@@ -62,30 +41,22 @@ class Eps implements BackendInterface
     protected $currentColor;
 
     /**
-     * init(): defined by BackendInterface.
+     * init(): defined by RendererInterface.
      *
-     * @see    BackendInterface::init()
-     * @param  integer $width
-     * @param  integer $height
-     * @param  integer $blockSize
+     * @see    ImageRendererInterface::init()
      * @return void
      */
-    public function init($width, $height, $blockSize)
+    public function init()
     {
         $this->eps = "%!PS-Adobe-3.0 EPSF-3.0\n"
-                   . "%%BoundingBox: 0 0 " . $width . " " . $height . "\n"
+                   . "%%BoundingBox: 0 0 " . $this->finalWidth . " " . $this->finalHeight . "\n"
                    . "/F { rectfill } def\n";
-
-        $this->image     = imagecreatetruecolor($width, $height);
-        $this->width     = $width;
-        $this->height    = $height;
-        $this->blockSize = $blockSize;
     }
 
     /**
-     * addColor(): defined by BackendInterface.
+     * addColor(): defined by RendererInterface.
      *
-     * @see    BackendInterface::addColor()
+     * @see    ImageRendererInterface::addColor()
      * @param  string         $id
      * @param  ColorInterface $color
      * @return void
@@ -104,22 +75,22 @@ class Eps implements BackendInterface
     }
 
     /**
-     * drawBackground(): defined by BackendInterface.
+     * drawBackground(): defined by RendererInterface.
      *
-     * @see    BackendInterface::drawBackground()
+     * @see    ImageRendererInterface::drawBackground()
      * @param  string $colorId
      * @return void
      */
     public function drawBackground($colorId)
     {
         $this->setColor($colorId);
-        $this->eps .= "0 0 " . $this->width . " " . $this->height . " F\n";
+        $this->eps .= "0 0 " . $this->finalWidth . " " . $this->finalHeight . " F\n";
     }
 
     /**
-     * drawBlock(): defined by BackendInterface.
+     * drawBlock(): defined by RendererInterface.
      *
-     * @see    BackendInterface::drawBlock()
+     * @see    ImageRendererInterface::drawBlock()
      * @param  integer $x
      * @param  integer $y
      * @param  string  $colorId
@@ -128,13 +99,13 @@ class Eps implements BackendInterface
     public function drawBlock($x, $y, $colorId)
     {
         $this->setColor($colorId);
-        $this->eps .= $x . " " . ($this->height - $y) . " " . $this->blockSize . " " . $this->blockSize . " F\n";
+        $this->eps .= $x . " " . ($this->finalHeight - $y) . " " . $this->blockSize . " " . $this->blockSize . " F\n";
     }
 
     /**
-     * getByteStream(): defined by BackendInterface.
+     * getByteStream(): defined by RendererInterface.
      *
-     * @see    BackendInterface::getByteStream()
+     * @see    ImageRendererInterface::getByteStream()
      * @return string
      */
     public function getByteStream()

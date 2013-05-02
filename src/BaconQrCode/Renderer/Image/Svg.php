@@ -7,7 +7,7 @@
  * @license   http://opensource.org/licenses/BSD-2-Clause Simplified BSD License
  */
 
-namespace BaconQrCode\Renderer\Backend;
+namespace BaconQrCode\Renderer\Image;
 
 use BaconQrCode\Exception;
 use BaconQrCode\Renderer\Color\ColorInterface;
@@ -16,7 +16,7 @@ use SimpleXMLElement;
 /**
  * SVG backend.
  */
-class Svg implements BackendInterface
+class Svg extends AbstractRenderer
 {
     /**
      * SVG resource.
@@ -24,27 +24,6 @@ class Svg implements BackendInterface
      * @var SimpleXMLElement
      */
     protected $svg;
-
-    /**
-     * Width of the SVG.
-     *
-     * @var integer
-     */
-    protected $width;
-
-    /**
-     * Height of the SVG.
-     *
-     * @var integer
-     */
-    protected $height;
-
-    /**
-     * Block size.
-     *
-     * @var integer
-     */
-    protected $blockSize;
 
     /**
      * Colors used for drawing.
@@ -61,34 +40,27 @@ class Svg implements BackendInterface
     protected $prototypeIds = array();
 
     /**
-     * init(): defined by BackendInterface.
+     * init(): defined by RendererInterface.
      *
-     * @see    BackendInterface::init()
-     * @param  integer $width
-     * @param  integer $height
-     * @param  integer $blockSize
+     * @see    ImageRendererInterface::init()
      * @return void
      */
-    public function init($width, $height, $blockSize)
+    public function init()
     {
         $this->svg = new SimpleXMLElement(
             '<?xml version="1.0" encoding="UTF-8"?>'
             . '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"/>'
         );
         $this->svg->addAttribute('version', '1.1');
-        $this->svg->addAttribute('width', $width . 'px');
-        $this->svg->addAttribute('height', $height . 'px');
+        $this->svg->addAttribute('width', $this->finalWidth . 'px');
+        $this->svg->addAttribute('height', $this->finalHeight . 'px');
         $this->svg->addChild('defs');
-
-        $this->width     = $width;
-        $this->height    = $height;
-        $this->blockSize = $blockSize;
     }
 
     /**
-     * addColor(): defined by BackendInterface.
+     * addColor(): defined by RendererInterface.
      *
-     * @see    BackendInterface::addColor()
+     * @see    ImageRendererInterface::addColor()
      * @param  string         $id
      * @param  ColorInterface $color
      * @return void
@@ -100,9 +72,9 @@ class Svg implements BackendInterface
     }
 
     /**
-     * drawBackground(): defined by BackendInterface.
+     * drawBackground(): defined by RendererInterface.
      *
-     * @see    BackendInterface::drawBackground()
+     * @see    ImageRendererInterface::drawBackground()
      * @param  string $colorId
      * @return void
      */
@@ -111,15 +83,15 @@ class Svg implements BackendInterface
         $rect = $this->svg->addChild('rect');
         $rect->addAttribute('x', 0);
         $rect->addAttribute('y', 0);
-        $rect->addAttribute('width', $this->width);
-        $rect->addAttribute('height', $this->height);
+        $rect->addAttribute('width', $this->finalWidth);
+        $rect->addAttribute('height', $this->finalHeight);
         $rect->addAttribute('fill', '#' . $this->colors[$colorId]);
     }
 
     /**
-     * drawBlock(): defined by BackendInterface.
+     * drawBlock(): defined by RendererInterface.
      *
-     * @see    BackendInterface::drawBlock()
+     * @see    ImageRendererInterface::drawBlock()
      * @param  integer $x
      * @param  integer $y
      * @param  string  $colorId
@@ -138,9 +110,9 @@ class Svg implements BackendInterface
     }
 
     /**
-     * getByteStream(): defined by BackendInterface.
+     * getByteStream(): defined by RendererInterface.
      *
-     * @see    BackendInterface::getByteStream()
+     * @see    ImageRendererInterface::getByteStream()
      * @return string
      */
     public function getByteStream()

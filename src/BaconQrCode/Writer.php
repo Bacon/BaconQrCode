@@ -59,26 +59,19 @@ class Writer
     }
 
     /**
-     * Writes QR code into a string or file.
+     * Writes QR code and returns it as string.
      *
      * Content is a string which *should* be encoded in UTF-8, in case there are
      * non ASCII-characters present.
      *
-     * The return value depends on whether a filename is supplied. If a filename
-     * is supplied, nothing will be returned. Else the byte stream of the
-     * renderer will be returned
-     *
-     * @param  string $content
-     * @param  string $filename
+     * @param  string  $content
      * @param  string  $encoding
-     * @param  int     $ecLevel
+     * @param  integer $ecLevel
+     * @return string
      * @throws Exception\InvalidArgumentException
-     * @internal param array $hints
-     * @return string|null
      */
-    public function write(
+    public function writeString(
         $content,
-        $filename = null,
         $encoding = Encoder::DEFAULT_BYTE_MODE_ECODING,
         $ecLevel = ErrorCorrectionLevel::L
     ) {
@@ -86,13 +79,27 @@ class Writer
             throw new Exception\InvalidArgumentException('Found empty contents');
         }
 
-        $qrCode     = Encoder::encode($content, new ErrorCorrectionLevel($ecLevel), $encoding);
-        $byteStream = $this->getRenderer()->render($qrCode);
+        $qrCode = Encoder::encode($content, new ErrorCorrectionLevel($ecLevel), $encoding);
 
-        if ($filename !== null) {
-            file_put_contents($filename, $byteStream);
-        } else {
-            return $byteStream;
-        }
+        return $this->getRenderer()->render($qrCode);
+    }
+
+    /**
+     * Writes QR code to a file.
+     *
+     * @see    Writer::writeString()
+     * @param  string  $content
+     * @param  string  $filename
+     * @param  string  $encoding
+     * @param  integer $ecLevel
+     * @return void
+     */
+    public function writeFile(
+        $content,
+        $filename,
+        $encoding = Encoder::DEFAULT_BYTE_MODE_ECODING,
+        $ecLevel = ErrorCorrectionLevel::L
+    ) {
+        file_put_contents($filename, $this->writeString($content, $encoding, $ecLevel));
     }
 }

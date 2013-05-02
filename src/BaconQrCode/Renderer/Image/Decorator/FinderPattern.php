@@ -7,10 +7,10 @@
  * @license   http://opensource.org/licenses/BSD-2-Clause Simplified BSD License
  */
 
-namespace BaconQrCode\Renderer\Decorator;
+namespace BaconQrCode\Renderer\Image\Decorator;
 
 use BaconQrCode\Encoder\QrCode;
-use BaconQrCode\Renderer\Backend\BackendInterface;
+use BaconQrCode\Renderer\Image\RendererInterface;
 use BaconQrCode\Renderer\Color;
 
 /**
@@ -18,6 +18,16 @@ use BaconQrCode\Renderer\Color;
  */
 class FinderPattern implements DecoratorInterface
 {
+    /**
+     * @var Color\ColorInterface
+     */
+    protected $innerColor;
+
+    /**
+     * @varColor\ColorInterface
+     */
+    protected $outerColor;
+
     /**
      * Outer position detection pattern.
      *
@@ -104,18 +114,18 @@ class FinderPattern implements DecoratorInterface
      * preProcess(): defined by DecoratorInterface.
      *
      * @see    DecoratorInterface::preProcess()
-     * @param  QrCode           $qrCode
-     * @param  BackendInterface $backend
-     * @param  integer          $outputWidth
-     * @param  integer          $outputHeight
-     * @param  integer          $leftPadding
-     * @param  integer          $topPadding
-     * @param  integer          $multiple
+     * @param  QrCode            $qrCode
+     * @param  RendererInterface $renderer
+     * @param  integer           $outputWidth
+     * @param  integer           $outputHeight
+     * @param  integer           $leftPadding
+     * @param  integer           $topPadding
+     * @param  integer           $multiple
      * @return void
      */
     public function preProcess(
         QrCode $qrCode,
-        BackendInterface $backend,
+        RendererInterface $renderer,
         $outputWidth,
         $outputHeight,
         $leftPadding,
@@ -143,18 +153,18 @@ class FinderPattern implements DecoratorInterface
      *
      * @see    DecoratorInterface::postProcess()
      *
-     * @param  QrCode           $qrCode
-     * @param  BackendInterface $backend
-     * @param  integer          $outputWidth
-     * @param  integer          $outputHeight
-     * @param  integer          $leftPadding
-     * @param  integer          $topPadding
-     * @param  integer          $multiple
+     * @param  QrCode            $qrCode
+     * @param  RendererInterface $renderer
+     * @param  integer           $outputWidth
+     * @param  integer           $outputHeight
+     * @param  integer           $leftPadding
+     * @param  integer           $topPadding
+     * @param  integer           $multiple
      * @return void
      */
     public function postProcess(
         QrCode $qrCode,
-        BackendInterface $backend,
+        RendererInterface $renderer,
         $outputWidth,
         $outputHeight,
         $leftPadding,
@@ -168,8 +178,8 @@ class FinderPattern implements DecoratorInterface
             array(0, $matrix->getHeight() - 7),
         );
 
-        $backend->addColor('finder-outer', $this->getOuterColor());
-        $backend->addColor('finder-inner', $this->getInnerColor());
+        $renderer->addColor('finder-outer', $this->getOuterColor());
+        $renderer->addColor('finder-inner', $this->getInnerColor());
 
         foreach (self::$outerPositionDetectionPattern as $y => $row) {
             foreach ($row as $x => $isOuterSet) {
@@ -177,7 +187,7 @@ class FinderPattern implements DecoratorInterface
 
                 if ($isOuterSet) {
                     foreach ($positions as $position) {
-                        $backend->drawBlock(
+                        $renderer->drawBlock(
                             $leftPadding + $x * $multiple + $position[0] * $multiple,
                             $topPadding + $y * $multiple + $position[1] * $multiple,
                             'finder-outer'
@@ -187,7 +197,7 @@ class FinderPattern implements DecoratorInterface
 
                 if ($isInnerSet) {
                     foreach ($positions as $position) {
-                        $backend->drawBlock(
+                        $renderer->drawBlock(
                             $leftPadding + $x * $multiple + $position[0] * $multiple,
                             $topPadding + $y * $multiple + $position[1] * $multiple,
                             'finder-inner'

@@ -7,25 +7,18 @@
  * @license   http://opensource.org/licenses/BSD-2-Clause Simplified BSD License
  */
 
-namespace BaconQrCode\Renderer;
+namespace BaconQrCode\Renderer\Image;
 
 use BaconQrCode\Encoder\QrCode;
-use BaconQrCode\Renderer\Backend;
 use BaconQrCode\Renderer\Color;
-use BaconQrCode\Renderer\Decorator\DecoratorInterface;
+use BaconQrCode\Renderer\Image\Decorator\DecoratorInterface;
+use BaconQrCode\Exception;
 
 /**
  * Image renderer, supporting multiple backends.
  */
-class ImageRenderer implements RendererInterface
+abstract class AbstractRenderer implements RendererInterface
 {
-    /**
-     * Backend to use for creating the bytestream.
-     *
-     * @var Backend\BackendInterface
-     */
-    protected $backend;
-
     /**
      * Margin around the QR code, also known as quiet zone.
      *
@@ -34,18 +27,46 @@ class ImageRenderer implements RendererInterface
     protected $margin = 4;
 
     /**
-     * Width of the rendered image.
+     * Requested width of the rendered image.
      *
      * @var integer
      */
     protected $width = 0;
 
     /**
-     * Height of the rendered image.
+     * Requested height of the rendered image.
      *
      * @var integer
      */
     protected $height = 0;
+
+    /**
+     * Whether dimensions should be rounded down.
+     *
+     * @var boolean
+     */
+    protected $roundDimensions = true;
+
+    /**
+     * Final width of the image.
+     *
+     * @var integer
+     */
+    protected $finalWidth;
+
+    /**
+     * Final height of the image.
+     *
+     * @var integer
+     */
+    protected $finalHeight;
+
+    /**
+     * Size of each individual block.
+     *
+     * @var integer
+     */
+    protected $blockSize;
 
     /**
      * Background color.
@@ -69,20 +90,10 @@ class ImageRenderer implements RendererInterface
     protected $decorators = array();
 
     /**
-     * Creates a new renderer with a given backend.
-     *
-     * @param Backend\BackendInterface $backend
-     */
-    public function __construct(Backend\BackendInterface $backend)
-    {
-        $this->backend = $backend;
-    }
-
-    /**
      * Sets the margin around the QR code.
      *
      * @param  integer $margin
-     * @return ImageRenderer
+     * @return AbstractRenderer
      * @throws Exception\InvalidArgumentException
      */
     public function setMargin($margin)
@@ -112,7 +123,7 @@ class ImageRenderer implements RendererInterface
      * will automatically use that as the width instead of the specified one.
      *
      * @param  integer $width
-     * @return ImageRenderer
+     * @return AbstractRenderer
      */
     public function setWidth($width)
     {
@@ -138,7 +149,7 @@ class ImageRenderer implements RendererInterface
      * specified one.
      *
      * @param  integer $height
-     * @return ImageRenderer
+     * @return AbstractRenderer
      */
     public function setHeight($height)
     {
@@ -157,10 +168,32 @@ class ImageRenderer implements RendererInterface
     }
 
     /**
+     * Sets whether dimensions should be rounded down.
+     *
+     * @param  boolean $flag
+     * @return AbstractRenderer
+     */
+    public function setRoundDimensions($flag)
+    {
+        $this->floorToClosestDimension = $flag;
+        return $this;
+    }
+
+    /**
+     * Gets whether dimensions should be rounded down.
+     *
+     * @return boolean
+     */
+    public function shouldRoundDimensions()
+    {
+        return $this->floorToClosestDimension;
+    }
+
+    /**
      * Sets background color.
      *
      * @param  Color\ColorInterface $color
-     * @return ImageRenderer
+     * @return AbstractRenderer
      */
     public function setBackgroundColor(Color\ColorInterface $color)
     {
@@ -186,7 +219,7 @@ class ImageRenderer implements RendererInterface
      * Sets foreground color.
      *
      * @param  Color\ColorInterface $color
-     * @return ImageRenderer
+     * @return AbstractRenderer
      */
     public function setForegroundColor(Color\ColorInterface $color)
     {
@@ -212,7 +245,7 @@ class ImageRenderer implements RendererInterface
      * Adds a decorator to the renderer.
      *
      * @param  DecoratorInterface $decorator
-     * @return ImageRenderer
+     * @return AbstractRenderer
      */
     public function addDecorator(DecoratorInterface $decorator)
     {
@@ -238,6 +271,11 @@ class ImageRenderer implements RendererInterface
         $outputHeight = max($this->getHeight(), $qrHeight);
         $multiple     = (int) min($outputWidth / $qrWidth, $outputHeight / $qrHeight);
 
+        if ($this->shouldRoundDimensions()) {
+            $outputWidth  -= $outputWidth % $multiple;
+            $outputHeight -= $outputHeight % $multiple;
+        }
+
         // Padding includes both the quiet zone and the extra white pixels to
         // accommodate the requested dimensions. For example, if input is 25x25
         // the QR will be 33x33 including the quiet zone. If the requested size
@@ -246,15 +284,20 @@ class ImageRenderer implements RendererInterface
         $leftPadding = (int) (($outputWidth - ($inputWidth * $multiple)) / 2);
         $topPadding  = (int) (($outputHeight - ($inputHeight * $multiple)) / 2);
 
-        $this->backend->init($outputWidth, $outputHeight, $multiple);
-        $this->backend->addColor('background', $this->getBackgroundColor());
-        $this->backend->addColor('foreground', $this->getForegroundColor());
-        $this->backend->drawBackground('background');
+        // Store calculated parameters
+        $this->finalWidth  = $outputWidth;
+        $this->finalHeight = $outputHeight;
+        $this->blockSize   = $multiple;
+
+        $this->init();
+        $this->addColor('background', $this->getBackgroundColor());
+        $this->addColor('foreground', $this->getForegroundColor());
+        $this->drawBackground('background');
 
         foreach ($this->decorators as $decorator) {
             $decorator->preProcess(
                 $qrCode,
-                $this->backend,
+                $this,
                 $outputWidth,
                 $outputHeight,
                 $leftPadding,
@@ -266,7 +309,7 @@ class ImageRenderer implements RendererInterface
         for ($inputY = 0, $outputY = $topPadding; $inputY < $inputHeight; $inputY++, $outputY += $multiple) {
             for ($inputX = 0, $outputX = $leftPadding; $inputX < $inputWidth; $inputX++, $outputX += $multiple) {
                 if ($input->get($inputX, $inputY) === 1) {
-                    $this->backend->drawBlock($outputX, $outputY, 'foreground');
+                    $this->drawBlock($outputX, $outputY, 'foreground');
                 }
             }
         }
@@ -274,7 +317,7 @@ class ImageRenderer implements RendererInterface
         foreach ($this->decorators as $decorator) {
             $decorator->postProcess(
                 $qrCode,
-                $this->backend,
+                $this,
                 $outputWidth,
                 $outputHeight,
                 $leftPadding,
@@ -283,6 +326,6 @@ class ImageRenderer implements RendererInterface
             );
         }
 
-        return $this->backend->getByteStream();
+        return $this->getByteStream();
     }
 }
