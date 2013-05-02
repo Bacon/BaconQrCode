@@ -9,8 +9,6 @@
 
 namespace BaconQrCode\Renderer\Text;
 
-use BaconQrCode\Exception;
-use BaconQrCode\Renderer\RendererInterface;
 use BaconQrCode\Encoder\QrCode;
 
 /**
@@ -86,6 +84,7 @@ class Html extends Plain
                     ' style="' . htmlspecialchars($this->style, ENT_QUOTES, 'utf-8') . '"' .
                     ' class="' . htmlspecialchars($this->class, ENT_QUOTES, 'utf-8') . '"' .
                   '>' . $textCode . '</pre>';
+
         return $result;
     }
 

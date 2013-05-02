@@ -105,7 +105,7 @@ class Plain implements RendererInterface
     /**
      * Sets the margin around the QR code.
      *
-     * @param  integer $margin
+     * @param  integer                            $margin
      * @return AbstractRenderer
      * @throws Exception\InvalidArgumentException
      */
@@ -116,6 +116,7 @@ class Plain implements RendererInterface
         }
 
         $this->margin = (int) $margin;
+
         return $this;
     }
 
@@ -150,9 +151,9 @@ class Plain implements RendererInterface
 
         // Body
         $array = $matrix->getArray();
-        foreach($array as $row){
+        foreach ($array as $row) {
             $result .= str_repeat($this->emptyBlock, $this->margin); // left margin
-            foreach($row as $byte){
+            foreach ($row as $byte) {
                 $result .= $byte ? $this->fullBlock : $this->emptyBlock;
             }
             $result .= str_repeat($this->emptyBlock, $this->margin); // right margin
