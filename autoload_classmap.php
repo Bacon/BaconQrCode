@@ -37,5 +37,6 @@ return array(
     'BaconQrCode\Renderer\Image\RendererInterface'            => __DIR__ . '/src/BaconQrCode/Renderer/Image/RendererInterface.php',
     'BaconQrCode\Renderer\Image\Svg'                          => __DIR__ . '/src/BaconQrCode/Renderer/Image/Svg.php',
     'BaconQrCode\Renderer\RendererInterface'                  => __DIR__ . '/src/BaconQrCode/Renderer/RendererInterface.php',
+    'BaconQrCode\Renderer\Text\Plain'                         => __DIR__ . '/src/BaconQrCode/Renderer/Text/Plain.php',
     'BaconQrCode\Writer'                                      => __DIR__ . '/src/BaconQrCode/Writer.php',
 );
