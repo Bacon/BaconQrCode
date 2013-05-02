@@ -10,11 +10,11 @@
 namespace BaconQrCode\Renderer\Text;
 
 use BaconQrCode\Exception;
-use BaconQrCode\Renderer\RendererInterface;
 use BaconQrCode\Encoder\QrCode;
+use BaconQrCode\Renderer\RendererInterface;
 
 /**
- * Bitmap backend.
+ * Plaintext backend.
  */
 class Plain implements RendererInterface
 {

@@ -12,7 +12,7 @@ namespace BaconQrCode\Renderer\Text;
 use BaconQrCode\Encoder\QrCode;
 
 /**
- * Bitmap backend.
+ * Html backend.
  */
 class Html extends Plain
 {
@@ -21,7 +21,7 @@ class Html extends Plain
      *
      * @var string
      */
-    protected $class = ' ';
+    protected $class = '';
 
     /**
      * HTML CSS style definition for the code element.
