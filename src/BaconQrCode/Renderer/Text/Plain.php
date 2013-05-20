@@ -14,7 +14,7 @@ use BaconQrCode\Encoder\QrCode;
 use BaconQrCode\Renderer\RendererInterface;
 
 /**
- * Plaintext backend.
+ * Plaintext renderer.
  */
 class Plain implements RendererInterface
 {
@@ -26,31 +26,11 @@ class Plain implements RendererInterface
     protected $margin = 1;
 
     /**
-     * Matrix used to generate code.
+     * Char used for full block.
      *
-     * @var array
-     */
-    protected $matrix = array();
-
-    /**
-     * The height of matrix.
-     *
-     * @var int
-     */
-    protected $matrixWidth = 0;
-
-    /**
-     * The width of matrix.
-     *
-     * @var int
-     */
-    protected $matrixHeight = 0;
-
-    /**
-     * Char used for full block
      * UTF-8 FULL BLOCK (U+2588)
      *
-     * @var string
+     * @var  string
      * @link http://www.fileformat.info/info/unicode/char/2588/index.htm
      */
     protected $fullBlock = "\xE2\x96\x88";
@@ -105,7 +85,7 @@ class Plain implements RendererInterface
     /**
      * Sets the margin around the QR code.
      *
-     * @param  integer                            $margin
+     * @param  integer $margin
      * @return AbstractRenderer
      * @throws Exception\InvalidArgumentException
      */
@@ -142,7 +122,6 @@ class Plain implements RendererInterface
         $result = '';
         $matrix = $qrCode->getMatrix();
         $width  = $matrix->getWidth();
-        $height = $matrix->getHeight();
 
         // Top margin
         for ($x = 0; $x < $this->margin; $x++) {
@@ -151,6 +130,7 @@ class Plain implements RendererInterface
 
         // Body
         $array = $matrix->getArray();
+
         foreach ($array as $row) {
             $result .= str_repeat($this->emptyBlock, $this->margin); // left margin
             foreach ($row as $byte) {
@@ -167,5 +147,4 @@ class Plain implements RendererInterface
 
         return $result;
     }
-
 }

@@ -12,7 +12,7 @@ namespace BaconQrCode\Renderer\Text;
 use BaconQrCode\Encoder\QrCode;
 
 /**
- * Html backend.
+ * Html renderer.
  */
 class Html extends Plain
 {
@@ -80,12 +80,12 @@ class Html extends Plain
     public function render(QrCode $qrCode)
     {
         $textCode = parent::render($qrCode);
-        $result = '<pre' .
-                    ' style="' . htmlspecialchars($this->style, ENT_QUOTES, 'utf-8') . '"' .
-                    ' class="' . htmlspecialchars($this->class, ENT_QUOTES, 'utf-8') . '"' .
-                  '>' . $textCode . '</pre>';
+
+        $result = '<pre'
+                . ' style="' . htmlspecialchars($this->style, ENT_QUOTES, 'utf-8') . '"'
+                . ' class="' . htmlspecialchars($this->class, ENT_QUOTES, 'utf-8') . '"'
+                . '>' . $textCode . '</pre>';
 
         return $result;
     }
-
 }

@@ -96,5 +96,4 @@ class HtmlTest extends TestCase
         $this->assertEquals('bar', $this->renderer->getClass());
         $this->assertStringMatchesFormat('%aclass="bar"%a', $this->renderer->render($qrCode));
     }
-
 }
