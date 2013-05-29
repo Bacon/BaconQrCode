@@ -76,6 +76,13 @@ abstract class AbstractRenderer implements RendererInterface
     protected $backgroundColor;
 
     /**
+     * Whether dimensions should be rounded down
+     * 
+     * @var boolean
+     */
+    protected $floorToClosestDimension;
+
+    /**
      * Foreground color.
      *
      * @var Color\ColorInterface
