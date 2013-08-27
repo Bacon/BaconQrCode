@@ -9,12 +9,12 @@
 
 namespace BaconQrCode;
 
-use Zend\Module\Consumer\AutoloaderProvider;
+use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 
 /**
  * Module for generating QR codes.
  */
-class Module implements AutoloaderProvider
+class Module implements AutoloaderProviderInterface
 {
     /**
      * Get autoloader config.
