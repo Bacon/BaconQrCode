@@ -25,7 +25,7 @@ class Module implements AutoloaderProviderInterface
     {
         return array(
             'Zend\Loader\ClassMapAutoloader' => array(
-                __DIR__ . '/../../autoload_classmap.php',
+                __DIR__ . '/autoload_classmap.php',
             ),
             'Zend\Loader\StandardAutoloader' => array(
                 'namespaces' => array(
