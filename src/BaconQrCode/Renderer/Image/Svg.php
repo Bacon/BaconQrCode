@@ -54,6 +54,7 @@ class Svg extends AbstractRenderer
         $this->svg->addAttribute('version', '1.1');
         $this->svg->addAttribute('width', $this->finalWidth . 'px');
         $this->svg->addAttribute('height', $this->finalHeight . 'px');
+        $this->svg->addAttribute('viewBox', '0 0 ' . $this->finalWidth . ' ' . $this->finalHeight);
         $this->svg->addChild('defs');
     }
 
