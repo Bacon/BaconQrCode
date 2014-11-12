@@ -211,14 +211,10 @@ abstract class AbstractRenderer implements RendererInterface
     /**
      * Gets background color.
      *
-     * @return Color\ColorInterface
+     * @return Color\ColorInterface|null
      */
     public function getBackgroundColor()
     {
-        if ($this->backgroundColor === null) {
-            $this->backgroundColor = new Color\Gray(100);
-        }
-
         return $this->backgroundColor;
     }
 
@@ -297,9 +293,14 @@ abstract class AbstractRenderer implements RendererInterface
         $this->blockSize   = $multiple;
 
         $this->init();
-        $this->addColor('background', $this->getBackgroundColor());
+
         $this->addColor('foreground', $this->getForegroundColor());
-        $this->drawBackground('background');
+
+        $backgroundColor = $this->getBackgroundColor();
+        if ($backgroundColor) {
+            $this->addColor('background', $this->getBackgroundColor());
+            $this->drawBackground('background');
+        }
 
         foreach ($this->decorators as $decorator) {
             $decorator->preProcess(
