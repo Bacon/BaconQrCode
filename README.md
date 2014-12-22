@@ -11,3 +11,15 @@ well.
 
 As the Reed Solomon codec implementation of the ZXing library performs quite
 slow in PHP, it was exchanged with the implementation by Phil Karn.
+
+
+Example usage
+------------
+``` PHP
+$render = new \BaconQrCode\Renderer\Image\Png();
+$render->setHeight(256);
+$render->setWidth(256);
+$QRCode = new \BaconQrCode\Writer($render);
+$fileName = tempnam(sys_get_temp_dir(), 'QRCode');
+$QRCode->writeFile('Hello World!', $fileName);
+```
