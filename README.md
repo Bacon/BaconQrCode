@@ -14,12 +14,11 @@ slow in PHP, it was exchanged with the implementation by Phil Karn.
 
 
 Example usage
-------------
-``` PHP
-$render = new \BaconQrCode\Renderer\Image\Png();
-$render->setHeight(256);
-$render->setWidth(256);
-$QRCode = new \BaconQrCode\Writer($render);
-$fileName = tempnam(sys_get_temp_dir(), 'QRCode');
-$QRCode->writeFile('Hello World!', $fileName);
+-------------
+```php
+$renderer = new \BaconQrCode\Renderer\Image\Png();
+$renderer->setHeight(256);
+$renderer->setWidth(256);
+$writer = new \BaconQrCode\Writer($renderer);
+$writer->writeFile('Hello World!', 'qrcode.png');
 ```
