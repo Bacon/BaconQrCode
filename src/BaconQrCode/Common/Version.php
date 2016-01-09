@@ -278,7 +278,7 @@ class Version
     {
         switch ($versionNumber) {
             case 1:
-                $patterns = array(6, 12);
+                $patterns = array();
                 $ecBlocks = array(
                     new EcBlocks(7, new EcBlock(1, 19)),
                     new EcBlocks(10, new EcBlock(1, 16)),
