@@ -46,7 +46,7 @@ class ReedSolomonTest extends TestCase
 
         for ($errors = 0; $errors <= $numRoots / 2; $errors++) {
             // Load block with random data and encode
-            $block = SplFixedArray::fromArray(array_fill(0, $blockSize, 0));
+            $block = SplFixedArray::fromArray(array_fill(0, $blockSize, 0), false);
 
             for ($i = 0; $i < $dataSize; $i++) {
                 $block[$i] = mt_rand(0, $blockSize);
@@ -54,8 +54,8 @@ class ReedSolomonTest extends TestCase
 
             // Make temporary copy
             $tBlock         = clone $block;
-            $parity         = SplFixedArray::fromArray(array_fill(0, $numRoots, 0));
-            $errorLocations = SplFixedArray::fromArray(array_fill(0, $blockSize, 0));
+            $parity         = SplFixedArray::fromArray(array_fill(0, $numRoots, 0), false);
+            $errorLocations = SplFixedArray::fromArray(array_fill(0, $blockSize, 0), false);
             $erasures       = array();
 
             // Create parity
@@ -84,7 +84,7 @@ class ReedSolomonTest extends TestCase
                 $tBlock[$errorLocation] ^= $errorValue;
             }
 
-            $erasures = SplFixedArray::fromArray($erasures);
+            $erasures = SplFixedArray::fromArray($erasures, false);
 
             // Decode the errored block
             $foundErrors = $codec->decode($tBlock, $erasures);

@@ -680,8 +680,8 @@ class Version
 
         self::$versions[$versionNumber - 1] = new self(
             $versionNumber,
-            SplFixedArray::fromArray($patterns),
-            SplFixedArray::fromArray($ecBlocks)
+            SplFixedArray::fromArray($patterns, false),
+            SplFixedArray::fromArray($ecBlocks, false)
         );
     }
 }

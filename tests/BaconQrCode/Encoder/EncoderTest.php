@@ -348,7 +348,7 @@ class EncoderTest extends TestCase
 
     public function testInterleaveWithEcBytes()
     {
-        $dataBytes = SplFixedArray::fromArray(array(32, 65, 205, 69, 41, 220, 46, 128, 236));
+        $dataBytes = SplFixedArray::fromArray(array(32, 65, 205, 69, 41, 220, 46, 128, 236), false);
         $in        = new BitArray();
 
         foreach ($dataBytes as $dataByte) {
@@ -361,7 +361,7 @@ class EncoderTest extends TestCase
             32, 65, 205, 69, 41, 220, 46, 128, 236,
             // Error correction bytes.
             42, 159, 74, 221, 244, 169, 239, 150, 138, 70, 237, 85, 224, 96, 74, 219, 61,
-        ));
+        ), false);
 
         $out = $outBits->toBytes(0, count($expected));
 
@@ -449,20 +449,20 @@ class EncoderTest extends TestCase
     {
         // Numbers are from http://www.swetake.com/qr/qr3.html and
         // http://www.swetake.com/qr/qr9.html
-        $dataBytes = SplFixedArray::fromArray(array(32, 65, 205, 69, 41, 220, 46, 128, 236));
+        $dataBytes = SplFixedArray::fromArray(array(32, 65, 205, 69, 41, 220, 46, 128, 236), false);
         $ecBytes   = $this->methods['generateEcBytes']->invoke(null, $dataBytes, 17);
-        $expected  = SplFixedArray::fromArray(array(42, 159, 74, 221, 244, 169, 239, 150, 138, 70, 237, 85, 224, 96, 74, 219, 61));
+        $expected  = SplFixedArray::fromArray(array(42, 159, 74, 221, 244, 169, 239, 150, 138, 70, 237, 85, 224, 96, 74, 219, 61), false);
         $this->assertEquals($expected, $ecBytes);
 
-        $dataBytes = SplFixedArray::fromArray(array(67, 70, 22, 38, 54, 70, 86, 102, 118, 134, 150, 166, 182, 198, 214));
+        $dataBytes = SplFixedArray::fromArray(array(67, 70, 22, 38, 54, 70, 86, 102, 118, 134, 150, 166, 182, 198, 214), false);
         $ecBytes   = $this->methods['generateEcBytes']->invoke(null, $dataBytes, 18);
-        $expected  = SplFixedArray::fromArray(array(175, 80, 155, 64, 178, 45, 214, 233, 65, 209, 12, 155, 117, 31, 140, 214, 27, 187));
+        $expected  = SplFixedArray::fromArray(array(175, 80, 155, 64, 178, 45, 214, 233, 65, 209, 12, 155, 117, 31, 140, 214, 27, 187), false);
         $this->assertEquals($expected, $ecBytes);
 
         // High-order zero coefficient case.
-        $dataBytes = SplFixedArray::fromArray(array(32, 49, 205, 69, 42, 20, 0, 236, 17));
+        $dataBytes = SplFixedArray::fromArray(array(32, 49, 205, 69, 42, 20, 0, 236, 17), false);
         $ecBytes   = $this->methods['generateEcBytes']->invoke(null, $dataBytes, 17);
-        $expected  = SplFixedArray::fromArray(array(0, 3, 130, 179, 194, 0, 55, 211, 110, 79, 98, 72, 170, 96, 211, 137, 213));
+        $expected  = SplFixedArray::fromArray(array(0, 3, 130, 179, 194, 0, 55, 211, 110, 79, 98, 72, 170, 96, 211, 137, 213), false);
         $this->assertEquals($expected, $ecBytes);
     }
 }

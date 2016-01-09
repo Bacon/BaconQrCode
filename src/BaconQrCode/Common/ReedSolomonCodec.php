@@ -122,8 +122,8 @@ class ReedSolomonCodec
         $this->symbolSize = $symbolSize;
         $this->blockSize  = (1 << $symbolSize) - 1;
         $this->padding    = $padding;
-        $this->alphaTo    = SplFixedArray::fromArray(array_fill(0, $this->blockSize + 1, 0));
-        $this->indexOf    = SplFixedArray::fromArray(array_fill(0, $this->blockSize + 1, 0));
+        $this->alphaTo    = SplFixedArray::fromArray(array_fill(0, $this->blockSize + 1, 0), false);
+        $this->indexOf    = SplFixedArray::fromArray(array_fill(0, $this->blockSize + 1, 0), false);
 
         // Generate galous field lookup table
         $this->indexOf[0]                = $this->blockSize;
@@ -149,7 +149,7 @@ class ReedSolomonCodec
         }
 
         // Form RS code generator polynomial from its roots
-        $this->generatorPoly = SplFixedArray::fromArray(array_fill(0, $numRoots + 1, 0));
+        $this->generatorPoly = SplFixedArray::fromArray(array_fill(0, $numRoots + 1, 0), false);
         $this->firstRoot     = $firstRoot;
         $this->primitive     = $primitive;
         $this->numRoots      = $numRoots;
@@ -229,8 +229,8 @@ class ReedSolomonCodec
     public function decode(SplFixedArray $data, SplFixedArray $erasures = null)
     {
         // This speeds up the initialization a bit.
-        $numRootsPlusOne = SplFixedArray::fromArray(array_fill(0, $this->numRoots + 1, 0));
-        $numRoots        = SplFixedArray::fromArray(array_fill(0, $this->numRoots, 0));
+        $numRootsPlusOne = SplFixedArray::fromArray(array_fill(0, $this->numRoots + 1, 0), false);
+        $numRoots        = SplFixedArray::fromArray(array_fill(0, $this->numRoots, 0), false);
 
         $lambda    = clone $numRootsPlusOne;
         $b         = clone $numRootsPlusOne;
@@ -242,7 +242,7 @@ class ReedSolomonCodec
         $numErasures = ($erasures !== null ? count($erasures) : 0);
 
         // Form the Syndromes; i.e., evaluate data(x) at roots of g(x)
-        $syndromes = SplFixedArray::fromArray(array_fill(0, $this->numRoots, $data[0]));
+        $syndromes = SplFixedArray::fromArray(array_fill(0, $this->numRoots, $data[0]), false);
 
         for ($i = 1; $i < $this->blockSize - $this->padding; $i++) {
             for ($j = 0; $j < $this->numRoots; $j++) {
@@ -314,7 +314,7 @@ class ReedSolomonCodec
                 $tmp = $b->toArray();
                 array_unshift($tmp, $this->blockSize);
                 array_pop($tmp);
-                $b = SplFixedArray::fromArray($tmp);
+                $b = SplFixedArray::fromArray($tmp, false);
             } else {
                 $t[0] = $lambda[0];
 
@@ -340,7 +340,7 @@ class ReedSolomonCodec
                     $tmp = $b->toArray();
                     array_unshift($tmp, $this->blockSize);
                     array_pop($tmp);
-                    $b = SplFixedArray::fromArray($tmp);
+                    $b = SplFixedArray::fromArray($tmp, false);
                 }
 
                 $lambda = clone $t;
