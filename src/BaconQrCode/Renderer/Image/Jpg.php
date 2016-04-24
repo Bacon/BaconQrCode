@@ -12,7 +12,6 @@ namespace BaconQrCode\Renderer\Image;
 use BaconQrCode\Exception;
 use BaconQrCode\Renderer\Color\ColorInterface;
 use Imagick;
-use ImagickDraw;
 use ImagickPixel;
 
 /**
@@ -31,23 +30,23 @@ class Jpg extends AbstractRenderer
     /**
      * Colors used for drawing.
      *
-     * @var ImagickPixel[]
+     * @var ColorInterface[]
      */
     protected $colors = array();
 
     /**
-     * Draw resource for drawing dots.
-     *
-     * @var ImagickDraw
-     */
-    protected $draw;
-
-    /**
-     * Flag for determining if cmyk should be used for colorspace.
+     * Flag for determining if cmyk should be used for colorSpace.
      *
      * @var bool
      */
     protected $cmyk = false;
+
+    /**
+     * ColorArray used for insert.
+     *
+     * @var array
+     */
+    private $colorArray = null;
 
     /**
      * init(): defined by RendererInterface.
@@ -58,7 +57,6 @@ class Jpg extends AbstractRenderer
     public function init()
     {
         $this->image = new \Imagick();
-        $this->draw = new \ImagickDraw();
     }
 
     /**
@@ -76,22 +74,7 @@ class Jpg extends AbstractRenderer
             throw new Exception\RuntimeException('Colors can only be added after init');
         }
 
-        $pixel = new \ImagickPixel();
-
-        if ($this->cmyk) {
-            $color = $color->toCmyk();
-            $pixel->setColorValue(Imagick::COLOR_CYAN, $color->getCyan() / 100);
-            $pixel->setColorValue(Imagick::COLOR_MAGENTA, $color->getMagenta() / 100);
-            $pixel->setColorValue(Imagick::COLOR_YELLOW, $color->getYellow() / 100);
-            $pixel->setColorValue(Imagick::COLOR_BLACK, $color->getBlack() / 100);
-        } else {
-            $color = $color->toRgb();
-            $pixel->setColorValue(Imagick::COLOR_RED, $color->getRed() / 255);
-            $pixel->setColorValue(Imagick::COLOR_GREEN, $color->getGreen() / 255);
-            $pixel->setColorValue(Imagick::COLOR_BLUE, $color->getBlue() / 255);
-        }
-
-        $this->colors[$id] = $pixel;
+        $this->colors[$id] = $color;
     }
 
     /**
@@ -103,15 +86,35 @@ class Jpg extends AbstractRenderer
      */
     public function drawBackground($colorId)
     {
-        $this->image->newImage($this->finalWidth, $this->finalHeight, $this->colors['background']);
-        $this->image->setImageFormat("jpg");
+        $color = $this->colors['background'];
+
+        if ($this->cmyk) {
+
+            $color = $color->toCmyk();
+
+            $pixel = new ImagickPixel(sprintf('cmyk(%s,%s,%s,%s)',
+                $color->getCyan(),
+                $color->getMagenta(),
+                $color->getYellow(),
+                $color->getBlack()));
+
+            $colorSpace = Imagick::COLORSPACE_CMYK;
+        } else {
+
+            $color = $color->toRgb();
+
+            $pixel = new ImagickPixel(sprintf('rgb(%s,%s,%s)',
+                $color->getRed(),
+                $color->getGreen(),
+                $color->getBlue()));
+
+            $colorSpace = Imagick::COLORSPACE_RGB;
+        }
+        $this->image->newImage($this->finalWidth, $this->finalHeight, $pixel);
+        $this->image->setImageFormat('jpeg');
         $this->image->setImageCompression(Imagick::COMPRESSION_JPEG);
         $this->image->setImageCompressionQuality(100);
-        if ($this->cmyk) {
-            $this->image->setImageColorspace(Imagick::COLORSPACE_CMYK);
-        } else {
-            $this->image->setImageColorspace(Imagick::COLORSPACE_RGB);
-        }
+        $this->image->setImageColorspace($colorSpace);
     }
 
     /**
@@ -125,12 +128,19 @@ class Jpg extends AbstractRenderer
      */
     public function drawBlock($x, $y, $colorId)
     {
-        $this->draw->setFillColor($this->colors[$colorId]);
-        if ($this->blockSize > 1) {
-            $this->draw->rectangle($x, $y, $x + $this->blockSize - 1, $y + $this->blockSize - 1);
-        } else {
-            $this->draw->point($x, $y);
+        $color = $this->colors[$colorId];
+
+        if ($this->colorArray == null) {
+            $this->buildColorArray($color);
         }
+
+        $this->image->importImagePixels($x,
+            $y,
+            $this->blockSize,
+            $this->blockSize,
+            $this->cmyk ? 'CMYK' : 'RGB',
+            Imagick::PIXEL_CHAR,
+            $this->colorArray);
     }
 
     /**
@@ -141,7 +151,6 @@ class Jpg extends AbstractRenderer
      */
     public function getByteStream()
     {
-        $this->image->drawImage($this->draw);
         return $this->image->getImageBlob();
     }
 
@@ -156,4 +165,33 @@ class Jpg extends AbstractRenderer
         $this->cmyk = $flag;
         return $this;
     }
+
+    /**
+     * Builds colorArray for importImagePixels.
+     *
+     * @param ColorInterface $color
+     */
+    private function buildColorArray(ColorInterface $color)
+    {
+        if ($this->cmyk) {
+            $color = $color->toCmyk();
+            $colorArray = array();
+            for ($i = 0; $i < $this->blockSize * $this->blockSize; $i++) {
+                $colorArray[] = (int)round($color->getCyan() * 2.55);
+                $colorArray[] = (int)round($color->getMagenta() * 2.55);
+                $colorArray[] = (int)round($color->getYellow() * 2.55);
+                $colorArray[] = (int)round($color->getBlack() * 2.55);
+            }
+        } else {
+            $color = $color->toRgb();
+            $colorArray = array();
+            for ($i = 0; $i < $this->blockSize * $this->blockSize; $i++) {
+                $colorArray[] = $color->getRed();
+                $colorArray[] = $color->getGreen();
+                $colorArray[] = $color->getBlue();
+            }
+        }
+        $this->colorArray = $colorArray;
+    }
+
 }
