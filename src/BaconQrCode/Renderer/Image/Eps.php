@@ -99,7 +99,7 @@ class Eps extends AbstractRenderer
     public function drawBlock($x, $y, $colorId)
     {
         $this->setColor($colorId);
-        $this->eps .= $x . " " . ($this->finalHeight - $y) . " " . $this->blockSize . " " . $this->blockSize . " F\n";
+        $this->eps .= $x . " " . ($this->finalHeight - $y - $this->blockSize) . " " . $this->blockSize . " " . $this->blockSize . " F\n";
     }
 
     /**
