@@ -8,4 +8,4 @@ php:
   - 7.1
   - hhvm
 
-script: ./vendor/bin/phpunit --bootstrap tests/bootstrap.php --configuration tests/phpunit.xml tests
+script: vendor/bin/phpunit --bootstrap tests/bootstrap.php --configuration tests/phpunit.xml tests
