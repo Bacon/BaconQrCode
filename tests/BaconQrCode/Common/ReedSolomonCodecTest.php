@@ -38,7 +38,11 @@ class ReedSolomonTest extends TestCase
      */
     public function testCodec($symbolSize, $generatorPoly, $firstRoot, $primitive, $numRoots)
     {
-        mt_srand(0xdeadbeef);
+        if (defined('MT_RAND_PHP')) {
+            mt_srand(0xdeadbeef, MT_RAND_PHP);
+        } else {
+            mt_srand(0xdeadbeef);
+        }
 
         $blockSize = (1 << $symbolSize) - 1;
         $dataSize  = $blockSize - $numRoots;
