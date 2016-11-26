@@ -4,6 +4,7 @@ php:
   - 5.4
   - 5.5
   - 7.0
+  - 7.1
   - hhvm
 
 script: phpunit --bootstrap tests/bootstrap.php --configuration tests/phpunit.xml tests
