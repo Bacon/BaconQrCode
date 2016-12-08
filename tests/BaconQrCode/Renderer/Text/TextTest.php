@@ -69,35 +69,6 @@ class PlainTest extends TestCase
         $this->assertEquals($expected, $this->renderer->render($qrCode));
     }
 
-    public function testBaseCompactRender()
-    {
-        $content = 'foobar';
-        $expected =
-            "                       \n" .
-            " █▀▀▀▀▀█ ▀█▀█▀ █▀▀▀▀▀█ \n" .
-            " █ ███ █  ██▄  █ ███ █ \n" .
-            " █ ▀▀▀ █   ▀▄█ █ ▀▀▀ █ \n" .
-            " ▀▀▀▀▀▀▀ █▄█▄█ ▀▀▀▀▀▀▀ \n" .
-            " ▀▀ ██ ▀  ██ █ █ ▄▄  ▀ \n" .
-            "  ▀▀▀▀▀▀▀▀ █▄ ▀▀ ▀ ▄▀█ \n" .
-            "  ▀▀  ▀▀▀▄ █▄▄ ▀  █ ▄▀ \n" .
-            " █▀▀▀▀▀█  ▀█▄██▀▀▀█▄   \n" .
-            " █ ███ █ ██ ██ ▀█ █▄▀▀ \n" .
-            " █ ▀▀▀ █ ▄▄█  ▄█▄▀█▄██ \n" .
-            " ▀▀▀▀▀▀▀ ▀▀▀▀   ▀▀     \n" .
-            "                       \n"
-        ;
-
-        $qrCode = Encoder::encode(
-            $content,
-            new ErrorCorrectionLevel(ErrorCorrectionLevel::L),
-            Encoder::DEFAULT_BYTE_MODE_ECODING
-        );
-        $this->renderer->setCompact(true);
-        $this->assertEquals(true, $this->renderer->getCompact());
-        $this->assertEquals($expected, $this->renderer->render($qrCode));
-    }
-
     public function testBasicRenderNoMargins()
     {
         $content = 'foobar';
@@ -132,35 +103,6 @@ class PlainTest extends TestCase
         );
         $this->renderer->setMargin(0);
         $this->assertEquals(0, $this->renderer->getMargin());
-        $this->assertEquals($expected, $this->renderer->render($qrCode));
-    }
-
-    public function testBaseCompactRenderNoMargins()
-    {
-        $content = 'foobar';
-        $expected =
-            "█▀▀▀▀▀█ ▀█▀█▀ █▀▀▀▀▀█\n" .
-            "█ ███ █  ██▄  █ ███ █\n" .
-            "█ ▀▀▀ █   ▀▄█ █ ▀▀▀ █\n" .
-            "▀▀▀▀▀▀▀ █▄█▄█ ▀▀▀▀▀▀▀\n" .
-            "▀▀ ██ ▀  ██ █ █ ▄▄  ▀\n" .
-            " ▀▀▀▀▀▀▀▀ █▄ ▀▀ ▀ ▄▀█\n" .
-            " ▀▀  ▀▀▀▄ █▄▄ ▀  █ ▄▀\n" .
-            "█▀▀▀▀▀█  ▀█▄██▀▀▀█▄  \n" .
-            "█ ███ █ ██ ██ ▀█ █▄▀▀\n" .
-            "█ ▀▀▀ █ ▄▄█  ▄█▄▀█▄██\n" .
-            "▀▀▀▀▀▀▀ ▀▀▀▀   ▀▀    \n"
-        ;
-
-        $qrCode = Encoder::encode(
-            $content,
-            new ErrorCorrectionLevel(ErrorCorrectionLevel::L),
-            Encoder::DEFAULT_BYTE_MODE_ECODING
-        );
-        $this->renderer->setMargin(0);
-        $this->renderer->setCompact(true);
-        $this->assertEquals(0, $this->renderer->getMargin());
-        $this->assertEquals(true, $this->renderer->getCompact());
         $this->assertEquals($expected, $this->renderer->render($qrCode));
     }
 
@@ -205,22 +147,130 @@ class PlainTest extends TestCase
         $this->assertEquals($expected, $this->renderer->render($qrCode));
     }
 
+    public function testBaseCompactRender()
+    {
+        $content = 'foobar';
+        $expected =
+            " ▄▄▄▄▄▄▄ ▄▄▄▄▄ ▄▄▄▄▄▄▄ \n" .
+            " █ ▄▄▄ █  █▄▀  █ ▄▄▄ █ \n" .
+            " █ ███ █  ▀█▀▄ █ ███ █ \n" .
+            " █▄▄▄▄▄█ ▄ ▄▀█ █▄▄▄▄▄█ \n" .
+            " ▄▄ ▄▄ ▄ ▀██▀█ ▄     ▄ \n" .
+            "  ▄▄██▄▄▄▄▀█ ▀▄█ █▀ ▄▄ \n" .
+            "  ▄▄  ▄▄▄  █▀  ▄  ▄▀ █ \n" .
+            " ▄▄▄▄▄▄▄ ▀▄█▀█▄▄▄▄█ ▀  \n" .
+            " █ ▄▄▄ █ ▄▄▀██▀▄▄ █▀▄▄ \n" .
+            " █ ███ █ ▀▀▄▀▀ ▄▀▄█▀▄▄ \n" .
+            " █▄▄▄▄▄█ ███▄ ▀▀█▄▀▀▀▀ \n" .
+            "                       \n"
+        ;
+
+        $qrCode = Encoder::encode(
+            $content,
+            new ErrorCorrectionLevel(ErrorCorrectionLevel::L),
+            Encoder::DEFAULT_BYTE_MODE_ECODING
+        );
+        $this->renderer->setCompact(true);
+        $this->assertEquals(true, $this->renderer->getCompact());
+        $this->assertEquals($expected, $this->renderer->render($qrCode));
+    }
+
+    public function testBaseCompactRenderNoMargins()
+    {
+        $content = 'foobar';
+        $expected =
+            "█▀▀▀▀▀█ ▀█▀█▀ █▀▀▀▀▀█\n" .
+            "█ ███ █  ██▄  █ ███ █\n" .
+            "█ ▀▀▀ █   ▀▄█ █ ▀▀▀ █\n" .
+            "▀▀▀▀▀▀▀ █▄█▄█ ▀▀▀▀▀▀▀\n" .
+            "▀▀ ██ ▀  ██ █ █ ▄▄  ▀\n" .
+            " ▀▀▀▀▀▀▀▀ █▄ ▀▀ ▀ ▄▀█\n" .
+            " ▀▀  ▀▀▀▄ █▄▄ ▀  █ ▄▀\n" .
+            "█▀▀▀▀▀█  ▀█▄██▀▀▀█▄  \n" .
+            "█ ███ █ ██ ██ ▀█ █▄▀▀\n" .
+            "█ ▀▀▀ █ ▄▄█  ▄█▄▀█▄██\n" .
+            "▀▀▀▀▀▀▀ ▀▀▀▀   ▀▀    \n"
+        ;
+
+        $qrCode = Encoder::encode(
+            $content,
+            new ErrorCorrectionLevel(ErrorCorrectionLevel::L),
+            Encoder::DEFAULT_BYTE_MODE_ECODING
+        );
+        $this->renderer->setMargin(0);
+        $this->renderer->setCompact(true);
+        $this->assertEquals(0, $this->renderer->getMargin());
+        $this->assertEquals(true, $this->renderer->getCompact());
+        $this->assertEquals($expected, $this->renderer->render($qrCode));
+    }
+
+    public function testBaseCompactRenderWithMargins()
+    {
+        $content = 'foobar';
+        $expected2Margin =
+            "                         \n" .
+            "  █▀▀▀▀▀█ ▀█▀█▀ █▀▀▀▀▀█  \n" .
+            "  █ ███ █  ██▄  █ ███ █  \n" .
+            "  █ ▀▀▀ █   ▀▄█ █ ▀▀▀ █  \n" .
+            "  ▀▀▀▀▀▀▀ █▄█▄█ ▀▀▀▀▀▀▀  \n" .
+            "  ▀▀ ██ ▀  ██ █ █ ▄▄  ▀  \n" .
+            "   ▀▀▀▀▀▀▀▀ █▄ ▀▀ ▀ ▄▀█  \n" .
+            "   ▀▀  ▀▀▀▄ █▄▄ ▀  █ ▄▀  \n" .
+            "  █▀▀▀▀▀█  ▀█▄██▀▀▀█▄    \n" .
+            "  █ ███ █ ██ ██ ▀█ █▄▀▀  \n" .
+            "  █ ▀▀▀ █ ▄▄█  ▄█▄▀█▄██  \n" .
+            "  ▀▀▀▀▀▀▀ ▀▀▀▀   ▀▀      \n" .
+            "                         \n"
+        ;
+
+        $expected3Margin =
+            "                           \n" .
+            "   ▄▄▄▄▄▄▄ ▄▄▄▄▄ ▄▄▄▄▄▄▄   \n" .
+            "   █ ▄▄▄ █  █▄▀  █ ▄▄▄ █   \n" .
+            "   █ ███ █  ▀█▀▄ █ ███ █   \n" .
+            "   █▄▄▄▄▄█ ▄ ▄▀█ █▄▄▄▄▄█   \n" .
+            "   ▄▄ ▄▄ ▄ ▀██▀█ ▄     ▄   \n" .
+            "    ▄▄██▄▄▄▄▀█ ▀▄█ █▀ ▄▄   \n" .
+            "    ▄▄  ▄▄▄  █▀  ▄  ▄▀ █   \n" .
+            "   ▄▄▄▄▄▄▄ ▀▄█▀█▄▄▄▄█ ▀    \n" .
+            "   █ ▄▄▄ █ ▄▄▀██▀▄▄ █▀▄▄   \n" .
+            "   █ ███ █ ▀▀▄▀▀ ▄▀▄█▀▄▄   \n" .
+            "   █▄▄▄▄▄█ ███▄ ▀▀█▄▀▀▀▀   \n" .
+            "                           \n" .
+            "                           \n"
+        ;
+
+        $qrCode = Encoder::encode(
+            $content,
+            new ErrorCorrectionLevel(ErrorCorrectionLevel::L),
+            Encoder::DEFAULT_BYTE_MODE_ECODING
+        );
+        $this->renderer->setMargin(2);
+        $this->renderer->setCompact(true);
+        $this->assertEquals(2, $this->renderer->getMargin());
+        $this->assertEquals(true, $this->renderer->getCompact());
+        $this->assertEquals($expected2Margin, $this->renderer->render($qrCode));
+
+        $this->renderer->setMargin(3);
+        $this->assertEquals(3, $this->renderer->getMargin());
+        $this->assertEquals($expected3Margin, $this->renderer->render($qrCode));
+    }
+
     public function testBaseCompactRenderCustomChar()
     {
         $content = 'foobar';
         $expected =
-            ".......................\n" .
-            ".#¯¯¯¯¯#.¯#¯#¯.#¯¯¯¯¯#.\n" .
-            ".#.###.#..##_..#.###.#.\n" .
-            ".#.¯¯¯.#...¯_#.#.¯¯¯.#.\n" .
-            ".¯¯¯¯¯¯¯.#_#_#.¯¯¯¯¯¯¯.\n" .
-            ".¯¯.##.¯..##.#.#.__..¯.\n" .
-            "..¯¯¯¯¯¯¯¯.#_.¯¯.¯._¯#.\n" .
-            "..¯¯..¯¯¯_.#__.¯..#._¯.\n" .
-            ".#¯¯¯¯¯#..¯#_##¯¯¯#_...\n" .
-            ".#.###.#.##.##.¯#.#_¯¯.\n" .
-            ".#.¯¯¯.#.__#.._#_¯#_##.\n" .
-            ".¯¯¯¯¯¯¯.¯¯¯¯...¯¯.....\n" .
+            "._______._____._______.\n" .
+            ".#.___.#..#_¯..#.___.#.\n" .
+            ".#.###.#..¯#¯_.#.###.#.\n" .
+            ".#_____#._._¯#.#_____#.\n" .
+            ".__.__._.¯##¯#._....._.\n" .
+            "..__##____¯#.¯_#.#¯.__.\n" .
+            "..__..___..#¯.._.._¯.#.\n" .
+            "._______.¯_#¯#____#.¯..\n" .
+            ".#.___.#.__¯##¯__.#¯__.\n" .
+            ".#.###.#.¯¯_¯¯._¯_#¯__.\n" .
+            ".#_____#.###_.¯¯#_¯¯¯¯.\n" .
             ".......................\n"
         ;
 

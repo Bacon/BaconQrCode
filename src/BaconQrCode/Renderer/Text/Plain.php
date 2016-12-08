@@ -209,25 +209,28 @@ class Plain implements RendererInterface
         $width  = $matrix->getWidth();
         $margin = str_repeat($this->emptyBlock, $this->margin);
 
-        // Top margin
-        for ($x = 0; $x < $this->margin; $x++) {
-            $result .= str_repeat($this->emptyBlock, $width + 2 * $this->margin)."\n";
-        }
-
         // Body
         $array = $matrix->getArray();
 
         if ($this->compact) {
-            $len = $array->getSize();
-            $size = $array[0]->getSize();
+            // Convert SplFixedArray to native array.
+            $array = $array->toArray();
+            $size = sizeof($array[0]);
+            $emptyRow = array_fill(0, $size, 0);
+
+            if ($this->margin > 0) {
+                for ($i = 0; $i < $this->margin; $i++) {
+                    array_unshift($array, $emptyRow);
+                    $array[] = $emptyRow;
+                }
+            }
+
+            $len = sizeof($array);
 
             // If not an even rows, fill an empty blocks row
             if ($len % 2 !== 0) {
-                $array->setSize($len + 1);
-                for ($i = 0; $i < $size; $i++) {
-                    $array[$len][$i] = 0;
-                }
                 $len++;
+                $array[] = $emptyRow;
             }
 
             for ($i = 0; $i < $len; $i++) {
@@ -250,6 +253,10 @@ class Plain implements RendererInterface
                 $result .= "\n";
             }
         } else {
+            // Top margin
+            for ($x = 0; $x < $this->margin; $x++) {
+                $result .= str_repeat($this->emptyBlock, $width + 2 * $this->margin)."\n";
+            }
             foreach ($array as $row) {
                 $result .= $margin; // left margin
                 foreach ($row as $byte) {
@@ -258,11 +265,11 @@ class Plain implements RendererInterface
                 $result .= $margin; // right margin
                 $result .= "\n";
             }
-        }
 
-        // Bottom margin
-        for ($x = 0; $x < $this->margin; $x++) {
-            $result .= str_repeat($this->emptyBlock, $width + 2 * $this->margin)."\n";
+            // Bottom margin
+            for ($x = 0; $x < $this->margin; $x++) {
+                $result .= str_repeat($this->emptyBlock, $width + 2 * $this->margin)."\n";
+            }
         }
 
         return $result;
