@@ -227,10 +227,18 @@ class Plain implements RendererInterface
 
             $len = sizeof($array);
 
-            // If not an even rows, fill an empty blocks row
+            // In compact mode, render must be even rows.
             if ($len % 2 !== 0) {
-                $len++;
-                $array[] = $emptyRow;
+                if ($this->margin > 0) {
+                    // Because render last row will be end with newline("\n"), so if
+                    // also add an empty blocks row, it looks not 'compact'.
+                    $len--;
+                    array_pop($array);
+                } else {
+                    // If there are zero margin, fill an empty blocks row.
+                    $len++;
+                    $array[] = $emptyRow;
+                }
             }
 
             for ($i = 0; $i < $len; $i++) {
