@@ -32,263 +32,220 @@ class PlainTest extends TestCase
         $this->writer = new Writer($this->renderer);
     }
 
-    public function testBasicRender()
+    public function additionProvider()
     {
-        $content = 'foobar';
-        $expected =
-            "                       \n" .
-            " ███████ █████ ███████ \n" .
-            " █     █  █ █  █     █ \n" .
-            " █ ███ █  ██   █ ███ █ \n" .
-            " █ ███ █  ███  █ ███ █ \n" .
-            " █ ███ █   █ █ █ ███ █ \n" .
-            " █     █    ██ █     █ \n" .
-            " ███████ █ █ █ ███████ \n" .
-            "         █████         \n" .
-            " ██ ██ █  ██ █ █     █ \n" .
-            "    ██    ██ █ █ ██    \n" .
-            "  ████████ █  ██ █  ██ \n" .
-            "           ██      █ █ \n" .
-            "  ██  ███  █   █  █  █ \n" .
-            "         █ ███    █ █  \n" .
-            " ███████  ██ ██████    \n" .
-            " █     █   ████   ██   \n" .
-            " █ ███ █ ██ ██ ██ █ ██ \n" .
-            " █ ███ █ ██ ██  █ ██   \n" .
-            " █ ███ █   █   █ ██ ██ \n" .
-            " █     █ ███  ███ ████ \n" .
-            " ███████ ████   ██     \n" .
-            "                       \n"
-        ;
-
-        $qrCode = Encoder::encode(
-            $content,
-            new ErrorCorrectionLevel(ErrorCorrectionLevel::L),
-            Encoder::DEFAULT_BYTE_MODE_ECODING
+        return array(
+            array(
+                "                       \n" .
+                " ███████ █████ ███████ \n" .
+                " █     █  █ █  █     █ \n" .
+                " █ ███ █  ██   █ ███ █ \n" .
+                " █ ███ █  ███  █ ███ █ \n" .
+                " █ ███ █   █ █ █ ███ █ \n" .
+                " █     █    ██ █     █ \n" .
+                " ███████ █ █ █ ███████ \n" .
+                "         █████         \n" .
+                " ██ ██ █  ██ █ █     █ \n" .
+                "    ██    ██ █ █ ██    \n" .
+                "  ████████ █  ██ █  ██ \n" .
+                "           ██      █ █ \n" .
+                "  ██  ███  █   █  █  █ \n" .
+                "         █ ███    █ █  \n" .
+                " ███████  ██ ██████    \n" .
+                " █     █   ████   ██   \n" .
+                " █ ███ █ ██ ██ ██ █ ██ \n" .
+                " █ ███ █ ██ ██  █ ██   \n" .
+                " █ ███ █   █   █ ██ ██ \n" .
+                " █     █ ███  ███ ████ \n" .
+                " ███████ ████   ██     \n" .
+                "                       \n"
+            ),
+            array(
+                "███████ █████ ███████\n" .
+                "█     █  █ █  █     █\n" .
+                "█ ███ █  ██   █ ███ █\n" .
+                "█ ███ █  ███  █ ███ █\n" .
+                "█ ███ █   █ █ █ ███ █\n" .
+                "█     █    ██ █     █\n" .
+                "███████ █ █ █ ███████\n" .
+                "        █████        \n" .
+                "██ ██ █  ██ █ █     █\n" .
+                "   ██    ██ █ █ ██   \n" .
+                " ████████ █  ██ █  ██\n" .
+                "          ██      █ █\n" .
+                " ██  ███  █   █  █  █\n" .
+                "        █ ███    █ █ \n" .
+                "███████  ██ ██████   \n" .
+                "█     █   ████   ██  \n" .
+                "█ ███ █ ██ ██ ██ █ ██\n" .
+                "█ ███ █ ██ ██  █ ██  \n" .
+                "█ ███ █   █   █ ██ ██\n" .
+                "█     █ ███  ███ ████\n" .
+                "███████ ████   ██    \n",
+                false,
+                0
+            ),
+            array(
+                "-----------------------\n" .
+                "-#######-#####-#######-\n" .
+                "-#-----#--#-#--#-----#-\n" .
+                "-#-###-#--##---#-###-#-\n" .
+                "-#-###-#--###--#-###-#-\n" .
+                "-#-###-#---#-#-#-###-#-\n" .
+                "-#-----#----##-#-----#-\n" .
+                "-#######-#-#-#-#######-\n" .
+                "---------#####---------\n" .
+                "-##-##-#--##-#-#-----#-\n" .
+                "----##----##-#-#-##----\n" .
+                "--########-#--##-#--##-\n" .
+                "-----------##------#-#-\n" .
+                "--##--###--#---#--#--#-\n" .
+                "---------#-###----#-#--\n" .
+                "-#######--##-######----\n" .
+                "-#-----#---####---##---\n" .
+                "-#-###-#-##-##-##-#-##-\n" .
+                "-#-###-#-##-##--#-##---\n" .
+                "-#-###-#---#---#-##-##-\n" .
+                "-#-----#-###--###-####-\n" .
+                "-#######-####---##-----\n" .
+                "-----------------------\n",
+                false,
+                1,
+                array(
+                    'fullBlock' => '#',
+                    'emptyBlock' => '-'
+                )
+            ),
+            array(
+                " ▄▄▄▄▄▄▄ ▄▄▄▄▄ ▄▄▄▄▄▄▄ \n" .
+                " █ ▄▄▄ █  █▄▀  █ ▄▄▄ █ \n" .
+                " █ ███ █  ▀█▀▄ █ ███ █ \n" .
+                " █▄▄▄▄▄█ ▄ ▄▀█ █▄▄▄▄▄█ \n" .
+                " ▄▄ ▄▄ ▄ ▀██▀█ ▄     ▄ \n" .
+                "  ▄▄██▄▄▄▄▀█ ▀▄█ █▀ ▄▄ \n" .
+                "  ▄▄  ▄▄▄  █▀  ▄  ▄▀ █ \n" .
+                " ▄▄▄▄▄▄▄ ▀▄█▀█▄▄▄▄█ ▀  \n" .
+                " █ ▄▄▄ █ ▄▄▀██▀▄▄ █▀▄▄ \n" .
+                " █ ███ █ ▀▀▄▀▀ ▄▀▄█▀▄▄ \n" .
+                " █▄▄▄▄▄█ ███▄ ▀▀█▄▀▀▀▀ \n",
+                true
+            ),
+            array(
+                "█▀▀▀▀▀█ ▀█▀█▀ █▀▀▀▀▀█\n" .
+                "█ ███ █  ██▄  █ ███ █\n" .
+                "█ ▀▀▀ █   ▀▄█ █ ▀▀▀ █\n" .
+                "▀▀▀▀▀▀▀ █▄█▄█ ▀▀▀▀▀▀▀\n" .
+                "▀▀ ██ ▀  ██ █ █ ▄▄  ▀\n" .
+                " ▀▀▀▀▀▀▀▀ █▄ ▀▀ ▀ ▄▀█\n" .
+                " ▀▀  ▀▀▀▄ █▄▄ ▀  █ ▄▀\n" .
+                "█▀▀▀▀▀█  ▀█▄██▀▀▀█▄  \n" .
+                "█ ███ █ ██ ██ ▀█ █▄▀▀\n" .
+                "█ ▀▀▀ █ ▄▄█  ▄█▄▀█▄██\n" .
+                "▀▀▀▀▀▀▀ ▀▀▀▀   ▀▀    \n",
+                true,
+                0
+            ),
+            array(
+                "                         \n" .
+                "  █▀▀▀▀▀█ ▀█▀█▀ █▀▀▀▀▀█  \n" .
+                "  █ ███ █  ██▄  █ ███ █  \n" .
+                "  █ ▀▀▀ █   ▀▄█ █ ▀▀▀ █  \n" .
+                "  ▀▀▀▀▀▀▀ █▄█▄█ ▀▀▀▀▀▀▀  \n" .
+                "  ▀▀ ██ ▀  ██ █ █ ▄▄  ▀  \n" .
+                "   ▀▀▀▀▀▀▀▀ █▄ ▀▀ ▀ ▄▀█  \n" .
+                "   ▀▀  ▀▀▀▄ █▄▄ ▀  █ ▄▀  \n" .
+                "  █▀▀▀▀▀█  ▀█▄██▀▀▀█▄    \n" .
+                "  █ ███ █ ██ ██ ▀█ █▄▀▀  \n" .
+                "  █ ▀▀▀ █ ▄▄█  ▄█▄▀█▄██  \n" .
+                "  ▀▀▀▀▀▀▀ ▀▀▀▀   ▀▀      \n",
+                true,
+                2
+            ),
+            array(
+                "                           \n" .
+                "   ▄▄▄▄▄▄▄ ▄▄▄▄▄ ▄▄▄▄▄▄▄   \n" .
+                "   █ ▄▄▄ █  █▄▀  █ ▄▄▄ █   \n" .
+                "   █ ███ █  ▀█▀▄ █ ███ █   \n" .
+                "   █▄▄▄▄▄█ ▄ ▄▀█ █▄▄▄▄▄█   \n" .
+                "   ▄▄ ▄▄ ▄ ▀██▀█ ▄     ▄   \n" .
+                "    ▄▄██▄▄▄▄▀█ ▀▄█ █▀ ▄▄   \n" .
+                "    ▄▄  ▄▄▄  █▀  ▄  ▄▀ █   \n" .
+                "   ▄▄▄▄▄▄▄ ▀▄█▀█▄▄▄▄█ ▀    \n" .
+                "   █ ▄▄▄ █ ▄▄▀██▀▄▄ █▀▄▄   \n" .
+                "   █ ███ █ ▀▀▄▀▀ ▄▀▄█▀▄▄   \n" .
+                "   █▄▄▄▄▄█ ███▄ ▀▀█▄▀▀▀▀   \n" .
+                "                           \n",
+                true,
+                3
+            ),
+            array(
+                "._______._____._______.\n" .
+                ".#.___.#..#_¯..#.___.#.\n" .
+                ".#.###.#..¯#¯_.#.###.#.\n" .
+                ".#_____#._._¯#.#_____#.\n" .
+                ".__.__._.¯##¯#._....._.\n" .
+                "..__##____¯#.¯_#.#¯.__.\n" .
+                "..__..___..#¯.._.._¯.#.\n" .
+                "._______.¯_#¯#____#.¯..\n" .
+                ".#.___.#.__¯##¯__.#¯__.\n" .
+                ".#.###.#.¯¯_¯¯._¯_#¯__.\n" .
+                ".#_____#.###_.¯¯#_¯¯¯¯.\n",
+                true,
+                1,
+                array(
+                    'fullBlock' => '#',
+                    'emptyBlock' => '.',
+                    'upplerHalfBlock' => '¯',
+                    'lowerHalfBlock' => '_'
+                )
+            ),
         );
-        $this->assertEquals($expected, $this->renderer->render($qrCode));
     }
 
-    public function testBasicRenderNoMargins()
-    {
-        $content = 'foobar';
-        $expected =
-            "███████ █████ ███████\n" .
-            "█     █  █ █  █     █\n" .
-            "█ ███ █  ██   █ ███ █\n" .
-            "█ ███ █  ███  █ ███ █\n" .
-            "█ ███ █   █ █ █ ███ █\n" .
-            "█     █    ██ █     █\n" .
-            "███████ █ █ █ ███████\n" .
-            "        █████        \n" .
-            "██ ██ █  ██ █ █     █\n" .
-            "   ██    ██ █ █ ██   \n" .
-            " ████████ █  ██ █  ██\n" .
-            "          ██      █ █\n" .
-            " ██  ███  █   █  █  █\n" .
-            "        █ ███    █ █ \n" .
-            "███████  ██ ██████   \n" .
-            "█     █   ████   ██  \n" .
-            "█ ███ █ ██ ██ ██ █ ██\n" .
-            "█ ███ █ ██ ██  █ ██  \n" .
-            "█ ███ █   █   █ ██ ██\n" .
-            "█     █ ███  ███ ████\n" .
-            "███████ ████   ██    \n"
-        ;
-
+    /**
+     * @dataProvider additionProvider
+     */
+    public function testTextRender(
+        $expected,
+        $compact = false,
+        $margin = 1,
+        array $blocks = array(),
+        $content = 'foobar'
+    ) {
         $qrCode = Encoder::encode(
             $content,
             new ErrorCorrectionLevel(ErrorCorrectionLevel::L),
             Encoder::DEFAULT_BYTE_MODE_ECODING
         );
-        $this->renderer->setMargin(0);
-        $this->assertEquals(0, $this->renderer->getMargin());
-        $this->assertEquals($expected, $this->renderer->render($qrCode));
-    }
 
-    public function testBasicRenderCustomChar()
-    {
-        $content = 'foobar';
-        $expected =
-            "-----------------------\n" .
-            "-#######-#####-#######-\n" .
-            "-#-----#--#-#--#-----#-\n" .
-            "-#-###-#--##---#-###-#-\n" .
-            "-#-###-#--###--#-###-#-\n" .
-            "-#-###-#---#-#-#-###-#-\n" .
-            "-#-----#----##-#-----#-\n" .
-            "-#######-#-#-#-#######-\n" .
-            "---------#####---------\n" .
-            "-##-##-#--##-#-#-----#-\n" .
-            "----##----##-#-#-##----\n" .
-            "--########-#--##-#--##-\n" .
-            "-----------##------#-#-\n" .
-            "--##--###--#---#--#--#-\n" .
-            "---------#-###----#-#--\n" .
-            "-#######--##-######----\n" .
-            "-#-----#---####---##---\n" .
-            "-#-###-#-##-##-##-#-##-\n" .
-            "-#-###-#-##-##--#-##---\n" .
-            "-#-###-#---#---#-##-##-\n" .
-            "-#-----#-###--###-####-\n" .
-            "-#######-####---##-----\n" .
-            "-----------------------\n"
-        ;
+        $this->renderer->setCompact($compact);
+        $this->assertEquals((boolean)$compact, $this->renderer->getCompact());
 
-        $qrCode = Encoder::encode(
-            $content,
-            new ErrorCorrectionLevel(ErrorCorrectionLevel::L),
-            Encoder::DEFAULT_BYTE_MODE_ECODING
-        );
-        $this->renderer->setFullBlock('#');
-        $this->renderer->setEmptyBlock('-');
-        $this->assertEquals('#', $this->renderer->getFullBlock());
-        $this->assertEquals('-', $this->renderer->getEmptyBlock());
-        $this->assertEquals($expected, $this->renderer->render($qrCode));
-    }
+        $this->renderer->setMargin($margin);
+        $this->assertEquals($margin, $this->renderer->getMargin());
 
-    public function testBaseCompactRender()
-    {
-        $content = 'foobar';
-        $expected =
-            " ▄▄▄▄▄▄▄ ▄▄▄▄▄ ▄▄▄▄▄▄▄ \n" .
-            " █ ▄▄▄ █  █▄▀  █ ▄▄▄ █ \n" .
-            " █ ███ █  ▀█▀▄ █ ███ █ \n" .
-            " █▄▄▄▄▄█ ▄ ▄▀█ █▄▄▄▄▄█ \n" .
-            " ▄▄ ▄▄ ▄ ▀██▀█ ▄     ▄ \n" .
-            "  ▄▄██▄▄▄▄▀█ ▀▄█ █▀ ▄▄ \n" .
-            "  ▄▄  ▄▄▄  █▀  ▄  ▄▀ █ \n" .
-            " ▄▄▄▄▄▄▄ ▀▄█▀█▄▄▄▄█ ▀  \n" .
-            " █ ▄▄▄ █ ▄▄▀██▀▄▄ █▀▄▄ \n" .
-            " █ ███ █ ▀▀▄▀▀ ▄▀▄█▀▄▄ \n" .
-            " █▄▄▄▄▄█ ███▄ ▀▀█▄▀▀▀▀ \n" .
-            "                       \n"
-        ;
+        if (!empty($blocks)) {
+            if (isset($blocks['fullBlock'])) {
+                $this->renderer->setFullBlock($blocks['fullBlock']);
+                $this->assertEquals($blocks['fullBlock'], $this->renderer->getFullBlock());
+            }
 
-        $qrCode = Encoder::encode(
-            $content,
-            new ErrorCorrectionLevel(ErrorCorrectionLevel::L),
-            Encoder::DEFAULT_BYTE_MODE_ECODING
-        );
-        $this->renderer->setCompact(true);
-        $this->assertEquals(true, $this->renderer->getCompact());
-        $this->assertEquals($expected, $this->renderer->render($qrCode));
-    }
+            if (isset($blocks['emptyBlock'])) {
+                $this->renderer->setEmptyBlock($blocks['emptyBlock']);
+                $this->assertEquals($blocks['emptyBlock'], $this->renderer->getEmptyBlock());
+            }
 
-    public function testBaseCompactRenderNoMargins()
-    {
-        $content = 'foobar';
-        $expected =
-            "█▀▀▀▀▀█ ▀█▀█▀ █▀▀▀▀▀█\n" .
-            "█ ███ █  ██▄  █ ███ █\n" .
-            "█ ▀▀▀ █   ▀▄█ █ ▀▀▀ █\n" .
-            "▀▀▀▀▀▀▀ █▄█▄█ ▀▀▀▀▀▀▀\n" .
-            "▀▀ ██ ▀  ██ █ █ ▄▄  ▀\n" .
-            " ▀▀▀▀▀▀▀▀ █▄ ▀▀ ▀ ▄▀█\n" .
-            " ▀▀  ▀▀▀▄ █▄▄ ▀  █ ▄▀\n" .
-            "█▀▀▀▀▀█  ▀█▄██▀▀▀█▄  \n" .
-            "█ ███ █ ██ ██ ▀█ █▄▀▀\n" .
-            "█ ▀▀▀ █ ▄▄█  ▄█▄▀█▄██\n" .
-            "▀▀▀▀▀▀▀ ▀▀▀▀   ▀▀    \n"
-        ;
+            if (isset($blocks['upplerHalfBlock'])) {
+                $this->renderer->setUpperHalfBlock($blocks['upplerHalfBlock']);
+                $this->assertEquals($blocks['upplerHalfBlock'], $this->renderer->getUpperHalfBlock());
+            }
 
-        $qrCode = Encoder::encode(
-            $content,
-            new ErrorCorrectionLevel(ErrorCorrectionLevel::L),
-            Encoder::DEFAULT_BYTE_MODE_ECODING
-        );
-        $this->renderer->setMargin(0);
-        $this->renderer->setCompact(true);
-        $this->assertEquals(0, $this->renderer->getMargin());
-        $this->assertEquals(true, $this->renderer->getCompact());
-        $this->assertEquals($expected, $this->renderer->render($qrCode));
-    }
+            if (isset($blocks['lowerHalfBlock'])) {
+                $this->renderer->setLowerHalfBlock($blocks['lowerHalfBlock']);
+                $this->assertEquals($blocks['lowerHalfBlock'], $this->renderer->getLowerHalfBlock());
+            }
+        }
 
-    public function testBaseCompactRenderWithMargins()
-    {
-        $content = 'foobar';
-        $expected2Margin =
-            "                         \n" .
-            "  █▀▀▀▀▀█ ▀█▀█▀ █▀▀▀▀▀█  \n" .
-            "  █ ███ █  ██▄  █ ███ █  \n" .
-            "  █ ▀▀▀ █   ▀▄█ █ ▀▀▀ █  \n" .
-            "  ▀▀▀▀▀▀▀ █▄█▄█ ▀▀▀▀▀▀▀  \n" .
-            "  ▀▀ ██ ▀  ██ █ █ ▄▄  ▀  \n" .
-            "   ▀▀▀▀▀▀▀▀ █▄ ▀▀ ▀ ▄▀█  \n" .
-            "   ▀▀  ▀▀▀▄ █▄▄ ▀  █ ▄▀  \n" .
-            "  █▀▀▀▀▀█  ▀█▄██▀▀▀█▄    \n" .
-            "  █ ███ █ ██ ██ ▀█ █▄▀▀  \n" .
-            "  █ ▀▀▀ █ ▄▄█  ▄█▄▀█▄██  \n" .
-            "  ▀▀▀▀▀▀▀ ▀▀▀▀   ▀▀      \n" .
-            "                         \n"
-        ;
-
-        $expected3Margin =
-            "                           \n" .
-            "   ▄▄▄▄▄▄▄ ▄▄▄▄▄ ▄▄▄▄▄▄▄   \n" .
-            "   █ ▄▄▄ █  █▄▀  █ ▄▄▄ █   \n" .
-            "   █ ███ █  ▀█▀▄ █ ███ █   \n" .
-            "   █▄▄▄▄▄█ ▄ ▄▀█ █▄▄▄▄▄█   \n" .
-            "   ▄▄ ▄▄ ▄ ▀██▀█ ▄     ▄   \n" .
-            "    ▄▄██▄▄▄▄▀█ ▀▄█ █▀ ▄▄   \n" .
-            "    ▄▄  ▄▄▄  █▀  ▄  ▄▀ █   \n" .
-            "   ▄▄▄▄▄▄▄ ▀▄█▀█▄▄▄▄█ ▀    \n" .
-            "   █ ▄▄▄ █ ▄▄▀██▀▄▄ █▀▄▄   \n" .
-            "   █ ███ █ ▀▀▄▀▀ ▄▀▄█▀▄▄   \n" .
-            "   █▄▄▄▄▄█ ███▄ ▀▀█▄▀▀▀▀   \n" .
-            "                           \n" .
-            "                           \n"
-        ;
-
-        $qrCode = Encoder::encode(
-            $content,
-            new ErrorCorrectionLevel(ErrorCorrectionLevel::L),
-            Encoder::DEFAULT_BYTE_MODE_ECODING
-        );
-        $this->renderer->setMargin(2);
-        $this->renderer->setCompact(true);
-        $this->assertEquals(2, $this->renderer->getMargin());
-        $this->assertEquals(true, $this->renderer->getCompact());
-        $this->assertEquals($expected2Margin, $this->renderer->render($qrCode));
-
-        $this->renderer->setMargin(3);
-        $this->assertEquals(3, $this->renderer->getMargin());
-        $this->assertEquals($expected3Margin, $this->renderer->render($qrCode));
-    }
-
-    public function testBaseCompactRenderCustomChar()
-    {
-        $content = 'foobar';
-        $expected =
-            "._______._____._______.\n" .
-            ".#.___.#..#_¯..#.___.#.\n" .
-            ".#.###.#..¯#¯_.#.###.#.\n" .
-            ".#_____#._._¯#.#_____#.\n" .
-            ".__.__._.¯##¯#._....._.\n" .
-            "..__##____¯#.¯_#.#¯.__.\n" .
-            "..__..___..#¯.._.._¯.#.\n" .
-            "._______.¯_#¯#____#.¯..\n" .
-            ".#.___.#.__¯##¯__.#¯__.\n" .
-            ".#.###.#.¯¯_¯¯._¯_#¯__.\n" .
-            ".#_____#.###_.¯¯#_¯¯¯¯.\n" .
-            ".......................\n"
-        ;
-
-        $qrCode = Encoder::encode(
-            $content,
-            new ErrorCorrectionLevel(ErrorCorrectionLevel::L),
-            Encoder::DEFAULT_BYTE_MODE_ECODING
-        );
-        $this->renderer->setCompact(true);
-        $this->renderer->setFullBlock('#');
-        $this->renderer->setEmptyBlock('.');
-        $this->renderer->setUpperHalfBlock('¯');
-        $this->renderer->setLowerHalfBlock('_');
-        $this->assertEquals(true, $this->renderer->getCompact());
-        $this->assertEquals('#', $this->renderer->getFullBlock());
-        $this->assertEquals('.', $this->renderer->getEmptyBlock());
-        $this->assertEquals('¯', $this->renderer->getUpperHalfBlock());
-        $this->assertEquals('_', $this->renderer->getLowerHalfBlock());
         $this->assertEquals($expected, $this->renderer->render($qrCode));
     }
 }
