@@ -9,7 +9,7 @@
 
 namespace BaconQrCode\Encoder;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase as TestCase;
 
 class MaskUtilTest extends TestCase
 {

@@ -12,7 +12,7 @@ namespace BaconQrCode\Encoder;
 use BaconQrCode\Common\BitArray;
 use BaconQrCode\Common\ErrorCorrectionLevel;
 use BaconQrCode\Common\Version;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase as TestCase;
 use ReflectionClass;
 use ReflectionMethod;
 
