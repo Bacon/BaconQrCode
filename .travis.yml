@@ -9,6 +9,10 @@ php:
   - nightly
   - hhvm
 
+matrix:
+  allow_failures:
+    - php: hhvm
+
 install:
   - travis_retry composer install --no-interaction
   - composer info -i
