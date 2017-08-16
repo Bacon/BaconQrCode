@@ -628,7 +628,9 @@ class Encoder
             throw new Exception\WriterException('Could not encode content to ' . $encoding);
         }
 
-        $length = strlen($bytes);
+        $length = function_exists('mb_strlen')
+            ? mb_strlen($bytes,'8bit')
+            : strlen($bytes);
 
         for ($i = 0; $i < $length; $i++) {
             $bits->appendBits(ord($bytes[$i]), 8);
