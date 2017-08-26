@@ -100,6 +100,6 @@ class Writer
         $encoding = Encoder::DEFAULT_BYTE_MODE_ECODING,
         $ecLevel = ErrorCorrectionLevel::L
     ) {
-        file_put_contents($filename, $this->writeString($content, $encoding, $ecLevel));
+        return file_put_contents($filename, $this->writeString($content, $encoding, $ecLevel));
     }
 }
