@@ -8,7 +8,8 @@
         "ext-iconv": "*"
     },
     "suggest": {
-        "ext-gd": "to generate QR code images"
+        "ext-gd": "to generate QR code images",
+        "ext-imagick": "to generate JPG-based QR code images"
     },
     "authors": [
         {
