@@ -4,7 +4,7 @@
     "license" : "BSD-2-Clause",
     "homepage": "https://github.com/Bacon/BaconQrCode",
     "require": {
-        "php": ">=5.3.3",
+        "php": "^5.4",
         "ext-iconv": "*"
     },
     "suggest": {
