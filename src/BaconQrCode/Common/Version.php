@@ -343,7 +343,7 @@ class Version
                     new EcBlocks(20, new EcBlock(2, 78)),
                     new EcBlocks(18, new EcBlock(4, 31)),
                     new EcBlocks(18, new EcBlock(2, 14), new EcBlock(4, 15)),
-                    new EcBlocks(26, new EcBlock(4, 13)),
+                    new EcBlocks(26, new EcBlock(4, 13), new EcBlock(1, 14)),
                 );
                 break;
 
