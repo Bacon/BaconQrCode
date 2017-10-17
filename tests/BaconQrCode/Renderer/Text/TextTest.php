@@ -12,7 +12,7 @@ namespace BaconQrCode\Encoder;
 use BaconQrCode\Common\ErrorCorrectionLevel;
 use BaconQrCode\Renderer\Text\Plain;
 use BaconQrCode\Writer;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase as TestCase;
 
 class PlainTest extends TestCase
 {

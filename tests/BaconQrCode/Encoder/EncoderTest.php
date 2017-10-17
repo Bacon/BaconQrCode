@@ -13,7 +13,7 @@ use BaconQrCode\Common\BitArray;
 use BaconQrCode\Common\ErrorCorrectionLevel;
 use BaconQrCode\Common\Mode;
 use BaconQrCode\Common\Version;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase as TestCase;
 use ReflectionClass;
 use ReflectionMethod;
 use SplFixedArray;
@@ -212,6 +212,10 @@ class EncoderTest extends TestCase
         $this->assertEquals(' ..X..... ....', $bits->__toString());
     }
 
+    /**
+     * @expectedException BaconQrCode\Exception\WriterException
+     * @expectedExceptionMessage Invalid alphanumeric code
+     */
     public function testAppendBytes()
     {
         // Should use appendNumericBytes.
@@ -262,11 +266,6 @@ class EncoderTest extends TestCase
         );
         $this->assertEquals(' .XX.XX.. XXXXX', $bits->__toString());
 
-        // Lower letters such as 'a' cannot be encoded in alphanumeric mode.
-        $this->setExpectedException(
-            'BaconQrCode\Exception\WriterException',
-            'Invalid alphanumeric code'
-        );
         $this->methods['appendBytes']->invoke(
             null,
             "a",
@@ -396,6 +395,10 @@ class EncoderTest extends TestCase
         $this->assertEquals('', $bits->__toString());
     }
 
+    /**
+     * @expectedException BaconQrCode\Exception\WriterException
+     * @expectedExceptionMessage Invalid alphanumeric code
+     */
     public function testAppendAlphanumericBytes()
     {
         $bits = new BitArray();
@@ -416,7 +419,6 @@ class EncoderTest extends TestCase
         $this->assertEquals('', $bits->__toString());
 
         // Invalid data
-        $this->setExpectedException('BaconQrCode\Exception\WriterException', 'Invalid alphanumeric code');
         $bits = new BitArray();
         $this->methods['appendAlphanumericBytes']->invoke(null, 'abc', $bits);
     }
