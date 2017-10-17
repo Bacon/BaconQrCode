@@ -40,6 +40,9 @@ class Png extends AbstractRenderer
     public function init()
     {
         $this->image = imagecreatetruecolor($this->finalWidth, $this->finalHeight);
+
+        imagefill($this->image, 0, 0, imagecolorallocatealpha($this->image, 0, 0, 0, 127));
+        imagesavealpha($this->image, true);
     }
 
     /**
