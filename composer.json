@@ -19,8 +19,8 @@
         }
     ],
     "autoload": {
-        "psr-0": {
-            "BaconQrCode": "src/"
+        "psr-4": {
+            "BaconQrCode\\": "src/BaconQrCode/"
         }
     },
     "require-dev": {
