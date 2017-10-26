@@ -31,7 +31,7 @@ final class BitArray
     public function __construct(int $size = 0)
     {
         $this->size = $size;
-        $this->bits = new SplFixedArray(($this->size + 31) >> 3);
+        $this->bits = SplFixedArray::fromArray(array_fill(0, ($this->size + 31) >> 3, 0));
     }
 
     /**
@@ -165,7 +165,7 @@ final class BitArray
         $lastInt = $end >> 5;
 
         for ($i = $firstInt; $i <= $lastInt; ++$i) {
-            $firstBit = $i > $firstInt ?  0 : $start & 0x1f;
+            $firstBit = $i > $firstInt ? 0 : $start & 0x1f;
             $lastBit = $i < $lastInt ? 31 : $end & 0x1f;
 
             if (0 === $firstBit && 31 === $lastBit) {
@@ -199,7 +199,7 @@ final class BitArray
 
      * @throws InvalidArgumentException if end is smaller than start
      */
-    public function isRange(int $start, int $end, int $value) : bool
+    public function isRange(int $start, int $end, bool $value) : bool
     {
         if ($end < $start) {
             throw new InvalidArgumentException('End must be greater or equal to start');
@@ -215,7 +215,7 @@ final class BitArray
         $lastInt = $end >> 5;
 
         for ($i = $firstInt; $i <= $lastInt; ++$i) {
-            $firstBit = $i > $firstInt ?  0 : $start & 0x1f;
+            $firstBit = $i > $firstInt ? 0 : $start & 0x1f;
             $lastBit = $i < $lastInt ? 31 : $end & 0x1f;
 
             if (0 === $firstBit && 31 === $lastBit) {

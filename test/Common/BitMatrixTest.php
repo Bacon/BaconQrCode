@@ -1,25 +1,21 @@
 <?php
-/**
- * BaconQrCode
- *
- * @link      http://github.com/Bacon/BaconQrCode For the canonical source repository
- * @copyright 2013 Ben 'DASPRiD' Scholzen
- * @license   http://opensource.org/licenses/BSD-2-Clause Simplified BSD License
- */
+declare(strict_types = 1);
 
-namespace BaconQrCode\Common;
+namespace BaconQrCodeTest\Common;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use BaconQrCode\Common\BitArray;
+use BaconQrCode\Common\BitMatrix;
+use PHPUnit\Framework\TestCase;
 
 class BitMatrixTest extends TestCase
 {
-    public function testGetSet()
+    public function testGetSet() : void
     {
         $matrix = new BitMatrix(33);
         $this->assertEquals(33, $matrix->getHeight());
 
-        for ($y = 0; $y < 33; $y++) {
-            for ($x = 0; $x < 33; $x++) {
+        for ($y = 0; $y < 33; ++$y) {
+            for ($x = 0; $x < 33; ++$x) {
                 if ($y * $x % 3 === 0) {
                     $matrix->set($x, $y);
                 }
@@ -27,29 +23,29 @@ class BitMatrixTest extends TestCase
         }
 
         for ($y = 0; $y < 33; $y++) {
-            for ($x = 0; $x < 33; $x++) {
-                $this->assertEquals($x * $y % 3 === 0, $matrix->get($x, $y));
+            for ($x = 0; $x < 33; ++$x) {
+                $this->assertSame(0 === $x * $y % 3, $matrix->get($x, $y));
             }
         }
     }
 
-    public function testSetRegion()
+    public function testSetRegion() : void
     {
         $matrix = new BitMatrix(5);
         $matrix->setRegion(1, 1, 3, 3);
 
-        for ($y = 0; $y < 5; $y++) {
-            for ($x = 0; $x < 5; $x++) {
-                $this->assertEquals($y >= 1 && $y <= 3 && $x >= 1 && $x <= 3, $matrix->get($x, $y));
+        for ($y = 0; $y < 5; ++$y) {
+            for ($x = 0; $x < 5; ++$x) {
+                $this->assertSame($y >= 1 && $y <= 3 && $x >= 1 && $x <= 3, $matrix->get($x, $y));
             }
         }
     }
 
-    public function testRectangularMatrix()
+    public function testRectangularMatrix() : void
     {
         $matrix = new BitMatrix(75, 20);
-        $this->assertEquals(75, $matrix->getWidth());
-        $this->assertEquals(20, $matrix->getHeight());
+        $this->assertSame(75, $matrix->getWidth());
+        $this->assertSame(20, $matrix->getHeight());
 
         $matrix->set(10, 0);
         $matrix->set(11, 1);
@@ -72,48 +68,48 @@ class BitMatrixTest extends TestCase
         $this->assertFalse($matrix->get(51, 3));
     }
 
-    public function testRectangularSetRegion()
+    public function testRectangularSetRegion() : void
     {
         $matrix = new BitMatrix(320, 240);
-        $this->assertEquals(320, $matrix->getWidth());
-        $this->assertEquals(240, $matrix->getHeight());
+        $this->assertSame(320, $matrix->getWidth());
+        $this->assertSame(240, $matrix->getHeight());
 
         $matrix->setRegion(105, 22, 80, 12);
 
-        for ($y = 0; $y < 240; $y++) {
-            for ($x = 0; $x < 320; $x++) {
+        for ($y = 0; $y < 240; ++$y) {
+            for ($x = 0; $x < 320; ++$x) {
                 $this->assertEquals($y >= 22 && $y < 34 && $x >= 105 && $x < 185, $matrix->get($x, $y));
             }
         }
     }
 
-    public function testGetRow()
+    public function testGetRow() : void
     {
         $matrix = new BitMatrix(102, 5);
 
-        for ($x = 0; $x < 102; $x++) {
-            if ($x & 3 === 0) {
+        for ($x = 0; $x < 102; ++$x) {
+            if (0 === ($x & 3)) {
                 $matrix->set($x, 2);
             }
         }
 
         $array1 = $matrix->getRow(2, null);
-        $this->assertEquals(102, $array1->getSize());
+        $this->assertSame(102, $array1->getSize());
 
         $array2 = new BitArray(60);
         $array2 = $matrix->getRow(2, $array2);
-        $this->assertEquals(102, $array2->getSize());
+        $this->assertSame(102, $array2->getSize());
 
         $array3 = new BitArray(200);
         $array3 = $matrix->getRow(2, $array3);
-        $this->assertEquals(200, $array3->getSize());
+        $this->assertSame(200, $array3->getSize());
 
-        for ($x = 0; $x < 102; $x++) {
-            $on = ($x & 3 === 0);
+        for ($x = 0; $x < 102; ++$x) {
+            $on = (0 === ($x & 3));
 
-            $this->assertEquals($on, $array1->get($x));
-            $this->assertEquals($on, $array2->get($x));
-            $this->assertEquals($on, $array3->get($x));
+            $this->assertSame($on, $array1->get($x));
+            $this->assertSame($on, $array2->get($x));
+            $this->assertSame($on, $array3->get($x));
         }
     }
 }

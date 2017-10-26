@@ -133,6 +133,7 @@ final class CharacterSetEci extends AbstractEnum
     public static function getCharacterSetEciByName(string $name) : ?self
     {
         $nameToEci = self::nameToEci();
+        $name = strtolower($name);
 
         if (! array_key_exists($name, $nameToEci)) {
             return null;
@@ -167,10 +168,10 @@ final class CharacterSetEci extends AbstractEnum
         self::$nameToEci = [];
 
         foreach (self::values() as $eci) {
-            self::$nameToEci[$eci->name()] = $eci;
+            self::$nameToEci[strtolower($eci->name())] = $eci;
 
             foreach ($eci->otherEncodingNames as $name) {
-                self::$nameToEci[$name] = $eci;
+                self::$nameToEci[strtolower($name)] = $eci;
             }
         }
 

@@ -153,7 +153,9 @@ final class ReedSolomonCodec
         $this->numRoots = $numRoots;
 
         // Find prim-th root of 1, used in decoding
-        for ($iPrimitive = 1; ($iPrimitive % $primitive) !== 0; $iPrimitive += $this->blockSize);
+        for ($iPrimitive = 1; ($iPrimitive % $primitive) !== 0; $iPrimitive += $this->blockSize) {
+        }
+
         $this->iPrimitive = intdiv($iPrimitive, $primitive);
 
         $this->generatorPoly[0] = 1;
@@ -358,12 +360,9 @@ final class ReedSolomonCodec
         $reg = clone $lambda;
         $reg[0] = 0;
         $count = 0;
+        $i = 1;
 
-        for (
-            $i = 1, $k = $this->iPrimitive - 1;
-            $i <= $this->blockSize;
-            $i++, $k = $this->modNn($k + $this->iPrimitive)
-        ) {
+        for ($k = $this->iPrimitive - 1; $i <= $this->blockSize; ++$i, $k = $this->modNn($k + $this->iPrimitive)) {
             $q = 1;
 
             for ($j = $degLambda; $j > 0; $j--) {
@@ -457,7 +456,7 @@ final class ReedSolomonCodec
     /**
      * Computes $x % GF_SIZE, where GF_SIZE is 2**GF_BITS - 1, without a slow divide.
      */
-    protected function modNn(int $x) : int
+    private function modNn(int $x) : int
     {
         while ($x >= $this->blockSize) {
             $x -= $this->blockSize;

@@ -235,7 +235,7 @@ final class MaskUtil
      * We need this for doing this calculation in both vertical and horizontal
      * orders respectively.
      */
-    protected static function applyMaskPenaltyRule1Internal(ByteMatrix $matrix, bool $isHorizontal) : int
+    private static function applyMaskPenaltyRule1Internal(ByteMatrix $matrix, bool $isHorizontal) : int
     {
         $penalty = 0;
         $iLimit = $isHorizontal ? $matrix->getHeight() : $matrix->getWidth();

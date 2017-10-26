@@ -141,7 +141,7 @@ final class Encoder
      */
     private static function chooseMode(string $content, string $encoding = null) : Mode
     {
-        if (0 === strcasecmp($encoding, 'SHIFT-JIS')) {
+        if (null !== $encoding && 0 === strcasecmp($encoding, 'SHIFT-JIS')) {
             return self::isOnlyDoubleByteKanji($content) ? Mode::KANJI() : Mode::BYTE();
         }
 
@@ -214,7 +214,7 @@ final class Encoder
     /**
      * Chooses the best mask pattern for a matrix.
      */
-    protected static function chooseMaskPattern(
+    private static function chooseMaskPattern(
         BitArray $bits,
         ErrorCorrectionLevel $ecLevel,
         Version $version,

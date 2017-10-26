@@ -59,7 +59,7 @@ class BitMatrix
         $this->width = $width;
         $this->height = $height;
         $this->rowSize = ($width + 31) >> 5;
-        $this->bits = new SplFixedArray($this->rowSize * $height);
+        $this->bits = SplFixedArray::fromArray(array_fill(0, $this->rowSize * $height, 0));
     }
 
     /**
@@ -68,7 +68,7 @@ class BitMatrix
     public function get(int $x, int $y) : bool
     {
         $offset = $y * $this->rowSize + ($x >> 5);
-        return (BitUtils::unsignedRightShift($this->bits[$offset], ($x & 0x1f)) & 1) !== 0;
+        return 0 !== (BitUtils::unsignedRightShift($this->bits[$offset], ($x & 0x1f)) & 1);
     }
 
     /**

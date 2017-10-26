@@ -1,66 +1,61 @@
 <?php
-/**
- * BaconQrCode
- *
- * @link      http://github.com/Bacon/BaconQrCode For the canonical source repository
- * @copyright 2013 Ben 'DASPRiD' Scholzen
- * @license   http://opensource.org/licenses/BSD-2-Clause Simplified BSD License
- */
+declare(strict_types = 1);
 
-namespace BaconQrCode\Common;
+namespace BaconQrCodeTest\Common;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use BaconQrCode\Common\BitArray;
+use PHPUnit\Framework\TestCase;
 
-class BitArrayTest extends TestCase
+final class BitArrayTest extends TestCase
 {
-    public function testGetSet()
+    public function testGetSet() : void
     {
         $array = new BitArray(33);
 
-        for ($i = 0; $i < 33; $i++) {
+        for ($i = 0; $i < 33; ++$i) {
             $this->assertFalse($array->get($i));
             $array->set($i);
             $this->assertTrue($array->get($i));
         }
     }
 
-    public function testGetNextSet1()
+    public function testGetNextSet1() : void
     {
         $array = new BitArray(32);
 
-        for ($i = 0; $i < $array->getSize(); $i++) {
+        for ($i = 0; $i < $array->getSize(); ++$i) {
             $this->assertEquals($i, 32, '', $array->getNextSet($i));
         }
 
         $array = new BitArray(33);
 
-        for ($i = 0; $i < $array->getSize(); $i++) {
+        for ($i = 0; $i < $array->getSize(); ++$i) {
             $this->assertEquals($i, 33, '', $array->getNextSet($i));
         }
     }
 
-    public function testGetNextSet2()
+    public function testGetNextSet2() : void
     {
         $array = new BitArray(33);
 
-        for ($i = 0; $i < $array->getSize(); $i++) {
+        for ($i = 0; $i < $array->getSize(); ++$i) {
             $this->assertEquals($i, $i <= 31 ? 31 : 33, '', $array->getNextSet($i));
         }
 
         $array = new BitArray(33);
 
-        for ($i = 0; $i < $array->getSize(); $i++) {
+        for ($i = 0; $i < $array->getSize(); ++$i) {
             $this->assertEquals($i, 32, '', $array->getNextSet($i));
         }
     }
 
-    public function testGetNextSet3()
+    public function testGetNextSet3() : void
     {
         $array = new BitArray(63);
         $array->set(31);
         $array->set(32);
 
-        for ($i = 0; $i < $array->getSize(); $i++) {
+        for ($i = 0; $i < $array->getSize(); ++$i) {
             if ($i <= 31) {
                 $expected = 31;
             } elseif ($i <= 32) {
@@ -73,13 +68,13 @@ class BitArrayTest extends TestCase
         }
     }
 
-    public function testGetNextSet4()
+    public function testGetNextSet4() : void
     {
         $array = new BitArray(63);
         $array->set(33);
         $array->set(40);
 
-        for ($i = 0; $i < $array->getSize(); $i++) {
+        for ($i = 0; $i < $array->getSize(); ++$i) {
             if ($i <= 33) {
                 $expected = 33;
             } elseif ($i <= 40) {
@@ -92,30 +87,26 @@ class BitArrayTest extends TestCase
         }
     }
 
-    public function testGetNextSet5()
+    public function testGetNextSet5() : void
     {
-        if (defined('MT_RAND_PHP')) {
-            mt_srand(0xdeadbeef, MT_RAND_PHP);
-        } else {
-            mt_srand(0xdeadbeef);
-        }
+        mt_srand(0xdeadbeef, MT_RAND_PHP);
 
-        for ($i = 0; $i < 10; $i++) {
-            $array  = new BitArray(mt_rand(1, 100));
+        for ($i = 0; $i < 10; ++$i) {
+            $array = new BitArray(mt_rand(1, 100));
             $numSet = mt_rand(0, 19);
 
-            for ($j = 0; $j < $numSet; $j++) {
+            for ($j = 0; $j < $numSet; ++$j) {
                 $array->set(mt_rand(0, $array->getSize() - 1));
             }
 
             $numQueries = mt_rand(0, 19);
 
-            for ($j = 0; $j < $numQueries; $j++) {
-                $query    = mt_rand(0, $array->getSize() - 1);
+            for ($j = 0; $j < $numQueries; ++$j) {
+                $query = mt_rand(0, $array->getSize() - 1);
                 $expected = $query;
 
-                while ($expected < $array->getSize() && !$array->get($expected)) {
-                    $expected++;
+                while ($expected < $array->getSize() && ! $array->get($expected)) {
+                    ++$expected;
                 }
 
                 $actual = $array->getNextSet($query);
@@ -129,36 +120,36 @@ class BitArrayTest extends TestCase
         }
     }
 
-    public function testSetBulk()
+    public function testSetBulk() : void
     {
         $array = new BitArray(64);
         $array->setBulk(32, 0xFFFF0000);
 
-        for ($i = 0; $i < 48; $i++) {
+        for ($i = 0; $i < 48; ++$i) {
             $this->assertFalse($array->get($i));
         }
 
-        for ($i = 48; $i < 64; $i++) {
+        for ($i = 48; $i < 64; ++$i) {
             $this->assertTrue($array->get($i));
         }
     }
 
-    public function testClear()
+    public function testClear() : void
     {
         $array = new BitArray(32);
 
-        for ($i = 0; $i < 32; $i++) {
+        for ($i = 0; $i < 32; ++$i) {
             $array->set($i);
         }
 
         $array->clear();
 
-        for ($i = 0; $i < 32; $i++) {
+        for ($i = 0; $i < 32; ++$i) {
             $this->assertFalse($array->get($i));
         }
     }
 
-    public function testGetArray()
+    public function testGetArray() : void
     {
         $array = new BitArray(64);
         $array->set(0);
@@ -166,11 +157,11 @@ class BitArrayTest extends TestCase
 
         $ints = $array->getBitArray();
 
-        $this->assertEquals(1, $ints[0]);
-        $this->assertEquals(0x80000000, $ints[1]);
+        $this->assertSame(1, $ints[0]);
+        $this->assertSame(0x80000000, $ints[1]);
     }
 
-    public function testIsRange()
+    public function testIsRange() : void
     {
         $array = new BitArray(64);
         $this->assertTrue($array->isRange(0, 64, false));
@@ -185,13 +176,13 @@ class BitArrayTest extends TestCase
         $array->set(34);
         $this->assertFalse($array->isRange(31, 35, true));
 
-        for ($i = 0; $i < 31; $i++) {
+        for ($i = 0; $i < 31; ++$i) {
             $array->set($i);
         }
 
         $this->assertTrue($array->isRange(0, 33, true));
 
-        for ($i = 33; $i < 64; $i++) {
+        for ($i = 33; $i < 64; ++$i) {
             $array->set($i);
         }
 
