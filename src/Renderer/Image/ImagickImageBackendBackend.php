@@ -25,11 +25,16 @@ final class ImagickImageBackendBackend implements ImageBackendInterface
      */
     private $draw;
 
-    public function __construct(int $size, ColorInterface $backgroundColor)
-    {
+    public function __construct(
+        int $size,
+        ColorInterface $backgroundColor,
+        string $imageFormat = 'png',
+        int $compressionQuality = 100
+    ) {
         $this->image = new Imagick();
         $this->image->newImage($size, $size, $this->getColorPixel($backgroundColor));
-        $this->image->setImageFormat('png');
+        $this->image->setImageFormat($imageFormat);
+        $this->image->setCompressionQuality($compressionQuality);
         $this->draw = new ImagickDraw();
     }
 
