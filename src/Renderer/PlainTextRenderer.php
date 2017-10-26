@@ -24,9 +24,9 @@ final class PlainTextRenderer implements RendererInterface
     private const LOWER_HALF_BLOCK = "\xe2\x96\x84";
 
     /**
-     * Empty block.
+     * UTF-8 no-break space (U+00A0)
      */
-    private const EMPTY_BLOCK = ' ';
+    private const EMPTY_BLOCK = "\xc2\xa0";
 
     /**
      * @var int
