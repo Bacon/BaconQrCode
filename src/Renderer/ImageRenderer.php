@@ -5,7 +5,7 @@ namespace BaconQrCode\Renderer;
 
 use BaconQrCode\Encoder\MatrixUtil;
 use BaconQrCode\Encoder\QrCode;
-use BaconQrCode\Exception;
+use BaconQrCode\Exception\InvalidArgumentException;
 use BaconQrCode\Renderer\Image\ImageBackendFactoryInterface;
 use BaconQrCode\Renderer\Image\ImageBackendInterface;
 
@@ -27,6 +27,9 @@ final class ImageRenderer implements RendererInterface
         $this->imageBackendFactory = $imageBackendFactory;
     }
 
+    /**
+     * @throws InvalidArgumentException if matrix width doesn't match height
+     */
     public function render(QrCode $qrCode) : string
     {
         $size = $this->rendererStyle->getSize();
@@ -35,7 +38,7 @@ final class ImageRenderer implements RendererInterface
         $matrixSize = $matrix->getWidth();
 
         if ($matrixSize !== $matrix->getHeight()) {
-            throw new Exception\InvalidArgumentException('Matrix must have the same width and height');
+            throw new InvalidArgumentException('Matrix must have the same width and height');
         }
 
         $totalSize = $matrixSize + ($margin * 2);
