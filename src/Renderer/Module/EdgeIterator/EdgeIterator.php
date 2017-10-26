@@ -51,6 +51,7 @@ final class EdgeIterator implements IteratorAggregate
         while (null !== $point) {
             $edge = $this->findEdge($point[0], $point[1]);
             $this->xorEdge($edge);
+            $edge->simplify();
 
             yield $edge;
 

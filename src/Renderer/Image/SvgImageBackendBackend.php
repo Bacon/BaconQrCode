@@ -149,7 +149,7 @@ final class SvgImageBackendBackend implements ImageBackendInterface
         $this->xmlWriter->startElement('path');
         $this->xmlWriter->writeAttribute('fill', $this->getColorString($color));
         $this->xmlWriter->writeAttribute('fill-rule', 'evenodd');
-        $this->xmlWriter->writeAttribute('d', implode(' ', $pathData));
+        $this->xmlWriter->writeAttribute('d', implode('', $pathData));
 
         if ($alpha < 1) {
             $this->xmlWriter->writeAttribute('fill-opacity', (string) $alpha);

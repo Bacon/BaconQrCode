@@ -66,4 +66,25 @@ final class Edge
     {
         return $this->maxX;
     }
+
+    public function simplify() : void
+    {
+        $points = $this->points;
+        $this->points = [];
+        $length = count($points);
+
+        for ($i = 0; $i < $length; ++$i) {
+            $previousPoint = $points[(0 === $i ? $length : $i) - 1];
+            $nextPoint = $points[($length - 1 === $i ? -1 : $i) + 1];
+            $currentPoint = $points[$i];
+
+            if (($previousPoint[0] === $currentPoint[0] && $currentPoint[0] === $nextPoint[0])
+                || ($previousPoint[1] === $currentPoint[1] && $currentPoint[1] === $nextPoint[1])
+            ) {
+                continue;
+            }
+
+            $this->points[] = $currentPoint;
+        }
+    }
 }
