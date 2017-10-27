@@ -80,7 +80,8 @@ final class StrongRoundnessModule implements ModuleInterface
                         0,
                         false,
                         $sweep,
-                        $currentPoint[0] + ($right ? .5 : -.5), $currentPoint[1]
+                        $currentPoint[0] + ($right ? .5 : -.5),
+                        $currentPoint[1]
                     );
                 }
             }
