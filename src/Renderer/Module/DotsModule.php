@@ -22,10 +22,10 @@ final class DotsModule implements ModuleInterface
 
                 $path = $path
                     ->moveTo($x + 1, $y + .5)
-                    ->ellipticArc(.5, .5, 0., false, true, $x + .5, $y + 1.)
-                    ->ellipticArc(.5, .5, 0., false, true, (float) $x, $y + .5)
-                    ->ellipticArc(.5, .5, 0., false, true, $x + .5, (float) $y)
-                    ->ellipticArc(.5, .5, 0., false, true, $x + 1., $y + .5)
+                    ->ellipticArc(.5, .5, 0, false, true, $x + .5, $y + 1)
+                    ->ellipticArc(.5, .5, 0, false, true, $x, $y + .5)
+                    ->ellipticArc(.5, .5, 0, false, true, $x + .5, $y)
+                    ->ellipticArc(.5, .5, 0, false, true, $x + 1, $y + .5)
                     ->close()
                 ;
             }

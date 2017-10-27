@@ -62,7 +62,6 @@ final class RendererStyle
         ColorInterface $moduleColor,
         ColorInterface $backgroundColor
     ) {
-        var_dump($module);
         $this->size = $size;
         $this->eye = $eye;
         $this->module = $module;
