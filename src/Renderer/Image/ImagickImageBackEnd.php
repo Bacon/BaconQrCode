@@ -19,58 +19,94 @@ use Imagick;
 use ImagickDraw;
 use ImagickPixel;
 
-final class ImagickImageBackendBackend implements ImageBackendInterface
+final class ImagickImageBackEnd implements ImageBackEndInterface
 {
     /**
-     * @var Imagick
+     * @var string
+     */
+    private $imageFormat;
+
+    /**
+     * @var int
+     */
+    private $compressionQuality;
+
+    /**
+     * @var Imagick|null
      */
     private $image;
 
     /**
-     * @var ImagickDraw
+     * @var ImagickDraw|null
      */
     private $draw;
 
-    public function __construct(
-        int $size,
-        ColorInterface $backgroundColor,
-        string $imageFormat = 'png',
-        int $compressionQuality = 100
-    ) {
+    public function __construct(string $imageFormat = 'png', int $compressionQuality = 100)
+    {
+        $this->imageFormat = $imageFormat;
+        $this->compressionQuality = $compressionQuality;
+    }
+
+    public function new(int $size, ColorInterface $backgroundColor) : void
+    {
         $this->image = new Imagick();
         $this->image->newImage($size, $size, $this->getColorPixel($backgroundColor));
-        $this->image->setImageFormat($imageFormat);
-        $this->image->setCompressionQuality($compressionQuality);
+        $this->image->setImageFormat($this->imageFormat);
+        $this->image->setCompressionQuality($this->compressionQuality);
         $this->draw = new ImagickDraw();
     }
 
     public function scale(float $size) : void
     {
+        if (null === $this->draw) {
+            throw new RuntimeException('No image has been started');
+        }
+
         $this->draw->scale($size, $size);
     }
 
     public function translate(float $x, float $y) : void
     {
+        if (null === $this->draw) {
+            throw new RuntimeException('No image has been started');
+        }
+
         $this->draw->translate($x, $y);
     }
 
     public function rotate(int $degrees) : void
     {
+        if (null === $this->draw) {
+            throw new RuntimeException('No image has been started');
+        }
+
         $this->draw->rotate($degrees);
     }
 
     public function push() : void
     {
+        if (null === $this->draw) {
+            throw new RuntimeException('No image has been started');
+        }
+
         $this->draw->push();
     }
 
     public function pop() : void
     {
+        if (null === $this->draw) {
+            throw new RuntimeException('No image has been started');
+        }
+
         $this->draw->pop();
     }
 
     public function drawPath(Path $path, ColorInterface $color) : void
     {
+        if (null === $this->draw) {
+            throw new RuntimeException('No image has been started');
+        }
+
         $this->draw->setFillColor($this->getColorPixel($color));
         $this->draw->pathStart();
 
@@ -120,10 +156,21 @@ final class ImagickImageBackendBackend implements ImageBackendInterface
         $this->draw->pathFinish();
     }
 
-    public function getBlob() : string
+    public function done() : string
     {
+        if (null === $this->draw) {
+            throw new RuntimeException('No image has been started');
+        }
+
         $this->image->drawImage($this->draw);
-        return $this->image->getImageBlob();
+
+        $blob = $this->image->getImageBlob();
+        $this->draw->clear();
+        $this->image->clear();
+        $this->draw = null;
+        $this->image = null;
+
+        return $blob;
     }
 
     private function getColorPixel(ColorInterface $color) : ImagickPixel

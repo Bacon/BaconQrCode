@@ -20,10 +20,10 @@ final class SquareModule implements ModuleInterface
             $edge->simplify();
             $points = $edge->getPoints();
             $length = count($points);
-            $path = $path->moveTo($points[0][0], $points[0][1]);
+            $path = $path->move($points[0][0], $points[0][1]);
 
             for ($i = 1; $i < $length; ++$i) {
-                $path = $path->lineTo($points[$i][0], $points[$i][1]);
+                $path = $path->line($points[$i][0], $points[$i][1]);
             }
 
             $path = $path->close();

@@ -20,19 +20,20 @@ slow in PHP, it was exchanged with the implementation by Phil Karn.
 ```php
 use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\RendererStyle;
-use BaconQrCode\Renderer\Image\ImagickImageBackendBackendFactory;
+use BaconQrCode\Renderer\Image\ImagickImageBackEnd;
 use BaconQrCode\Writer;
 
 $renderer = new ImageRenderer(
     RendererStyle::default(400),
-    new ImagickImageBackendBackendFactory()
+    new ImagickImageBackEnd()
 );
 $writer = new Writer($renderer);
 $writer->writeFile('Hello World!', 'qrcode.png');
 ```
 
-## Available image renderer backends
-BaconQrCode comes with multiple backends for rendering images. Currently included are the following:
+## Available image renderer back ends
+BaconQrCode comes with multiple back ends for rendering images. Currently included are the following:
 
-- `ImagickImageBackendBackend`: renders raster images using the Imagick library
-- `SvgImageBackendBackend`: renders SVG files using XMLWriter
+- `ImagickImageBackEnd`: renders raster images using the Imagick library
+- `SvgImageBackEnd`: renders SVG files using XMLWriter
+- `EpsImageBackEnd`: renders EPS files

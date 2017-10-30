@@ -10,15 +10,15 @@ final class SimpleCircleEye implements EyeInterface
     public function getExternalPath() : Path
     {
         return (new Path())
-            ->moveTo(-3.5, -3.5)
-            ->lineTo(3.5, -3.5)
-            ->lineTo(3.5, 3.5)
-            ->lineTo(-3.5, 3.5)
+            ->move(-3.5, -3.5)
+            ->line(3.5, -3.5)
+            ->line(3.5, 3.5)
+            ->line(-3.5, 3.5)
             ->close()
-            ->moveTo(-2.5, -2.5)
-            ->lineTo(-2.5, 2.5)
-            ->lineTo(2.5, 2.5)
-            ->lineTo(2.5, -2.5)
+            ->move(-2.5, -2.5)
+            ->line(-2.5, 2.5)
+            ->line(2.5, 2.5)
+            ->line(2.5, -2.5)
             ->close()
         ;
     }
@@ -26,7 +26,7 @@ final class SimpleCircleEye implements EyeInterface
     public function getInternalPath() : Path
     {
         return (new Path())
-            ->moveTo(1.5, 0)
+            ->move(1.5, 0)
             ->ellipticArc(1.5, 1.5, 0., false, true, 0., 1.5)
             ->ellipticArc(1.5, 1.5, 0., false, true, -1.5, 0.)
             ->ellipticArc(1.5, 1.5, 0., false, true, 0., -1.5)

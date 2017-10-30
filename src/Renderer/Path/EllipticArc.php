@@ -98,7 +98,7 @@ final class EllipticArc
     /**
      * Converts the elliptic arc to multiple curves.
      *
-     * Since not all image backends support elliptic arcs, this method allows to convert the arc into multiple curves
+     * Since not all image back ends support elliptic arcs, this method allows to convert the arc into multiple curves
      * resembling the same result.
      *
      * @see https://mortoray.com/2017/02/16/rendering-an-svg-elliptical-arc-as-bezier-curves/

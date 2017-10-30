@@ -6,8 +6,7 @@ namespace BaconQrCode\Renderer;
 use BaconQrCode\Encoder\MatrixUtil;
 use BaconQrCode\Encoder\QrCode;
 use BaconQrCode\Exception\InvalidArgumentException;
-use BaconQrCode\Renderer\Image\ImageBackendFactoryInterface;
-use BaconQrCode\Renderer\Image\ImageBackendInterface;
+use BaconQrCode\Renderer\Image\ImageBackEndInterface;
 
 final class ImageRenderer implements RendererInterface
 {
@@ -17,14 +16,14 @@ final class ImageRenderer implements RendererInterface
     private $rendererStyle;
 
     /**
-     * @var ImageBackendFactoryInterface
+     * @var ImageBackEndInterface
      */
-    private $imageBackendFactory;
+    private $imageBackEnd;
 
-    public function __construct(RendererStyle $rendererStyle, ImageBackendFactoryInterface $imageBackendFactory)
+    public function __construct(RendererStyle $rendererStyle, ImageBackEndInterface $imageBackEnd)
     {
         $this->rendererStyle = $rendererStyle;
-        $this->imageBackendFactory = $imageBackendFactory;
+        $this->imageBackEnd = $imageBackEnd;
     }
 
     /**
@@ -44,21 +43,20 @@ final class ImageRenderer implements RendererInterface
         $totalSize = $matrixSize + ($margin * 2);
         $moduleSize = $size / $totalSize;
 
-        $imageBackend = $this->imageBackendFactory->__invoke($size, $this->rendererStyle->getBackgroundColor());
-        $imageBackend->scale((float) $moduleSize);
-        $imageBackend->translate((float) $margin, (float) $margin);
+        $this->imageBackEnd->new($size, $this->rendererStyle->getBackgroundColor());
+        $this->imageBackEnd->scale((float) $moduleSize);
+        $this->imageBackEnd->translate((float) $margin, (float) $margin);
 
         $module = $this->rendererStyle->getModule();
-
-        $this->drawEyes($imageBackend, $matrixSize);
+        $this->drawEyes($matrixSize);
         $moduleMatrix = clone $matrix;
         MatrixUtil::removePositionDetectionPatterns($moduleMatrix);
-        $imageBackend->drawPath($module->createPath($moduleMatrix), $this->rendererStyle->getModuleColor());
+        $this->imageBackEnd->drawPath($module->createPath($moduleMatrix), $this->rendererStyle->getModuleColor());
 
-        return $imageBackend->getBlob();
+        return $this->imageBackEnd->done();
     }
 
-    private function drawEyes(ImageBackendInterface $imageBackend, int $matrixSize) : void
+    private function drawEyes(int $matrixSize) : void
     {
         $eye = $this->rendererStyle->getEye();
 
@@ -67,24 +65,24 @@ final class ImageRenderer implements RendererInterface
         $externalColor = $this->rendererStyle->getExternalEyeColor();
         $internalColor = $this->rendererStyle->getInternalEyeColor();
 
-        $imageBackend->push();
-        $imageBackend->translate(3.5, 3.5);
-        $imageBackend->drawPath($externalPath, $externalColor);
-        $imageBackend->drawPath($internalPath, $internalColor);
-        $imageBackend->pop();
+        $this->imageBackEnd->push();
+        $this->imageBackEnd->translate(3.5, 3.5);
+        $this->imageBackEnd->drawPath($externalPath, $externalColor);
+        $this->imageBackEnd->drawPath($internalPath, $internalColor);
+        $this->imageBackEnd->pop();
 
-        $imageBackend->push();
-        $imageBackend->translate($matrixSize - 3.5, 3.5);
-        $imageBackend->rotate(90);
-        $imageBackend->drawPath($externalPath, $externalColor);
-        $imageBackend->drawPath($internalPath, $internalColor);
-        $imageBackend->pop();
+        $this->imageBackEnd->push();
+        $this->imageBackEnd->translate($matrixSize - 3.5, 3.5);
+        $this->imageBackEnd->rotate(90);
+        $this->imageBackEnd->drawPath($externalPath, $externalColor);
+        $this->imageBackEnd->drawPath($internalPath, $internalColor);
+        $this->imageBackEnd->pop();
 
-        $imageBackend->push();
-        $imageBackend->translate(3.5, $matrixSize - 3.5);
-        $imageBackend->rotate(-90);
-        $imageBackend->drawPath($externalPath, $externalColor);
-        $imageBackend->drawPath($internalPath, $internalColor);
-        $imageBackend->pop();
+        $this->imageBackEnd->push();
+        $this->imageBackEnd->translate(3.5, $matrixSize - 3.5);
+        $this->imageBackEnd->rotate(-90);
+        $this->imageBackEnd->drawPath($externalPath, $externalColor);
+        $this->imageBackEnd->drawPath($internalPath, $internalColor);
+        $this->imageBackEnd->pop();
     }
 }

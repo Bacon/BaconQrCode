@@ -46,13 +46,13 @@ final class RoundnessModule implements ModuleInterface
 
             if ($horizontal) {
                 $right = $nextPoint[0] > $currentPoint[0];
-                $path = $path->moveTo(
+                $path = $path->move(
                     $currentPoint[0] + ($right ? $this->intensity : -$this->intensity),
                     $currentPoint[1]
                 );
             } else {
                 $up = $nextPoint[0] < $currentPoint[0];
-                $path = $path->moveTo(
+                $path = $path->move(
                     $currentPoint[0],
                     $currentPoint[1] + ($up ? -$this->intensity : $this->intensity)
                 );
@@ -80,7 +80,7 @@ final class RoundnessModule implements ModuleInterface
                         || ($right && $previousPoint[0] !== $currentPoint[0] - 1)
                         || (! $right && $previousPoint[0] - 1 !== $currentPoint[0])
                     ) {
-                        $path = $path->lineTo(
+                        $path = $path->line(
                             $currentPoint[0] + ($right ? -$this->intensity : $this->intensity),
                             $currentPoint[1]
                         );
@@ -104,7 +104,7 @@ final class RoundnessModule implements ModuleInterface
                         || ($up && $previousPoint[1] !== $currentPoint[1] + 1)
                         || (! $up && $previousPoint[0] + 1 !== $currentPoint[0])
                     ) {
-                        $path = $path->lineTo(
+                        $path = $path->line(
                             $currentPoint[0],
                             $currentPoint[1] + ($up ? $this->intensity : -$this->intensity)
                         );

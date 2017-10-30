@@ -48,7 +48,7 @@ final class DotsModule implements ModuleInterface
                 $pathY = $y + $margin;
 
                 $path = $path
-                    ->moveTo($pathX + $this->size, $pathY + $halfSize)
+                    ->move($pathX + $this->size, $pathY + $halfSize)
                     ->ellipticArc($halfSize, $halfSize, 0, false, true, $pathX + $halfSize, $pathY + $this->size)
                     ->ellipticArc($halfSize, $halfSize, 0, false, true, $pathX, $pathY + $halfSize)
                     ->ellipticArc($halfSize, $halfSize, 0, false, true, $pathX + $halfSize, $pathY)
