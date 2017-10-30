@@ -117,7 +117,6 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
                     break;
 
                 case $op instanceof Line:
-
                     $this->draw->pathLineToAbsolute($op->getX(), $op->getY());
                     break;
 

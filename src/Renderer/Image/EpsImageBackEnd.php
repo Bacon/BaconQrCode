@@ -56,11 +56,11 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         }
 
         $this->eps .= wordwrap(
-            "0 0 m"
-            . sprintf(" %s 0 l", (string) $size)
-            . sprintf(" %s %s l", (string) $size, (string) $size)
-            . sprintf(" 0 %s l", (string) $size)
-            . " z"
+            '0 0 m'
+            . sprintf(' %s 0 l', (string) $size)
+            . sprintf(' %s %s l', (string) $size, (string) $size)
+            . sprintf(' 0 %s l', (string) $size)
+            . ' z'
             . ' ' .$this->getColorString($backgroundColor) . " f\n",
             75,
             "\n "
@@ -125,7 +125,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         $fromX = 0;
         $fromY = 0;
         $this->eps .= wordwrap(
-            "n "
+            'n '
             . $this->drawPathOperations($path, $fromX, $fromY)
             . ' ' . $this->getColorString($color) . " f\n",
             75,
@@ -155,13 +155,13 @@ final class EpsImageBackEnd implements ImageBackEndInterface
                 case $op instanceof Move:
                     $fromX = $toX = round($op->getX(), self::PRECISION);
                     $fromY = $toY = round($op->getY(), self::PRECISION);
-                    $pathData[] = sprintf("%s %s m", $toX, $toY);
+                    $pathData[] = sprintf('%s %s m', $toX, $toY);
                     break;
 
                 case $op instanceof Line:
                     $fromX = $toX = round($op->getX(), self::PRECISION);
                     $fromY = $toY = round($op->getY(), self::PRECISION);
-                    $pathData[] = sprintf("%s %s l", $toX, $toY);
+                    $pathData[] = sprintf('%s %s l', $toX, $toY);
                     break;
 
                 case $op instanceof EllipticArc:
@@ -175,11 +175,11 @@ final class EpsImageBackEnd implements ImageBackEndInterface
                     $y2 = round($op->getY2(), self::PRECISION);
                     $fromX = $x3 = round($op->getX3(), self::PRECISION);
                     $fromY = $y3 = round($op->getY3(), self::PRECISION);
-                    $pathData[] = sprintf("%s %s %s %s %s %s c", $x1, $y1, $x2, $y2, $x3, $y3);
+                    $pathData[] = sprintf('%s %s %s %s %s %s c', $x1, $y1, $x2, $y2, $x3, $y3);
                     break;
 
                 case $op instanceof Close:
-                    $pathData[] = "z";
+                    $pathData[] = 'z';
                     break;
 
                 default:
@@ -194,7 +194,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
     {
         if ($color instanceof Rgb) {
             return sprintf(
-                "%s %s %s rgb",
+                '%s %s %s rgb',
                 (string) ($color->getRed() / 255),
                 (string) ($color->getGreen() / 255),
                 (string) ($color->getBlue() / 255)
@@ -203,7 +203,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
 
         if ($color instanceof Cmyk) {
             return sprintf(
-                "%s %s %s %s cmyk",
+                '%s %s %s %s cmyk',
                 (string) ($color->getCyan() / 100),
                 (string) ($color->getMagenta() / 100),
                 (string) ($color->getYellow() / 100),
@@ -213,7 +213,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
 
         if ($color instanceof Gray) {
             return sprintf(
-                "%s gray",
+                '%s gray',
                 (string) ($color->getGray() / 100)
             );
         }
