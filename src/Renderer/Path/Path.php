@@ -9,21 +9,21 @@ use Traversable;
 final class Path implements IteratorAggregate
 {
     /**
-     * @var array
+     * @var object[]
      */
     private $operations = [];
 
     public function moveTo(float $x, float $y) : self
     {
         $path = clone $this;
-        $path->operations[] = ['move-to', $x, $y];
+        $path->operations[] = new Move($x, $y);
         return $path;
     }
 
     public function lineTo(float $x, float $y) : self
     {
         $path = clone $this;
-        $path->operations[] = ['line-to', $x, $y];
+        $path->operations[] = new Line($x, $y);
         return $path;
     }
 
@@ -37,19 +37,19 @@ final class Path implements IteratorAggregate
         float $y
     ) : self {
         $path = clone $this;
-        $path->operations[] = ['elliptic-arc', $xRadius, $yRadius, $xAxisRotation, $largeArc, $sweep, $x, $y];
+        $path->operations[] = new EllipticArc($xRadius, $yRadius, $xAxisRotation, $largeArc, $sweep, $x, $y);
         return $path;
     }
 
     public function close() : self
     {
         $path = clone $this;
-        $path->operations[] = ['close'];
+        $path->operations[] = Close::instance();
         return $path;
     }
 
     /**
-     * @return array[]|Traversable
+     * @return object[]|Traversable
      */
     public function getIterator() : Traversable
     {

@@ -3,11 +3,17 @@ declare(strict_types = 1);
 
 namespace BaconQrCode\Renderer\Image;
 
+use BaconQrCode\Exception\RuntimeException;
 use BaconQrCode\Renderer\Color\Alpha;
 use BaconQrCode\Renderer\Color\Cmyk;
 use BaconQrCode\Renderer\Color\ColorInterface;
 use BaconQrCode\Renderer\Color\Gray;
 use BaconQrCode\Renderer\Color\Rgb;
+use BaconQrCode\Renderer\Path\Close;
+use BaconQrCode\Renderer\Path\Curve;
+use BaconQrCode\Renderer\Path\EllipticArc;
+use BaconQrCode\Renderer\Path\Line;
+use BaconQrCode\Renderer\Path\Move;
 use BaconQrCode\Renderer\Path\Path;
 use Imagick;
 use ImagickDraw;
@@ -68,31 +74,46 @@ final class ImagickImageBackendBackend implements ImageBackendInterface
         $this->draw->setFillColor($this->getColorPixel($color));
         $this->draw->pathStart();
 
-        foreach ($path as $operation) {
-            switch ($operation[0]) {
-                case 'move-to':
-                    $this->draw->pathMoveToAbsolute($operation[1], $operation[2]);
+        foreach ($path as $op) {
+            switch (true) {
+                case $op instanceof Move:
+                    $this->draw->pathMoveToAbsolute($op->getX(), $op->getY());
                     break;
 
-                case 'line-to':
-                    $this->draw->pathLineToAbsolute($operation[1], $operation[2]);
+                case $op instanceof Line:
+
+                    $this->draw->pathLineToAbsolute($op->getX(), $op->getY());
                     break;
 
-                case 'elliptic-arc':
+                case $op instanceof EllipticArc:
                     $this->draw->pathEllipticArcAbsolute(
-                        $operation[1],
-                        $operation[2],
-                        $operation[3],
-                        $operation[4],
-                        $operation[5],
-                        $operation[6],
-                        $operation[7]
+                        $op->getXRadius(),
+                        $op->getYRadius(),
+                        $op->getXAxisAngle(),
+                        $op->isLargeArc(),
+                        $op->isSweep(),
+                        $op->getX(),
+                        $op->getY()
                     );
                     break;
 
-                case 'close':
+                case $op instanceof Curve:
+                    $this->draw->pathCurveToAbsolute(
+                        $op->getX1(),
+                        $op->getY1(),
+                        $op->getX2(),
+                        $op->getY2(),
+                        $op->getX3(),
+                        $op->getY3()
+                    );
+                    break;
+
+                case $op instanceof Close:
                     $this->draw->pathClose();
                     break;
+
+                default:
+                    throw new RuntimeException('Unexpected draw operation: ' . get_class($op));
             }
         }
 

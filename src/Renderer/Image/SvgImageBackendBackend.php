@@ -3,8 +3,14 @@ declare(strict_types = 1);
 
 namespace BaconQrCode\Renderer\Image;
 
+use BaconQrCode\Exception\RuntimeException;
 use BaconQrCode\Renderer\Color\Alpha;
 use BaconQrCode\Renderer\Color\ColorInterface;
+use BaconQrCode\Renderer\Path\Close;
+use BaconQrCode\Renderer\Path\Curve;
+use BaconQrCode\Renderer\Path\EllipticArc;
+use BaconQrCode\Renderer\Path\Line;
+use BaconQrCode\Renderer\Path\Move;
 use BaconQrCode\Renderer\Path\Path;
 use XMLWriter;
 
@@ -117,32 +123,47 @@ final class SvgImageBackendBackend implements ImageBackendInterface
 
         $pathData = [];
 
-        foreach ($path as $operation) {
-            switch ($operation[0]) {
-                case 'move-to':
-                    $pathData[] = sprintf('M%s %s', (string) $operation[1], (string) $operation[2]);
+        foreach ($path as $op) {
+            switch (true) {
+                case $op instanceof Move:
+                    $pathData[] = sprintf('M%s %s', (string) $op->getX(), (string) $op->getY());
                     break;
 
-                case 'line-to':
-                    $pathData[] = sprintf('L%s %s', (string) $operation[1], (string) $operation[2]);
+                case $op instanceof Line:
+                    $pathData[] = sprintf('L%s %s', (string) $op->getX(), (string) $op->getY());
                     break;
 
-                case 'elliptic-arc':
+                case $op instanceof EllipticArc:
                     $pathData[] = sprintf(
-                        'A%s %s %s %d %d %s %s',
-                        (string) $operation[1],
-                        (string) $operation[2],
-                        (string) $operation[3],
-                        (int) $operation[4],
-                        (int) $operation[5],
-                        (string) $operation[6],
-                        (string) $operation[7]
+                        'A%s %s %s %u %u %s %s',
+                        (string) $op->getXRadius(),
+                        (string) $op->getYRadius(),
+                        (string) $op->getXAxisAngle(),
+                        $op->isLargeArc(),
+                        $op->isSweep(),
+                        (string) $op->getX(),
+                        (string) $op->getY()
                     );
                     break;
 
-                case 'close':
+                case $op instanceof Curve:
+                    $pathData[] = sprintf(
+                        'C%s %s %s %s %s %s',
+                        (string) $op->getX1(),
+                        (string) $op->getY1(),
+                        (string) $op->getX2(),
+                        (string) $op->getY2(),
+                        (string) $op->getX3(),
+                        (string) $op->getY3()
+                    );
+                    break;
+
+                case $op instanceof Close:
                     $pathData[] = 'Z';
                     break;
+
+                default:
+                    throw new RuntimeException('Unexpected draw operation: ' . get_class($op));
             }
         }
 
