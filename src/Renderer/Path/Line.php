@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace BaconQrCode\Renderer\Path;
 
-final class Line
+final class Line implements OperationInterface
 {
     /**
      * @var float
@@ -29,5 +29,13 @@ final class Line
     public function getY() : float
     {
         return $this->y;
+    }
+
+    /**
+     * @return self
+     */
+    public function translate(float $x, float $y) : OperationInterface
+    {
+        return new self($this->x + $x, $this->y + $y);
     }
 }

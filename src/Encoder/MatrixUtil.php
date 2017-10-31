@@ -450,7 +450,7 @@ final class MatrixUtil
     /**
      * Embeds "dataBits" using "getMaskPattern".
      *
-     *  For debugging purposes, it skips masking process if "getMaskPattern" is -1. See 8.7 of JISX0510:2004 (p.38) for
+     * For debugging purposes, it skips masking process if "getMaskPattern" is -1. See 8.7 of JISX0510:2004 (p.38) for
      * how to embed data bits.
      *
      * @throws WriterException if not all bits could be consumed

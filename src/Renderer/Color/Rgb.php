@@ -74,15 +74,15 @@ final class Rgb implements ColorInterface
         $k = min($c, $m, $y);
 
         return new Cmyk(
-            100 * ($c - $k) / (1 - $k),
-            100 * ($m - $k) / (1 - $k),
-            100 * ($y - $k) / (1 - $k),
-            100 * $k
+            (int) (100 * ($c - $k) / (1 - $k)),
+            (int) (100 * ($m - $k) / (1 - $k)),
+            (int) (100 * ($y - $k) / (1 - $k)),
+            (int) (100 * $k)
         );
     }
 
     public function toGray() : Gray
     {
-        return new Gray(($this->red * 0.21 + $this->green * 0.71 + $this->blue * 0.07) / 2.55);
+        return new Gray((int) (($this->red * 0.21 + $this->green * 0.71 + $this->blue * 0.07) / 2.55));
     }
 }

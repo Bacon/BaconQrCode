@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace BaconQrCode\Renderer\Path;
 
-final class Curve
+final class Curve implements OperationInterface
 {
     /**
      * @var float
@@ -73,5 +73,20 @@ final class Curve
     public function getY3() : float
     {
         return $this->y3;
+    }
+
+    /**
+     * @return self
+     */
+    public function translate(float $x, float $y) : OperationInterface
+    {
+        return new self(
+            $this->x1 + $x,
+            $this->y1 + $y,
+            $this->x2 + $x,
+            $this->y2 + $y,
+            $this->x3 + $x,
+            $this->y3 + $y
+        );
     }
 }

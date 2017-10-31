@@ -12,6 +12,7 @@ use BaconQrCode\Renderer\Path\EllipticArc;
 use BaconQrCode\Renderer\Path\Line;
 use BaconQrCode\Renderer\Path\Move;
 use BaconQrCode\Renderer\Path\Path;
+use BaconQrCode\Renderer\RendererStyle\Gradient;
 use XMLWriter;
 
 final class SvgImageBackEnd implements ImageBackEndInterface
@@ -32,6 +33,13 @@ final class SvgImageBackEnd implements ImageBackEndInterface
      * @var int|null
      */
     private $currentStack;
+
+    public function __construct()
+    {
+        if (! class_exists(XMLWriter::class)) {
+            throw new RuntimeException('You need to install the libxml extension to use this back end');
+        }
+    }
 
     public function new(int $size, ColorInterface $backgroundColor) : void
     {
@@ -137,7 +145,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         --$this->currentStack;
     }
 
-    public function drawPath(Path $path, ColorInterface $color) : void
+    public function drawPathWithColor(Path $path, ColorInterface $color) : void
     {
         if (null === $this->xmlWriter) {
             throw new RuntimeException('No image has been started');
@@ -217,6 +225,11 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         }
 
         $this->xmlWriter->endElement();
+    }
+
+    public function drawPathWithGradient(Path $path, Gradient $gradient) : void
+    {
+        // @todo
     }
 
     public function done() : string

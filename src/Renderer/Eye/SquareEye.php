@@ -5,8 +5,25 @@ namespace BaconQrCode\Renderer\Eye;
 
 use BaconQrCode\Renderer\Path\Path;
 
+/**
+ * Renders the eyes in their default square shape.
+ */
 final class SquareEye implements EyeInterface
 {
+    /**
+     * @var self|null
+     */
+    private static $instance;
+
+    private function __construct()
+    {
+    }
+
+    public static function instance() : self
+    {
+        return self::$instance ?: self::$instance = new self();
+    }
+
     public function getExternalPath() : Path
     {
         return (new Path())

@@ -16,6 +16,11 @@ final class Edge
     private $points = [];
 
     /**
+     * @var array<int[]>|null
+     */
+    private $simplifiedPoints;
+
+    /**
      * @var int
      */
     private $minX = PHP_INT_MAX;
@@ -67,16 +72,19 @@ final class Edge
         return $this->maxX;
     }
 
-    public function simplify() : void
+    public function getSimplifiedPoints() : array
     {
-        $points = $this->points;
-        $this->points = [];
-        $length = count($points);
+        if (null !== $this->simplifiedPoints) {
+            return $this->simplifiedPoints;
+        }
+
+        $points = [];
+        $length = count($this->points);
 
         for ($i = 0; $i < $length; ++$i) {
-            $previousPoint = $points[(0 === $i ? $length : $i) - 1];
-            $nextPoint = $points[($length - 1 === $i ? -1 : $i) + 1];
-            $currentPoint = $points[$i];
+            $previousPoint = $this->points[(0 === $i ? $length : $i) - 1];
+            $nextPoint = $this->points[($length - 1 === $i ? -1 : $i) + 1];
+            $currentPoint = $this->points[$i];
 
             if (($previousPoint[0] === $currentPoint[0] && $currentPoint[0] === $nextPoint[0])
                 || ($previousPoint[1] === $currentPoint[1] && $currentPoint[1] === $nextPoint[1])
@@ -84,7 +92,9 @@ final class Edge
                 continue;
             }
 
-            $this->points[] = $currentPoint;
+            $points[] = $currentPoint;
         }
+
+        return $this->simplifiedPoints = $points;
     }
 }

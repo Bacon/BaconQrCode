@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace BaconQrCode\Renderer\Path;
 
-final class EllipticArc
+final class EllipticArc implements OperationInterface
 {
     private const ZERO_TOLERANCE = 1e-05;
 
@@ -93,6 +93,22 @@ final class EllipticArc
     public function getY() : float
     {
         return $this->y;
+    }
+
+    /**
+     * @return self
+     */
+    public function translate(float $x, float $y) : OperationInterface
+    {
+        return new self(
+            $this->xRadius,
+            $this->yRadius,
+            $this->xAxisAngle,
+            $this->largeArc,
+            $this->sweep,
+            $this->x + $x,
+            $this->y + $y
+        );
     }
 
     /**

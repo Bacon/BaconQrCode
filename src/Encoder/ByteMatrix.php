@@ -39,7 +39,7 @@ final class ByteMatrix
         $this->bytes = new SplFixedArray($height);
 
         for ($y = 0; $y < $height; ++$y) {
-            $this->bytes[$y] = new SplFixedArray($width);
+            $this->bytes[$y] = SplFixedArray::fromArray(array_fill(0, $width, 0));
         }
     }
 

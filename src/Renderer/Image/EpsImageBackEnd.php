@@ -15,6 +15,7 @@ use BaconQrCode\Renderer\Path\EllipticArc;
 use BaconQrCode\Renderer\Path\Line;
 use BaconQrCode\Renderer\Path\Move;
 use BaconQrCode\Renderer\Path\Path;
+use BaconQrCode\Renderer\RendererStyle\Gradient;
 
 final class EpsImageBackEnd implements ImageBackEndInterface
 {
@@ -43,10 +44,10 @@ final class EpsImageBackEnd implements ImageBackEndInterface
             . "/l { lineto } bind def\n"
             . "/c { curveto } bind def\n"
             . "/z { closepath } bind def\n"
-            . "/f { fill } bind def\n"
+            . "/f { eofill } bind def\n"
             . "/rgb { setrgbcolor } bind def\n"
             . "/cmyk { setcmykcolor } bind def\n"
-            . "/gray { setgraycolor } bind def\n"
+            . "/gray { setgray } bind def\n"
             . "%%EndProlog\n"
             . "1 -1 s\n"
             . sprintf("0 -%d t\n", $size);
@@ -112,7 +113,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         $this->eps .= "Q\n";
     }
 
-    public function drawPath(Path $path, ColorInterface $color) : void
+    public function drawPathWithColor(Path $path, ColorInterface $color) : void
     {
         if (null === $this->eps) {
             throw new RuntimeException('No image has been started');
@@ -131,6 +132,11 @@ final class EpsImageBackEnd implements ImageBackEndInterface
             75,
             "\n "
         );
+    }
+
+    public function drawPathWithGradient(Path $path, Gradient $gradient) : void
+    {
+        // @todo
     }
 
     public function done() : string

@@ -6,6 +6,7 @@ namespace BaconQrCode\Renderer\Image;
 use BaconQrCode\Exception\RuntimeException;
 use BaconQrCode\Renderer\Color\ColorInterface;
 use BaconQrCode\Renderer\Path\Path;
+use BaconQrCode\Renderer\RendererStyle\Gradient;
 
 /**
  * Interface for back ends able to to produce path based images.
@@ -59,7 +60,14 @@ interface ImageBackEndInterface
      *
      * @throws RuntimeException if no image was started yet.
      */
-    public function drawPath(Path $path, ColorInterface $color) : void;
+    public function drawPathWithColor(Path $path, ColorInterface $color) : void;
+
+    /**
+     * Draws a path with a given gradient.
+     *
+     * @throws RuntimeException if no image was started yet.
+     */
+    public function drawPathWithGradient(Path $path, Gradient $gradient) : void;
 
     /**
      * Ends the image drawing operation and returns the resulting blob.

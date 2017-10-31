@@ -15,6 +15,7 @@ use BaconQrCode\Renderer\Path\EllipticArc;
 use BaconQrCode\Renderer\Path\Line;
 use BaconQrCode\Renderer\Path\Move;
 use BaconQrCode\Renderer\Path\Path;
+use BaconQrCode\Renderer\RendererStyle\Gradient;
 use Imagick;
 use ImagickDraw;
 use ImagickPixel;
@@ -43,6 +44,10 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
 
     public function __construct(string $imageFormat = 'png', int $compressionQuality = 100)
     {
+        if (! class_exists(Imagick::class)) {
+            throw new RuntimeException('You need to install the imagick extension to use this back end');
+        }
+
         $this->imageFormat = $imageFormat;
         $this->compressionQuality = $compressionQuality;
     }
@@ -101,7 +106,7 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
         $this->draw->pop();
     }
 
-    public function drawPath(Path $path, ColorInterface $color) : void
+    public function drawPathWithColor(Path $path, ColorInterface $color) : void
     {
         if (null === $this->draw) {
             throw new RuntimeException('No image has been started');
@@ -153,6 +158,11 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
         }
 
         $this->draw->pathFinish();
+    }
+
+    public function drawPathWithGradient(Path $path, Gradient $gradient) : void
+    {
+        // @todo
     }
 
     public function done() : string

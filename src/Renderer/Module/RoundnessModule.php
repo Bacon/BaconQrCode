@@ -36,8 +36,7 @@ final class RoundnessModule implements ModuleInterface
         $path = new Path();
 
         foreach (new EdgeIterator($matrix) as $edge) {
-            $edge->simplify();
-            $points = $edge->getPoints();
+            $points = $edge->getSimplifiedPoints();
             $length = count($points);
 
             $currentPoint = $points[0];

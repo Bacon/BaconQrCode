@@ -19,12 +19,12 @@ slow in PHP, it was exchanged with the implementation by Phil Karn.
 ## Example usage
 ```php
 use BaconQrCode\Renderer\ImageRenderer;
-use BaconQrCode\Renderer\RendererStyle;
 use BaconQrCode\Renderer\Image\ImagickImageBackEnd;
+use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Writer;
 
 $renderer = new ImageRenderer(
-    RendererStyle::default(400),
+    new RendererStyle(400),
     new ImagickImageBackEnd()
 );
 $writer = new Writer($renderer);
