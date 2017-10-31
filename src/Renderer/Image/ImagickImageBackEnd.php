@@ -160,8 +160,14 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
         $this->draw->pathFinish();
     }
 
-    public function drawPathWithGradient(Path $path, Gradient $gradient) : void
-    {
+    public function drawPathWithGradient(
+        Path $path,
+        Gradient $gradient,
+        float $x,
+        float $y,
+        float $width,
+        float $height
+    ) : void {
         // @todo
     }
 

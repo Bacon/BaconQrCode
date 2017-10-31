@@ -57,7 +57,14 @@ final class ImageRenderer implements RendererInterface
         $modulePath = $this->drawEyes($matrixSize, $module->createPath($moduleMatrix));
 
         if ($fill->hasGradientFill()) {
-            $this->imageBackEnd->drawPathWithGradient($modulePath, $fill->getForegroundGradient());
+            $this->imageBackEnd->drawPathWithGradient(
+                $modulePath,
+                $fill->getForegroundGradient(),
+                0,
+                0,
+                $matrixSize,
+                $matrixSize
+            );
         } else {
             $this->imageBackEnd->drawPathWithColor($modulePath, $fill->getForegroundColor());
         }

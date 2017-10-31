@@ -16,6 +16,7 @@ use BaconQrCode\Renderer\Path\Line;
 use BaconQrCode\Renderer\Path\Move;
 use BaconQrCode\Renderer\Path\Path;
 use BaconQrCode\Renderer\RendererStyle\Gradient;
+use BaconQrCode\Renderer\RendererStyle\GradientType;
 
 final class EpsImageBackEnd implements ImageBackEndInterface
 {
@@ -62,7 +63,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
             . sprintf(' %s %s l', (string) $size, (string) $size)
             . sprintf(' 0 %s l', (string) $size)
             . ' z'
-            . ' ' .$this->getColorString($backgroundColor) . " f\n",
+            . ' ' .$this->getColorSetString($backgroundColor) . " f\n",
             75,
             "\n "
         );
@@ -128,15 +129,42 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         $this->eps .= wordwrap(
             'n '
             . $this->drawPathOperations($path, $fromX, $fromY)
-            . ' ' . $this->getColorString($color) . " f\n",
+            . ' ' . $this->getColorSetString($color) . " f\n",
             75,
             "\n "
         );
     }
 
-    public function drawPathWithGradient(Path $path, Gradient $gradient) : void
-    {
-        // @todo
+    public function drawPathWithGradient(
+        Path $path,
+        Gradient $gradient,
+        float $x,
+        float $y,
+        float $width,
+        float $height
+    ) : void {
+        if (null === $this->eps) {
+            throw new RuntimeException('No image has been started');
+        }
+
+        $startColor = $gradient->getStartColor();
+        $endColor = $gradient->getEndColor();
+
+        if ($startColor instanceof Alpha && $endColor instanceof Alpha
+            && 0 === $startColor->getAlpha() && 0 === $endColor->getAlpha()
+        ) {
+            return;
+        }
+
+        $fromX = 0;
+        $fromY = 0;
+        $this->eps .= wordwrap(
+            'q n ' . $this->drawPathOperations($path, $fromX, $fromY) . "\n",
+            75,
+            "\n "
+        );
+
+        $this->createGradientFill($gradient, $x, $y, $width, $height);
     }
 
     public function done() : string
@@ -196,32 +224,164 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         return implode(' ', $pathData);
     }
 
+    private function createGradientFill(Gradient $gradient, float $x, float $y, float $width, float $height) : void
+    {
+        $startColor = $gradient->getStartColor();
+        $endColor = $gradient->getEndColor();
+
+        if ($startColor instanceof Alpha) {
+            $startColor = $startColor->getBaseColor();
+        }
+
+        $startColorType = get_class($startColor);
+
+        if (! in_array($startColorType, [Rgb::class, Cmyk::class, Gray::class])) {
+            $startColorType = Cmyk::class;
+            $startColor = $startColor->toCmyk();
+        }
+
+        if (get_class($endColor) !== $startColorType) {
+            switch ($startColorType) {
+                case Cmyk::class:
+                    $endColor = $endColor->toCmyk();
+                    break;
+
+                case Rgb::class:
+                    $endColor = $endColor->toRgb();
+                    break;
+
+                case Gray::class:
+                    $endColor = $endColor->toGray();
+                    break;
+            }
+        }
+
+        $this->eps .= "eoclip\n<<\n";
+
+        if ($gradient->getType() === GradientType::RADIAL()) {
+            $this->eps .= " /ShadingType 3\n";
+        } else {
+            $this->eps .= " /ShadingType 2\n";
+        }
+
+        $this->eps .= " /Extend [ true true ]\n"
+            . " /AntiAlias true\n";
+
+        switch ($startColorType) {
+            case Cmyk::class:
+                $this->eps .= " /ColorSpace /DeviceCMYK\n";
+                break;
+
+            case Rgb::class:
+                $this->eps .= " /ColorSpace /DeviceRGB\n";
+                break;
+
+            case Gray::class:
+                $this->eps .= " /ColorSpace /DeviceGray\n";
+                break;
+        }
+
+        switch ($gradient->getType()) {
+            case GradientType::HORIZONTAL():
+                $this->eps .= sprintf(
+                    " /Coords [ %s %s %s %s ]\n",
+                    round($x, self::PRECISION),
+                    round($y, self::PRECISION),
+                    round($x + $width, self::PRECISION),
+                    round($y, self::PRECISION)
+                );
+                break;
+
+            case GradientType::VERTICAL():
+                $this->eps .= sprintf(
+                    " /Coords [ %s %s %s %s ]\n",
+                    round($x, self::PRECISION),
+                    round($y, self::PRECISION),
+                    round($x, self::PRECISION),
+                    round($y + $height, self::PRECISION)
+                );
+                break;
+
+            case GradientType::DIAGONAL():
+                $this->eps .= sprintf(
+                    " /Coords [ %s %s %s %s ]\n",
+                    round($x, self::PRECISION),
+                    round($y, self::PRECISION),
+                    round($x + $width, self::PRECISION),
+                    round($y + $height, self::PRECISION)
+                );
+                break;
+
+            case GradientType::INVERSE_DIAGONAL():
+                $this->eps .= sprintf(
+                    " /Coords [ %s %s %s %s ]\n",
+                    round($x, self::PRECISION),
+                    round($y + $height, self::PRECISION),
+                    round($x + $width, self::PRECISION),
+                    round($y, self::PRECISION)
+                );
+                break;
+
+            case GradientType::RADIAL():
+                $centerX = ($x + $width) / 2;
+                $centerY = ($y + $height) / 2;
+
+                $this->eps .= sprintf(
+                    " /Coords [ %s %s 0 %s %s %s ]\n",
+                    round($centerX, self::PRECISION),
+                    round($centerY, self::PRECISION),
+                    round($centerX, self::PRECISION),
+                    round($centerY, self::PRECISION),
+                    round(max($width, $height), self::PRECISION)
+                );
+                break;
+        }
+
+        $this->eps .= " /Function\n"
+            . " <<\n"
+            . "  /FunctionType 2\n"
+            . "  /Domain [ 0 1 ]\n"
+            . sprintf("  /C0 [ %s ]\n", $this->getColorString($startColor))
+            . sprintf("  /C1 [ %s ]\n", $this->getColorString($endColor))
+            . "  /N 1\n"
+            . " >>\n>>\nshfill\nQ\n";
+    }
+
+    private function getColorSetString(ColorInterface $color) : string
+    {
+        if ($color instanceof Rgb) {
+            return $this->getColorString($color) . ' rgb';
+        }
+
+        if ($color instanceof Cmyk) {
+            return $this->getColorString($color) . ' cmyk';
+        }
+
+        if ($color instanceof Gray) {
+            return $this->getColorString($color) . ' gray';
+        }
+
+        return $this->getColorSetString($color->toCmyk());
+    }
+
     private function getColorString(ColorInterface $color) : string
     {
         if ($color instanceof Rgb) {
-            return sprintf(
-                '%s %s %s rgb',
-                (string) ($color->getRed() / 255),
-                (string) ($color->getGreen() / 255),
-                (string) ($color->getBlue() / 255)
-            );
+            return sprintf('%s %s %s', $color->getRed() / 255, $color->getGreen() / 255, $color->getBlue() / 255);
         }
 
         if ($color instanceof Cmyk) {
             return sprintf(
-                '%s %s %s %s cmyk',
-                (string) ($color->getCyan() / 100),
-                (string) ($color->getMagenta() / 100),
-                (string) ($color->getYellow() / 100),
-                (string) ($color->getBlack() / 100)
+                '%s %s %s %s',
+                $color->getCyan() / 100,
+                $color->getMagenta() / 100,
+                $color->getYellow() / 100,
+                $color->getBlack() / 100
             );
         }
 
         if ($color instanceof Gray) {
-            return sprintf(
-                '%s gray',
-                (string) ($color->getGray() / 100)
-            );
+            return sprintf('%s', $color->getGray() / 100);
         }
 
         return $this->getColorString($color->toCmyk());

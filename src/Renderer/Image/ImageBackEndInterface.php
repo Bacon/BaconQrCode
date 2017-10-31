@@ -63,11 +63,18 @@ interface ImageBackEndInterface
     public function drawPathWithColor(Path $path, ColorInterface $color) : void;
 
     /**
-     * Draws a path with a given gradient.
+     * Draws a path with a given gradient which spans the box described by the position and size.
      *
      * @throws RuntimeException if no image was started yet.
      */
-    public function drawPathWithGradient(Path $path, Gradient $gradient) : void;
+    public function drawPathWithGradient(
+        Path $path,
+        Gradient $gradient,
+        float $x,
+        float $y,
+        float $width,
+        float $height
+    ) : void;
 
     /**
      * Ends the image drawing operation and returns the resulting blob.
