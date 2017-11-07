@@ -332,7 +332,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
                     round($centerY, self::PRECISION),
                     round($centerX, self::PRECISION),
                     round($centerY, self::PRECISION),
-                    round(max($width, $height), self::PRECISION)
+                    round(max($width, $height) / 2, self::PRECISION)
                 );
                 break;
         }

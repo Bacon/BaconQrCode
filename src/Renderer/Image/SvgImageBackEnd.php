@@ -13,6 +13,7 @@ use BaconQrCode\Renderer\Path\Line;
 use BaconQrCode\Renderer\Path\Move;
 use BaconQrCode\Renderer\Path\Path;
 use BaconQrCode\Renderer\RendererStyle\Gradient;
+use BaconQrCode\Renderer\RendererStyle\GradientType;
 use XMLWriter;
 
 final class SvgImageBackEnd implements ImageBackEndInterface
@@ -34,6 +35,11 @@ final class SvgImageBackEnd implements ImageBackEndInterface
      */
     private $currentStack;
 
+    /**
+     * @var int|null
+     */
+    private $gradientCount;
+
     public function __construct()
     {
         if (! class_exists(XMLWriter::class)) {
@@ -54,6 +60,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         $this->xmlWriter->writeAttribute('height', $size . 'px');
         $this->xmlWriter->writeAttribute('viewBox', '0 0 '. $size . ' ' . $size);
 
+        $this->gradientCount = 0;
         $this->currentStack = 0;
         $this->stack[0] = 0;
 
@@ -161,6 +168,67 @@ final class SvgImageBackEnd implements ImageBackEndInterface
             return;
         }
 
+        $this->startPathElement($path);
+        $this->xmlWriter->writeAttribute('fill', $this->getColorString($color));
+
+        if ($alpha < 1) {
+            $this->xmlWriter->writeAttribute('fill-opacity', (string) $alpha);
+        }
+
+        $this->xmlWriter->endElement();
+    }
+
+    public function drawPathWithGradient(
+        Path $path,
+        Gradient $gradient,
+        float $x,
+        float $y,
+        float $width,
+        float $height
+    ) : void {
+        if (null === $this->xmlWriter) {
+            throw new RuntimeException('No image has been started');
+        }
+
+        $startColor = $gradient->getStartColor();
+        $endColor = $gradient->getEndColor();
+
+        if ($startColor instanceof Alpha && $endColor instanceof Alpha
+            && 0 === $startColor->getAlpha() && 0 === $endColor->getAlpha()
+        ) {
+            return;
+        }
+
+        $gradientId = $this->createGradientFill($gradient, $x, $y, $width, $height);
+        $this->startPathElement($path);
+        $this->xmlWriter->writeAttribute('fill', 'url(#' . $gradientId . ')');
+        $this->xmlWriter->endElement();
+    }
+
+    public function done() : string
+    {
+        if (null === $this->xmlWriter) {
+            throw new RuntimeException('No image has been started');
+        }
+
+        foreach ($this->stack as $openElements) {
+            for ($i = $openElements; $i > 0; --$i) {
+                $this->xmlWriter->endElement();
+            }
+        }
+
+        $this->xmlWriter->endDocument();
+        $blob = $this->xmlWriter->outputMemory(true);
+        $this->xmlWriter = null;
+        $this->stack = null;
+        $this->currentStack = null;
+        $this->gradientCount = null;
+
+        return $blob;
+    }
+
+    private function startPathElement(Path $path) : void
+    {
         $pathData = [];
 
         foreach ($path as $op) {
@@ -216,47 +284,88 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         }
 
         $this->xmlWriter->startElement('path');
-        $this->xmlWriter->writeAttribute('fill', $this->getColorString($color));
         $this->xmlWriter->writeAttribute('fill-rule', 'evenodd');
         $this->xmlWriter->writeAttribute('d', implode('', $pathData));
+    }
 
-        if ($alpha < 1) {
-            $this->xmlWriter->writeAttribute('fill-opacity', (string) $alpha);
+    private function createGradientFill(Gradient $gradient, float $x, float $y, float $width, float $height) : string
+    {
+        $this->xmlWriter->startElement('defs');
+
+        $startColor = $gradient->getStartColor();
+        $endColor = $gradient->getEndColor();
+
+        if ($gradient->getType() === GradientType::RADIAL()) {
+            $this->xmlWriter->startElement('radialGradient');
+        } else {
+            $this->xmlWriter->startElement('linearGradient');
+        }
+
+        $this->xmlWriter->writeAttribute('gradientUnits', 'userSpaceOnUse');
+
+        switch ($gradient->getType()) {
+            case GradientType::HORIZONTAL():
+                $this->xmlWriter->writeAttribute('x1', (string) round($x, self::PRECISION));
+                $this->xmlWriter->writeAttribute('y1', (string) round($y, self::PRECISION));
+                $this->xmlWriter->writeAttribute('x2', (string) round($x + $width, self::PRECISION));
+                $this->xmlWriter->writeAttribute('y2', (string) round($y, self::PRECISION));
+                break;
+
+            case GradientType::VERTICAL():
+                $this->xmlWriter->writeAttribute('x1', (string) round($x, self::PRECISION));
+                $this->xmlWriter->writeAttribute('y1', (string) round($y, self::PRECISION));
+                $this->xmlWriter->writeAttribute('x2', (string) round($x, self::PRECISION));
+                $this->xmlWriter->writeAttribute('y2', (string) round($y + $height, self::PRECISION));
+                break;
+
+            case GradientType::DIAGONAL():
+                $this->xmlWriter->writeAttribute('x1', (string) round($x, self::PRECISION));
+                $this->xmlWriter->writeAttribute('y1', (string) round($y, self::PRECISION));
+                $this->xmlWriter->writeAttribute('x2', (string) round($x + $width, self::PRECISION));
+                $this->xmlWriter->writeAttribute('y2', (string) round($y + $height, self::PRECISION));
+                break;
+
+            case GradientType::INVERSE_DIAGONAL():
+                $this->xmlWriter->writeAttribute('x1', (string) round($x, self::PRECISION));
+                $this->xmlWriter->writeAttribute('y1', (string) round($y + $height, self::PRECISION));
+                $this->xmlWriter->writeAttribute('x2', (string) round($x + $width, self::PRECISION));
+                $this->xmlWriter->writeAttribute('y2', (string) round($y, self::PRECISION));
+                break;
+
+            case GradientType::RADIAL():
+                $this->xmlWriter->writeAttribute('cx', (string) round(($x + $width) / 2, self::PRECISION));
+                $this->xmlWriter->writeAttribute('cy', (string) round(($y + $height) / 2, self::PRECISION));
+                $this->xmlWriter->writeAttribute('r', (string) round(max($width, $height) / 2, self::PRECISION));
+                break;
+        }
+
+        $id = sprintf('g%d', ++$this->gradientCount);
+        $this->xmlWriter->writeAttribute('id', $id);
+
+        $this->xmlWriter->startElement('stop');
+        $this->xmlWriter->writeAttribute('offset', '0%');
+        $this->xmlWriter->writeAttribute('stop-color', $this->getColorString($startColor));
+
+        if ($startColor instanceof Alpha) {
+            $this->xmlWriter->writeAttribute('stop-opacity', $startColor->getAlpha());
         }
 
         $this->xmlWriter->endElement();
-    }
 
-    public function drawPathWithGradient(
-        Path $path,
-        Gradient $gradient,
-        float $x,
-        float $y,
-        float $width,
-        float $height
-    ) : void {
-        // @todo
-    }
+        $this->xmlWriter->startElement('stop');
+        $this->xmlWriter->writeAttribute('offset', '100%');
+        $this->xmlWriter->writeAttribute('stop-color', $this->getColorString($endColor));
 
-    public function done() : string
-    {
-        if (null === $this->xmlWriter) {
-            throw new RuntimeException('No image has been started');
+        if ($endColor instanceof Alpha) {
+            $this->xmlWriter->writeAttribute('stop-opacity', $endColor->getAlpha());
         }
 
-        foreach ($this->stack as $openElements) {
-            for ($i = $openElements; $i > 0; --$i) {
-                $this->xmlWriter->endElement();
-            }
-        }
+        $this->xmlWriter->endElement();
 
-        $this->xmlWriter->endDocument();
-        $blob = $this->xmlWriter->outputMemory(true);
-        $this->xmlWriter = null;
-        $this->stack = null;
-        $this->currentStack = null;
+        $this->xmlWriter->endElement();
+        $this->xmlWriter->endElement();
 
-        return $blob;
+        return $id;
     }
 
     private function getColorString(ColorInterface $color) : string
