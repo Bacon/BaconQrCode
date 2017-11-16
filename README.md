@@ -22,3 +22,9 @@ $renderer->setWidth(256);
 $writer = new \BaconQrCode\Writer($renderer);
 $writer->writeFile('Hello World!', 'qrcode.png');
 ```
+
+
+Run tests
+---------
+`vendor\bin\phpunit --bootstrap tests/bootstrap.php --configuration tests/phpunit.xml tests` on Windows
+`vendor/bin/phpunit --bootstrap tests/bootstrap.php --configuration tests/phpunit.xml tests` on Linux

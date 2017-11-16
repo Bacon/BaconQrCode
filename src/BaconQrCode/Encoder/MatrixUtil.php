@@ -316,6 +316,11 @@ class MatrixUtil
         while ($value !== 0) {
             $value >>= 1;
             $numDigits++;
+            // If 32 bit php is used, $value could be -1 on integer overflow.
+            // And this causes infinite loop on test run.
+            if ($value === -1) {
+                break;
+            }
         }
 
         return $numDigits;
