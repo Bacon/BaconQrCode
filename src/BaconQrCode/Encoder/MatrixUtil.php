@@ -220,7 +220,7 @@ class MatrixUtil
      */
     protected static function makeTypeInfoBits(ErrorCorrectionLevel $level, $maskPattern, BitArray $bits)
     {
-        $typeInfo = ($level->get() << 3) | $maskPattern;
+        $typeInfo = ((int) $level->get() << 3) | $maskPattern;
         $bits->appendBits($typeInfo, 5);
 
         $bchCode = self::calculateBchCode($typeInfo, self::$typeInfoPoly);
