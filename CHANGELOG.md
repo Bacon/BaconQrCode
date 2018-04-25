@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- [#25](https://github.com/bacon/bacon-qr-code/pull/25) allows for setting a more compact text output
+- [#25](https://github.com/Bacon/BaconQrCode/pull/25) allows for setting a more compact text output
 
 - CHANGELOG.md added (how meta)
 
