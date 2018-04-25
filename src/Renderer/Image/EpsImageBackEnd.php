@@ -120,10 +120,6 @@ final class EpsImageBackEnd implements ImageBackEndInterface
             throw new RuntimeException('No image has been started');
         }
 
-        if ($color instanceof Alpha && 0 === $color->getAlpha()) {
-            return;
-        }
-
         $fromX = 0;
         $fromY = 0;
         $this->eps .= wordwrap(
@@ -145,15 +141,6 @@ final class EpsImageBackEnd implements ImageBackEndInterface
     ) : void {
         if (null === $this->eps) {
             throw new RuntimeException('No image has been started');
-        }
-
-        $startColor = $gradient->getStartColor();
-        $endColor = $gradient->getEndColor();
-
-        if ($startColor instanceof Alpha && $endColor instanceof Alpha
-            && 0 === $startColor->getAlpha() && 0 === $endColor->getAlpha()
-        ) {
-            return;
         }
 
         $fromX = 0;

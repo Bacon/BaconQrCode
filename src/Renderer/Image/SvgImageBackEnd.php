@@ -56,8 +56,8 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         $this->xmlWriter->startElement('svg');
         $this->xmlWriter->writeAttribute('xmlns', 'http://www.w3.org/2000/svg');
         $this->xmlWriter->writeAttribute('version', '1.1');
-        $this->xmlWriter->writeAttribute('width', $size . 'px');
-        $this->xmlWriter->writeAttribute('height', $size . 'px');
+        $this->xmlWriter->writeAttribute('width', (string) $size);
+        $this->xmlWriter->writeAttribute('height', (string) $size);
         $this->xmlWriter->writeAttribute('viewBox', '0 0 '. $size . ' ' . $size);
 
         $this->gradientCount = 0;
@@ -164,10 +164,6 @@ final class SvgImageBackEnd implements ImageBackEndInterface
             $alpha = $color->getAlpha() / 100;
         }
 
-        if (0 === $alpha) {
-            return;
-        }
-
         $this->startPathElement($path);
         $this->xmlWriter->writeAttribute('fill', $this->getColorString($color));
 
@@ -188,15 +184,6 @@ final class SvgImageBackEnd implements ImageBackEndInterface
     ) : void {
         if (null === $this->xmlWriter) {
             throw new RuntimeException('No image has been started');
-        }
-
-        $startColor = $gradient->getStartColor();
-        $endColor = $gradient->getEndColor();
-
-        if ($startColor instanceof Alpha && $endColor instanceof Alpha
-            && 0 === $startColor->getAlpha() && 0 === $endColor->getAlpha()
-        ) {
-            return;
         }
 
         $gradientId = $this->createGradientFill($gradient, $x, $y, $width, $height);
