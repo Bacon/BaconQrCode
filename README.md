@@ -18,6 +18,7 @@ slow in PHP, it was exchanged with the implementation by Phil Karn.
 
 ## Example usage
 ```php
+require_once("<Filepath>/vendor/autoload.php"); //include all files in the downloaded otphp package
 use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\Image\ImagickImageBackEnd;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
@@ -29,6 +30,27 @@ $renderer = new ImageRenderer(
 );
 $writer = new Writer($renderer);
 $writer->writeFile('Hello World!', 'qrcode.png');
+```
+
+## Example to create an SVG in current file
+
+```php
+require_once("<Filepath>/vendor/autoload.php"); //include all files in the downloaded otphp package
+
+use BaconQrCode\Renderer\ImageRenderer;
+use BaconQrCode\Renderer\Image\SvgImageBackEnd;
+use BaconQrCode\Renderer\RendererStyle\RendererStyle;
+use BaconQrCode\Writer;
+
+$renderer = new ImageRenderer(
+    new RendererStyle(400),
+    new SvgImageBackEnd()
+);
+$writer = new Writer($renderer);
+
+$qr_image = $writer->writeString($stringToMakeImage);
+echo "$qr_image";
+
 ```
 
 ## Available image renderer back ends
