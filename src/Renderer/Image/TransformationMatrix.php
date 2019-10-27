@@ -47,7 +47,8 @@ final class TransformationMatrix
     public static function rotate(int $degrees) : self
     {
         $matrix = new self();
-        $matrix->values = [cos($degrees), sin($degrees), -sin($degrees), cos($degrees), 0, 0];
+        $rad = deg2rad($degrees);
+        $matrix->values = [cos($rad), sin($rad), -sin($rad), cos($rad), 0, 0];
         return $matrix;
     }
 
@@ -61,7 +62,7 @@ final class TransformationMatrix
     {
         return [
             $x * $this->values[0] + $y * $this->values[2] + $this->values[4],
-            $x * $this->values[2] + $x * $this->values[3] + $this->values[5],
+            $x * $this->values[1] + $y * $this->values[3] + $this->values[5],
         ];
     }
 }
