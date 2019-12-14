@@ -97,7 +97,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         $this->xmlWriter->startElement('g');
         $this->xmlWriter->writeAttribute(
             'transform',
-            sprintf('scale(%s)', round($size, self::PRECISION))
+            sprintf('scale(%s)', number_format($size, self::PRECISION))
         );
         ++$this->stack[$this->currentStack];
     }
@@ -111,7 +111,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         $this->xmlWriter->startElement('g');
         $this->xmlWriter->writeAttribute(
             'transform',
-            sprintf('translate(%s,%s)', round($x, self::PRECISION), round($y, self::PRECISION))
+            sprintf('translate(%s,%s)', number_format($x, self::PRECISION), number_format($y, self::PRECISION))
         );
         ++$this->stack[$this->currentStack];
     }
@@ -223,41 +223,41 @@ final class SvgImageBackEnd implements ImageBackEndInterface
                 case $op instanceof Move:
                     $pathData[] = sprintf(
                         'M%s %s',
-                        round($op->getX(), self::PRECISION),
-                        round($op->getY(), self::PRECISION)
+                        number_format($op->getX(), self::PRECISION),
+                        number_format($op->getY(), self::PRECISION)
                     );
                     break;
 
                 case $op instanceof Line:
                     $pathData[] = sprintf(
                         'L%s %s',
-                        round($op->getX(), self::PRECISION),
-                        round($op->getY(), self::PRECISION)
+                        number_format($op->getX(), self::PRECISION),
+                        number_format($op->getY(), self::PRECISION)
                     );
                     break;
 
                 case $op instanceof EllipticArc:
                     $pathData[] = sprintf(
                         'A%s %s %s %u %u %s %s',
-                        round($op->getXRadius(), self::PRECISION),
-                        round($op->getYRadius(), self::PRECISION),
-                        round($op->getXAxisAngle(), self::PRECISION),
+                        number_format($op->getXRadius(), self::PRECISION),
+                        number_format($op->getYRadius(), self::PRECISION),
+                        number_format($op->getXAxisAngle(), self::PRECISION),
                         $op->isLargeArc(),
                         $op->isSweep(),
-                        round($op->getX(), self::PRECISION),
-                        round($op->getY(), self::PRECISION)
+                        number_format($op->getX(), self::PRECISION),
+                        number_format($op->getY(), self::PRECISION)
                     );
                     break;
 
                 case $op instanceof Curve:
                     $pathData[] = sprintf(
                         'C%s %s %s %s %s %s',
-                        round($op->getX1(), self::PRECISION),
-                        round($op->getY1(), self::PRECISION),
-                        round($op->getX2(), self::PRECISION),
-                        round($op->getY2(), self::PRECISION),
-                        round($op->getX3(), self::PRECISION),
-                        round($op->getY3(), self::PRECISION)
+                        number_format($op->getX1(), self::PRECISION),
+                        number_format($op->getY1(), self::PRECISION),
+                        number_format($op->getX2(), self::PRECISION),
+                        number_format($op->getY2(), self::PRECISION),
+                        number_format($op->getX3(), self::PRECISION),
+                        number_format($op->getY3(), self::PRECISION)
                     );
                     break;
 
@@ -292,37 +292,37 @@ final class SvgImageBackEnd implements ImageBackEndInterface
 
         switch ($gradient->getType()) {
             case GradientType::HORIZONTAL():
-                $this->xmlWriter->writeAttribute('x1', (string) round($x, self::PRECISION));
-                $this->xmlWriter->writeAttribute('y1', (string) round($y, self::PRECISION));
-                $this->xmlWriter->writeAttribute('x2', (string) round($x + $width, self::PRECISION));
-                $this->xmlWriter->writeAttribute('y2', (string) round($y, self::PRECISION));
+                $this->xmlWriter->writeAttribute('x1', number_format($x, self::PRECISION));
+                $this->xmlWriter->writeAttribute('y1', number_format($y, self::PRECISION));
+                $this->xmlWriter->writeAttribute('x2', number_format($x + $width, self::PRECISION));
+                $this->xmlWriter->writeAttribute('y2', number_format($y, self::PRECISION));
                 break;
 
             case GradientType::VERTICAL():
-                $this->xmlWriter->writeAttribute('x1', (string) round($x, self::PRECISION));
-                $this->xmlWriter->writeAttribute('y1', (string) round($y, self::PRECISION));
-                $this->xmlWriter->writeAttribute('x2', (string) round($x, self::PRECISION));
-                $this->xmlWriter->writeAttribute('y2', (string) round($y + $height, self::PRECISION));
+                $this->xmlWriter->writeAttribute('x1', number_format($x, self::PRECISION));
+                $this->xmlWriter->writeAttribute('y1', number_format($y, self::PRECISION));
+                $this->xmlWriter->writeAttribute('x2', number_format($x, self::PRECISION));
+                $this->xmlWriter->writeAttribute('y2', number_format($y + $height, self::PRECISION));
                 break;
 
             case GradientType::DIAGONAL():
-                $this->xmlWriter->writeAttribute('x1', (string) round($x, self::PRECISION));
-                $this->xmlWriter->writeAttribute('y1', (string) round($y, self::PRECISION));
-                $this->xmlWriter->writeAttribute('x2', (string) round($x + $width, self::PRECISION));
-                $this->xmlWriter->writeAttribute('y2', (string) round($y + $height, self::PRECISION));
+                $this->xmlWriter->writeAttribute('x1', number_format($x, self::PRECISION));
+                $this->xmlWriter->writeAttribute('y1', number_format($y, self::PRECISION));
+                $this->xmlWriter->writeAttribute('x2', number_format($x + $width, self::PRECISION));
+                $this->xmlWriter->writeAttribute('y2', number_format($y + $height, self::PRECISION));
                 break;
 
             case GradientType::INVERSE_DIAGONAL():
-                $this->xmlWriter->writeAttribute('x1', (string) round($x, self::PRECISION));
-                $this->xmlWriter->writeAttribute('y1', (string) round($y + $height, self::PRECISION));
-                $this->xmlWriter->writeAttribute('x2', (string) round($x + $width, self::PRECISION));
-                $this->xmlWriter->writeAttribute('y2', (string) round($y, self::PRECISION));
+                $this->xmlWriter->writeAttribute('x1', number_format($x, self::PRECISION));
+                $this->xmlWriter->writeAttribute('y1', number_format($y + $height, self::PRECISION));
+                $this->xmlWriter->writeAttribute('x2', number_format($x + $width, self::PRECISION));
+                $this->xmlWriter->writeAttribute('y2', number_format($y, self::PRECISION));
                 break;
 
             case GradientType::RADIAL():
-                $this->xmlWriter->writeAttribute('cx', (string) round(($x + $width) / 2, self::PRECISION));
-                $this->xmlWriter->writeAttribute('cy', (string) round(($y + $height) / 2, self::PRECISION));
-                $this->xmlWriter->writeAttribute('r', (string) round(max($width, $height) / 2, self::PRECISION));
+                $this->xmlWriter->writeAttribute('cx', number_format(($x + $width) / 2, self::PRECISION));
+                $this->xmlWriter->writeAttribute('cy', number_format(($y + $height) / 2, self::PRECISION));
+                $this->xmlWriter->writeAttribute('r', number_format(max($width, $height) / 2, self::PRECISION));
                 break;
         }
 

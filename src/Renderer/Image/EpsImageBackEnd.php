@@ -75,7 +75,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
             throw new RuntimeException('No image has been started');
         }
 
-        $this->eps .= sprintf("%1\$s %1\$s s\n", round($size, self::PRECISION));
+        $this->eps .= sprintf("%1\$s %1\$s s\n", number_format($size, self::PRECISION));
     }
 
     public function translate(float $x, float $y) : void
@@ -84,7 +84,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
             throw new RuntimeException('No image has been started');
         }
 
-        $this->eps .= sprintf("%s %s t\n", round($x, self::PRECISION), round($y, self::PRECISION));
+        $this->eps .= sprintf("%s %s t\n", number_format($x, self::PRECISION), number_format($y, self::PRECISION));
     }
 
     public function rotate(int $degrees) : void
@@ -174,14 +174,14 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         foreach ($ops as $op) {
             switch (true) {
                 case $op instanceof Move:
-                    $fromX = $toX = round($op->getX(), self::PRECISION);
-                    $fromY = $toY = round($op->getY(), self::PRECISION);
+                    $fromX = $toX = number_format($op->getX(), self::PRECISION);
+                    $fromY = $toY = number_format($op->getY(), self::PRECISION);
                     $pathData[] = sprintf('%s %s m', $toX, $toY);
                     break;
 
                 case $op instanceof Line:
-                    $fromX = $toX = round($op->getX(), self::PRECISION);
-                    $fromY = $toY = round($op->getY(), self::PRECISION);
+                    $fromX = $toX = number_format($op->getX(), self::PRECISION);
+                    $fromY = $toY = number_format($op->getY(), self::PRECISION);
                     $pathData[] = sprintf('%s %s l', $toX, $toY);
                     break;
 
@@ -190,12 +190,12 @@ final class EpsImageBackEnd implements ImageBackEndInterface
                     break;
 
                 case $op instanceof Curve:
-                    $x1 = round($op->getX1(), self::PRECISION);
-                    $y1 = round($op->getY1(), self::PRECISION);
-                    $x2 = round($op->getX2(), self::PRECISION);
-                    $y2 = round($op->getY2(), self::PRECISION);
-                    $fromX = $x3 = round($op->getX3(), self::PRECISION);
-                    $fromY = $y3 = round($op->getY3(), self::PRECISION);
+                    $x1 = number_format($op->getX1(), self::PRECISION);
+                    $y1 = number_format($op->getY1(), self::PRECISION);
+                    $x2 = number_format($op->getX2(), self::PRECISION);
+                    $y2 = number_format($op->getY2(), self::PRECISION);
+                    $fromX = $x3 = number_format($op->getX3(), self::PRECISION);
+                    $fromY = $y3 = number_format($op->getY3(), self::PRECISION);
                     $pathData[] = sprintf('%s %s %s %s %s %s c', $x1, $y1, $x2, $y2, $x3, $y3);
                     break;
 
@@ -272,40 +272,40 @@ final class EpsImageBackEnd implements ImageBackEndInterface
             case GradientType::HORIZONTAL():
                 $this->eps .= sprintf(
                     " /Coords [ %s %s %s %s ]\n",
-                    round($x, self::PRECISION),
-                    round($y, self::PRECISION),
-                    round($x + $width, self::PRECISION),
-                    round($y, self::PRECISION)
+                    number_format($x, self::PRECISION),
+                    number_format($y, self::PRECISION),
+                    number_format($x + $width, self::PRECISION),
+                    number_format($y, self::PRECISION)
                 );
                 break;
 
             case GradientType::VERTICAL():
                 $this->eps .= sprintf(
                     " /Coords [ %s %s %s %s ]\n",
-                    round($x, self::PRECISION),
-                    round($y, self::PRECISION),
-                    round($x, self::PRECISION),
-                    round($y + $height, self::PRECISION)
+                    number_format($x, self::PRECISION),
+                    number_format($y, self::PRECISION),
+                    number_format($x, self::PRECISION),
+                    number_format($y + $height, self::PRECISION)
                 );
                 break;
 
             case GradientType::DIAGONAL():
                 $this->eps .= sprintf(
                     " /Coords [ %s %s %s %s ]\n",
-                    round($x, self::PRECISION),
-                    round($y, self::PRECISION),
-                    round($x + $width, self::PRECISION),
-                    round($y + $height, self::PRECISION)
+                    number_format($x, self::PRECISION),
+                    number_format($y, self::PRECISION),
+                    number_format($x + $width, self::PRECISION),
+                    number_format($y + $height, self::PRECISION)
                 );
                 break;
 
             case GradientType::INVERSE_DIAGONAL():
                 $this->eps .= sprintf(
                     " /Coords [ %s %s %s %s ]\n",
-                    round($x, self::PRECISION),
-                    round($y + $height, self::PRECISION),
-                    round($x + $width, self::PRECISION),
-                    round($y, self::PRECISION)
+                    number_format($x, self::PRECISION),
+                    number_format($y + $height, self::PRECISION),
+                    number_format($x + $width, self::PRECISION),
+                    number_format($y, self::PRECISION)
                 );
                 break;
 
@@ -315,11 +315,11 @@ final class EpsImageBackEnd implements ImageBackEndInterface
 
                 $this->eps .= sprintf(
                     " /Coords [ %s %s 0 %s %s %s ]\n",
-                    round($centerX, self::PRECISION),
-                    round($centerY, self::PRECISION),
-                    round($centerX, self::PRECISION),
-                    round($centerY, self::PRECISION),
-                    round(max($width, $height) / 2, self::PRECISION)
+                    number_format($centerX, self::PRECISION),
+                    number_format($centerY, self::PRECISION),
+                    number_format($centerX, self::PRECISION),
+                    number_format($centerY, self::PRECISION),
+                    number_format(max($width, $height) / 2, self::PRECISION)
                 );
                 break;
         }
