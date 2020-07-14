@@ -36,6 +36,6 @@ final class Move implements OperationInterface
      */
     public function translate(float $x, float $y) : OperationInterface
     {
-        return new self($this->x + $x, $this->x + $y);
+        return new self($this->x + $x, $this->y + $y);
     }
 }
