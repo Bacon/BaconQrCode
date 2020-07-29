@@ -1,41 +1,52 @@
-sudo: false
+dist: xenial
 
 language: php
 
+stages:
+  - name: "Lint"
+  - name: "PHP Unit tests"
+
 cache:
   directories:
-    - $HOME/.composer/cache
-    - $HOME/.local
-    - vendor
+    - $HOME/.composer/cache/
 
-matrix:
-  fast_finish: true
-  include:
-    - php: 7.1
-      env:
-        - EXECUTE_CS_CHECK=true
-        - EXECUTE_TEST_COVERALLS=true
-        - PATH="$HOME/.local/bin:$PATH"
-    - php: nightly
+install:
+  - composer install --no-interaction
+
+script:
+  - ./vendor/bin/phpunit --coverage-clover clover.xml
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
+jobs:
   allow_failures:
     - php: nightly
 
-before_install:
-  - if [[ $EXECUTE_TEST_COVERALLS != 'true' ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
-  - composer self-update
-  - if [[ $EXECUTE_TEST_COVERALLS == 'true' ]]; then composer require --dev --no-update satooshi/php-coveralls:2.0.0 ; fi
+  include:
+    - stage: "Lint"
+      name: "Lint files"
+      before_install: phpenv config-rm xdebug.ini
+      after_success: skip
+      script: ./vendor/bin/phpcs
 
-install:
-  - travis_retry composer install --no-interaction
-  - composer info -i
-
-script:
-  - if [[ $EXECUTE_TEST_COVERALLS == 'true' ]]; then vendor/bin/phpunit --coverage-clover clover.xml ; fi
-  - if [[ $EXECUTE_TEST_COVERALLS != 'true' ]]; then vendor/bin/phpunit ; fi
-  - if [[ $EXECUTE_CS_CHECK == 'true' ]]; then vendor/bin/phpcs ; fi
-
-after_script:
-  - if [[ $EXECUTE_TEST_COVERALLS == 'true' ]]; then vendor/bin/coveralls ; fi
+    - stage: "PHP Unit tests"
+      php: 7.1
+      name: "PHP 7.1"
+    - stage: "PHP Unit tests"
+      php: 7.2
+      name: "PHP 7.2"
+    - stage: "PHP Unit tests"
+      php: 7.3
+      name: "PHP 7.3"
+    - stage: "PHP Unit tests"
+      php: 7.4
+      name: "PHP 7.4"
+    - stage: "PHP Unit tests"
+      php: nightly
+      name: "PHP nightly"
+      install:
+        - composer install --no-interaction --ignore-platform-reqs
 
 notifications:
   email: true
