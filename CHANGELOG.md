@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 2.0.1 - 2020-xx-xx
+## 2.0.2 - 2020-xx-xx
 
 ### Changed
 
@@ -10,7 +10,7 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#71](https://github.com/Bacon/BaconQrCode/issues/71) Allow tests in vendor bundles for Debian packaging.
 - [#71](https://github.com/Bacon/BaconQrCode/issues/71) Update TravisCI config file.
 
-## 2.0.1 - 2020-12-14
+## 2.0.1 - 2020-07-14
 
 ### Fixed
 
