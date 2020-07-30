@@ -17,7 +17,9 @@ script:
   - ./vendor/bin/phpunit --coverage-clover clover.xml
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.2.0/php-coveralls.phar
+  - chmod +x php-coveralls.phar
+  - php php-coveralls.phar --verbose --coverage_clover clover.xml --json_path coveralls-upload.json
 
 jobs:
   allow_failures:
