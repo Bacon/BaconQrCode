@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 2.0.2 - 2020-xx-xx
+
+### Changed
+
+- [#71](https://github.com/Bacon/BaconQrCode/issues/71) Upgrade phpunit.
+- [#71](https://github.com/Bacon/BaconQrCode/issues/71) Allow tests in vendor bundles for Debian packaging.
+- [#71](https://github.com/Bacon/BaconQrCode/issues/71) Update TravisCI config file.
+
+## 2.0.1 - 2020-07-14
+
+### Fixed
+
+- [#69](https://github.com/Bacon/BaconQrCode/pull/69) SimpleCircleEye Class not working properly.
+
 ## 2.0.0 - 2018-04-25
 
 ### Added
