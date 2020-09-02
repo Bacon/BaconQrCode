@@ -48,7 +48,7 @@ final class Encoder
         string $content,
         ErrorCorrectionLevel $ecLevel,
         string $encoding = self::DEFAULT_BYTE_MODE_ECODING,
-        ?Version $versionNumber = null
+        ?Version $forcedVersion = null
     ) : QrCode {
         // Pick an encoding mode appropriate for the content. Note that this
         // will not attempt to use multiple modes / segments even if that were
@@ -84,8 +84,9 @@ final class Encoder
             + $dataBits->getSize();
         $provisionalVersion = self::chooseVersion($provisionalBitsNeeded, $ecLevel);
 
-        if (null !== $versionNumber) {
-            $version = $versionNumber;
+        if (null !== $forcedVersion) {
+            // Forced version number 
+            $version = $forcedVersion;
         } else {
             // Use that guess to calculate the right version. I am still not sure
             // this works in 100% of cases.
