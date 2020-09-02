@@ -41,7 +41,7 @@ final class Writer
         string $content,
         string $encoding = Encoder::DEFAULT_BYTE_MODE_ECODING,
         ?ErrorCorrectionLevel $ecLevel = null,
-        ?Version $versionNumber = null
+        ?Version $forcedVersion = null
     ) : string {
         if (strlen($content) === 0) {
             throw new InvalidArgumentException('Found empty contents');
@@ -51,7 +51,7 @@ final class Writer
             $ecLevel = ErrorCorrectionLevel::L();
         }
 
-        return $this->renderer->render(Encoder::encode($content, $ecLevel, $encoding, $versionNumber));
+        return $this->renderer->render(Encoder::encode($content, $ecLevel, $encoding, $forcedVersion));
     }
 
     /**
@@ -64,8 +64,8 @@ final class Writer
         string $filename,
         string $encoding = Encoder::DEFAULT_BYTE_MODE_ECODING,
         ?ErrorCorrectionLevel $ecLevel = null,
-        ?Version $versionNumber = null
+        ?Version $forcedVersion = null
     ) : void {
-        file_put_contents($filename, $this->writeString($content, $encoding, $ecLevel, $versionNumber));
+        file_put_contents($filename, $this->writeString($content, $encoding, $ecLevel, $forcedVersion));
     }
 }
