@@ -76,18 +76,18 @@ final class Encoder
         $dataBits = new BitArray();
         self::appendBytes($content, $mode, $dataBits, $encoding);
 
-        // Hard part: need to know version to know how many bits length takes.
-        // But need to know how many bits it takes to know version. First we
-        // take a guess at version by assuming version will be the minimum, 1:
-        $provisionalBitsNeeded = $headerBits->getSize()
-            + $mode->getCharacterCountBits(Version::getVersionForNumber(1))
-            + $dataBits->getSize();
-        $provisionalVersion = self::chooseVersion($provisionalBitsNeeded, $ecLevel);
-
         if (null !== $forcedVersion) {
             // Forced version number 
             $version = $forcedVersion;
         } else {
+            // Hard part: need to know version to know how many bits length takes.
+            // But need to know how many bits it takes to know version. First we
+            // take a guess at version by assuming version will be the minimum, 1:
+            $provisionalBitsNeeded = $headerBits->getSize()
+                + $mode->getCharacterCountBits(Version::getVersionForNumber(1))
+                + $dataBits->getSize();
+            $provisionalVersion = self::chooseVersion($provisionalBitsNeeded, $ecLevel);
+        
             // Use that guess to calculate the right version. I am still not sure
             // this works in 100% of cases.
             $bitsNeeded = $headerBits->getSize()
