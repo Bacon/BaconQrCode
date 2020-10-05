@@ -6,7 +6,7 @@
     "require": {
         "php": "^7.1 || ^8.0",
         "ext-iconv": "*",
-        "dasprid/enum": "^1.0"
+        "dasprid/enum": "^1.0.3"
     },
     "suggest": {
         "ext-imagick": "to generate QR code images"
