@@ -76,24 +76,29 @@ final class Encoder
         $dataBits = new BitArray();
         self::appendBytes($content, $mode, $dataBits, $encoding);
 
-        if (null !== $forcedVersion) {
-            // Forced version number 
-            $version = $forcedVersion;
-        } else {
-            // Hard part: need to know version to know how many bits length takes.
-            // But need to know how many bits it takes to know version. First we
-            // take a guess at version by assuming version will be the minimum, 1:
-            $provisionalBitsNeeded = $headerBits->getSize()
-                + $mode->getCharacterCountBits(Version::getVersionForNumber(1))
-                + $dataBits->getSize();
-            $provisionalVersion = self::chooseVersion($provisionalBitsNeeded, $ecLevel);
+        // Hard part: need to know version to know how many bits length takes.
+        // But need to know how many bits it takes to know version. First we
+        // take a guess at version by assuming version will be the minimum, 1:
+        $provisionalBitsNeeded = $headerBits->getSize()
+            + $mode->getCharacterCountBits(Version::getVersionForNumber(1))
+            + $dataBits->getSize();
+        $provisionalVersion = self::chooseVersion($provisionalBitsNeeded, $ecLevel);
+
+        // Use that guess to calculate the right version. I am still not sure
+        // this works in 100% of cases.
+        $bitsNeeded = $headerBits->getSize()
+            + $mode->getCharacterCountBits($provisionalVersion)
+            + $dataBits->getSize();
+        $version = self::chooseVersion($bitsNeeded, $ecLevel);
         
-            // Use that guess to calculate the right version. I am still not sure
-            // this works in 100% of cases.
-            $bitsNeeded = $headerBits->getSize()
-                + $mode->getCharacterCountBits($provisionalVersion)
-                + $dataBits->getSize();
-            $version = self::chooseVersion($bitsNeeded, $ecLevel);
+        if (null !== $forcedVersion) {
+            // Forced version check
+            if ($version->getVersionNumber() <= $forcedVersion->getVersionNumber()) {
+                // Calculated minimum version is same or equal as forced version
+                $version = $forcedVersion;
+            } else {
+                throw new WriterException('Invalid version! Calculated version: ' . $version->getVersionNumber() . ', requested version: ' . $forcedVersion->getVersionNumber());
+            }  
         }
 
         $headerAndDataBits = new BitArray();
