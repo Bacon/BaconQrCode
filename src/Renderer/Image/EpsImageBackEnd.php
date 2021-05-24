@@ -75,7 +75,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
             throw new RuntimeException('No image has been started');
         }
 
-        $this->eps .= sprintf("%1\$s %1\$s s\n", round($size, self::PRECISION));
+        $this->eps .= sprintf("%1\$1.".self::PRECISION."F %1\$1.".self::PRECISION."F s\n", round($size, self::PRECISION));
     }
 
     public function translate(float $x, float $y) : void
@@ -84,7 +84,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
             throw new RuntimeException('No image has been started');
         }
 
-        $this->eps .= sprintf("%s %s t\n", round($x, self::PRECISION), round($y, self::PRECISION));
+        $this->eps .= sprintf("%1.".self::PRECISION."F %1.".self::PRECISION."F t\n", round($x, self::PRECISION), round($y, self::PRECISION));
     }
 
     public function rotate(int $degrees) : void
@@ -176,13 +176,13 @@ final class EpsImageBackEnd implements ImageBackEndInterface
                 case $op instanceof Move:
                     $fromX = $toX = round($op->getX(), self::PRECISION);
                     $fromY = $toY = round($op->getY(), self::PRECISION);
-                    $pathData[] = sprintf('%s %s m', $toX, $toY);
+                    $pathData[] = sprintf('%1.".self::PRECISION."F %1.".self::PRECISION."F m', $toX, $toY);
                     break;
 
                 case $op instanceof Line:
                     $fromX = $toX = round($op->getX(), self::PRECISION);
                     $fromY = $toY = round($op->getY(), self::PRECISION);
-                    $pathData[] = sprintf('%s %s l', $toX, $toY);
+                    $pathData[] = sprintf('%1.".self::PRECISION."F %1.".self::PRECISION."F l', $toX, $toY);
                     break;
 
                 case $op instanceof EllipticArc:
@@ -196,7 +196,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
                     $y2 = round($op->getY2(), self::PRECISION);
                     $fromX = $x3 = round($op->getX3(), self::PRECISION);
                     $fromY = $y3 = round($op->getY3(), self::PRECISION);
-                    $pathData[] = sprintf('%s %s %s %s %s %s c', $x1, $y1, $x2, $y2, $x3, $y3);
+                    $pathData[] = sprintf('%1.".self::PRECISION."F %1.".self::PRECISION."F %1.".self::PRECISION."F %1.".self::PRECISION."F %1.".self::PRECISION."F %1.".self::PRECISION."F c', $x1, $y1, $x2, $y2, $x3, $y3);
                     break;
 
                 case $op instanceof Close:
@@ -271,7 +271,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         switch ($gradient->getType()) {
             case GradientType::HORIZONTAL():
                 $this->eps .= sprintf(
-                    " /Coords [ %s %s %s %s ]\n",
+                    " /Coords [ %1.".self::PRECISION."F %1.".self::PRECISION."F %1.".self::PRECISION."F %1.".self::PRECISION."F ]\n",
                     round($x, self::PRECISION),
                     round($y, self::PRECISION),
                     round($x + $width, self::PRECISION),
@@ -281,7 +281,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
 
             case GradientType::VERTICAL():
                 $this->eps .= sprintf(
-                    " /Coords [ %s %s %s %s ]\n",
+                    " /Coords [ %1.".self::PRECISION."F %1.".self::PRECISION."F %1.".self::PRECISION."F %1.".self::PRECISION."F ]\n",
                     round($x, self::PRECISION),
                     round($y, self::PRECISION),
                     round($x, self::PRECISION),
@@ -291,7 +291,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
 
             case GradientType::DIAGONAL():
                 $this->eps .= sprintf(
-                    " /Coords [ %s %s %s %s ]\n",
+                    " /Coords [ %1.".self::PRECISION."F %1.".self::PRECISION."F %1.".self::PRECISION."F %1.".self::PRECISION."F ]\n",
                     round($x, self::PRECISION),
                     round($y, self::PRECISION),
                     round($x + $width, self::PRECISION),
@@ -301,7 +301,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
 
             case GradientType::INVERSE_DIAGONAL():
                 $this->eps .= sprintf(
-                    " /Coords [ %s %s %s %s ]\n",
+                    " /Coords [ %1.".self::PRECISION."F %1.".self::PRECISION."F %1.".self::PRECISION."F %1.".self::PRECISION."F ]\n",
                     round($x, self::PRECISION),
                     round($y + $height, self::PRECISION),
                     round($x + $width, self::PRECISION),
@@ -314,7 +314,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
                 $centerY = ($y + $height) / 2;
 
                 $this->eps .= sprintf(
-                    " /Coords [ %s %s 0 %s %s %s ]\n",
+                    " /Coords [ %1.".self::PRECISION."F %1.".self::PRECISION."F 0 %1.".self::PRECISION."F %1.".self::PRECISION."F %1.".self::PRECISION."F ]\n",
                     round($centerX, self::PRECISION),
                     round($centerY, self::PRECISION),
                     round($centerX, self::PRECISION),
@@ -354,12 +354,12 @@ final class EpsImageBackEnd implements ImageBackEndInterface
     private function getColorString(ColorInterface $color) : string
     {
         if ($color instanceof Rgb) {
-            return sprintf('%s %s %s', $color->getRed() / 255, $color->getGreen() / 255, $color->getBlue() / 255);
+            return sprintf("%1.".self::PRECISION."F %1.".self::PRECISION."F %1.".self::PRECISION."F", $color->getRed() / 255, $color->getGreen() / 255, $color->getBlue() / 255);
         }
 
         if ($color instanceof Cmyk) {
             return sprintf(
-                '%s %s %s %s',
+                "% %1.".self::PRECISION."F %1.".self::PRECISION."F %1.".self::PRECISION."F",
                 $color->getCyan() / 100,
                 $color->getMagenta() / 100,
                 $color->getYellow() / 100,
@@ -368,7 +368,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         }
 
         if ($color instanceof Gray) {
-            return sprintf('%s', $color->getGray() / 100);
+            return sprintf("%1.".self::PRECISION."F", $color->getGray() / 100);
         }
 
         return $this->getColorString($color->toCmyk());
