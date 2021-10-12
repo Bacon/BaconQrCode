@@ -20,7 +20,7 @@ final class Encoder
     /**
      * Default byte encoding.
      */
-    public const DEFAULT_BYTE_MODE_ECODING = 'ISO-8859-1';
+    public const DEFAULT_BYTE_MODE_ECODING = 'UTF-8';
 
     /**
      * The original table is defined in the table 5 of JISX0510:2004 (p.19).
