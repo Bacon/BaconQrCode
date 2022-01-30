@@ -33,17 +33,14 @@ jobs:
       script: ./vendor/bin/phpcs
 
     - stage: "PHP Unit tests"
-      php: 7.1
-      name: "PHP 7.1"
-    - stage: "PHP Unit tests"
-      php: 7.2
-      name: "PHP 7.2"
-    - stage: "PHP Unit tests"
-      php: 7.3
-      name: "PHP 7.3"
-    - stage: "PHP Unit tests"
       php: 7.4
       name: "PHP 7.4"
+    - stage: "PHP Unit tests"
+      php: 8.0
+      name: "PHP 8.0"
+    - stage: "PHP Unit tests"
+      php: 8.1
+      name: "PHP 8.1"
     - stage: "PHP Unit tests"
       php: nightly
       name: "PHP nightly"
