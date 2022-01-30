@@ -1,7 +1,7 @@
 # QR Code generator
 
-[![Build Status](https://api.travis-ci.org/Bacon/BaconQrCode.png?branch=master)](http://travis-ci.org/Bacon/BaconQrCode)
-[![Coverage Status](https://coveralls.io/repos/github/Bacon/BaconQrCode/badge.svg?branch=master)](https://coveralls.io/github/Bacon/BaconQrCode?branch=master)
+[![PHP CI](https://github.com/Bacon/BaconQrCode/actions/workflows/ci.yml/badge.svg)](https://github.com/Bacon/BaconQrCode/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/Bacon/BaconQrCode/branch/master/graph/badge.svg?token=rD0HcAiEEx)](https://codecov.io/gh/Bacon/BaconQrCode)
 [![Latest Stable Version](https://poser.pugx.org/bacon/bacon-qr-code/v/stable)](https://packagist.org/packages/bacon/bacon-qr-code)
 [![Total Downloads](https://poser.pugx.org/bacon/bacon-qr-code/downloads)](https://packagist.org/packages/bacon/bacon-qr-code)
 [![License](https://poser.pugx.org/bacon/bacon-qr-code/license)](https://packagist.org/packages/bacon/bacon-qr-code)
