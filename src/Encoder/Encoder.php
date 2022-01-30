@@ -90,15 +90,20 @@ final class Encoder
             + $mode->getCharacterCountBits($provisionalVersion)
             + $dataBits->getSize();
         $version = self::chooseVersion($bitsNeeded, $ecLevel);
-        
+
         if (null !== $forcedVersion) {
             // Forced version check
             if ($version->getVersionNumber() <= $forcedVersion->getVersionNumber()) {
                 // Calculated minimum version is same or equal as forced version
                 $version = $forcedVersion;
             } else {
-                throw new WriterException('Invalid version! Calculated version: ' . $version->getVersionNumber() . ', requested version: ' . $forcedVersion->getVersionNumber());
-            }  
+                throw new WriterException(
+                    'Invalid version! Calculated version: '
+                    . $version->getVersionNumber()
+                    . ', requested version: '
+                    . $forcedVersion->getVersionNumber()
+                );
+            }
         }
 
         $headerAndDataBits = new BitArray();
