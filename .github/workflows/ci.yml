@@ -28,7 +28,9 @@ jobs:
       matrix:
         operating-system: [ubuntu-latest]
         php-versions: ['7.4', '8.0', '8.1']
+        arch: ['amd64', 'i386']
     runs-on: ${{ matrix.operating-system }}
+    container: shivammathur/node:latest-${{ matrix.arch }}
     steps:
       - uses: actions/checkout@v2
 
