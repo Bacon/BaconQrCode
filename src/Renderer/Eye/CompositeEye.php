@@ -33,6 +33,6 @@ final class CompositeEye implements EyeInterface
 
     public function getInternalPath() : Path
     {
-        return $this->externalEye->getInternalPath();
+        return $this->internalEye->getInternalPath();
     }
 }
