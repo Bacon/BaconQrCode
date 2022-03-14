@@ -39,6 +39,7 @@ final class GridEye implements EyeInterface
             ->ellipticArc(2.5, 2.5, 0, false, true, 0, -2.5)
             ->ellipticArc(2.5, 2.5, 0, false, true, 2.5, 0)
             ->close()
+        ;
     }
 
     public function getInternalPath() : Path
