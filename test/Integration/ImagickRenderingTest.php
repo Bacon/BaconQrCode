@@ -60,4 +60,46 @@ final class ImagickRenderingTest extends TestCase
         $this->assertMatchesFileSnapshot($tempName);
         unlink($tempName);
     }
+
+    public function testIssue105() : void
+    {
+        $squareModule = SquareModule::instance();
+        $gridEye = GridEye::instance();
+
+        $renderer1 = new ImageRenderer(
+                new RendererStyle(
+                        400,
+                        2,
+                        $squareModule,
+                        $gridEye,
+                        Fill::uniformColor(new Rgb(255, 255, 255), new Rgb(0, 0, 255))
+                ),
+                new ImagickImageBackEnd()
+        );
+        $writer1 = new Writer($renderer1);
+        $tempName1 = tempnam(sys_get_temp_dir(), 'test') . '.png';
+        $writer1->writeFile('rotation without eye color', $tempName1);
+
+        $this->assertMatchesFileSnapshot($tempName1);
+        unlink($tempName1);
+        
+        $eyeFill = new EyeFill(new Rgb(255, 0, 0), new Rgb(0, 255, 0));
+
+        $renderer2 = new ImageRenderer(
+                new RendererStyle(
+                        400,
+                        2,
+                        $squareModule,
+                        $gridEye,
+                        Fill::withForegroundColor(new Rgb(255, 255, 255), new Rgb(0, 0, 255), $eyeFill, $eyeFill, $eyeFill)
+                ),
+                new ImagickImageBackEnd()
+        );
+        $writer2 = new Writer($renderer2);
+        $tempName2 = tempnam(sys_get_temp_dir(), 'test') . '.png';
+        $writer2->writeFile('rotation with eye color', $tempName2);
+
+        $this->assertMatchesFileSnapshot($tempName2);
+        unlink($tempName2);
+    }
 }
