@@ -50,9 +50,13 @@ final class ImageRenderer implements RendererInterface
         $cutoutWidth = $this->rendererStyle->getCutoutWidth();
         $cutoutHeight = $this->rendererStyle->getCutoutHeight();
         $cutoutModuleWidth = (int) ($cutoutWidth / $moduleSize);
-        if ($cutoutModuleWidth % 2 == 0) $cutoutModuleWidth++;
+        if ($cutoutModuleWidth % 2 == 0) {
+            $cutoutModuleWidth++;
+        }
         $cutoutModuleHeight = (int) ($cutoutHeight / $moduleSize);
-        if ($cutoutModuleHeight % 2 == 0) $cutoutModuleHeight++;
+        if ($cutoutModuleHeight % 2 == 0) {
+            $cutoutModuleHeight++;
+        }
         $xStart = (int) ($totalSize / 2 - $cutoutModuleWidth / 2);
         $yStart = (int) ($totalSize / 2 - $cutoutModuleHeight / 2);
         for ($y = 0; $y < $cutoutModuleHeight; ++$y) {
