@@ -67,14 +67,14 @@ final class ImagickRenderingTest extends TestCase
         $gridEye = GridEye::instance();
 
         $renderer1 = new ImageRenderer(
-                new RendererStyle(
-                        400,
-                        2,
-                        $squareModule,
-                        $gridEye,
-                        Fill::uniformColor(new Rgb(255, 255, 255), new Rgb(0, 0, 255))
-                ),
-                new ImagickImageBackEnd()
+            new RendererStyle(
+                400,
+                2,
+                $squareModule,
+                $gridEye,
+                Fill::uniformColor(new Rgb(255, 255, 255), new Rgb(0, 0, 255))
+            ),
+            new ImagickImageBackEnd()
         );
         $writer1 = new Writer($renderer1);
         $tempName1 = tempnam(sys_get_temp_dir(), 'test') . '.png';
@@ -86,14 +86,14 @@ final class ImagickRenderingTest extends TestCase
         $eyeFill = new EyeFill(new Rgb(255, 0, 0), new Rgb(0, 255, 0));
 
         $renderer2 = new ImageRenderer(
-                new RendererStyle(
-                        400,
-                        2,
-                        $squareModule,
-                        $gridEye,
-                        Fill::withForegroundColor(new Rgb(255, 255, 255), new Rgb(0, 0, 255), $eyeFill, $eyeFill, $eyeFill)
-                ),
-                new ImagickImageBackEnd()
+            new RendererStyle(
+                400,
+                2,
+                $squareModule,
+                $gridEye,
+                Fill::withForegroundColor(new Rgb(255, 255, 255), new Rgb(0, 0, 255), $eyeFill, $eyeFill, $eyeFill)
+            ),
+            new ImagickImageBackEnd()
         );
         $writer2 = new Writer($renderer2);
         $tempName2 = tempnam(sys_get_temp_dir(), 'test') . '.png';
