@@ -62,7 +62,6 @@ final class ImageRenderer implements RendererInterface
           $yStart = (int) ($totalSize / 2 - $cutoutModuleHeight / 2);
           for ($y = 0; $y < $cutoutModuleHeight; ++$y) {
               for ($x = 0; $x < $cutoutModuleWidth; ++$x) {
-                  print $xStart + $x . ', ' . $yStart + $y;
                   $matrix->set($xStart + $x, $yStart + $y, 0);
               }
           }
