@@ -47,8 +47,8 @@ final class Line implements OperationInterface
         $radians = deg2rad($degrees);
         $sin = sin($radians);
         $cos = cos($radians);
-        $new_x = $this->x * $cos - $this->y * $sin;
-        $new_y = $this->x * $sin + $this->y * $cos;
-        return new self($new_x, $new_y);
+        $xr = $this->x * $cos - $this->y * $sin;
+        $yr = $this->x * $sin + $this->y * $cos;
+        return new self($xr, $yr);
     }
 }
