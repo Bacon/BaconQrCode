@@ -35,18 +35,32 @@ final class RendererStyle
      */
     private $fill;
 
+    /**
+     * @var int
+     */
+    private $cutoutWidth;
+
+    /**
+     * @var int
+     */
+    private $cutoutHeight;
+
     public function __construct(
         int $size,
         int $margin = 4,
         ?ModuleInterface $module = null,
         ?EyeInterface $eye = null,
-        ?Fill $fill = null
+        ?Fill $fill = null,
+        int $cutoutWidth = 0,
+        int $cutoutHeight = 0
     ) {
         $this->margin = $margin;
         $this->size = $size;
         $this->module = $module ?: SquareModule::instance();
         $this->eye = $eye ?: new ModuleEye($this->module);
         $this->fill = $fill ?: Fill::default();
+        $this->cutoutWidth = $cutoutWidth;
+        $this->cutoutHeight = $cutoutHeight;
     }
 
     public function withSize(int $size) : self
@@ -86,5 +100,15 @@ final class RendererStyle
     public function getFill() : Fill
     {
         return $this->fill;
+    }
+
+    public function getCutoutWidth() : int
+    {
+        return $this->cutoutWidth;
+    }
+
+    public function getCutoutHeight() : int
+    {
+        return $this->cutoutHeight;
     }
 }
