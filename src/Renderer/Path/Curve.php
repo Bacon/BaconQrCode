@@ -98,19 +98,19 @@ final class Curve implements OperationInterface
         $radians = deg2rad($degrees);
         $sin = sin($radians);
         $cos = cos($radians);
-        $new_x1 = $this->x1 * $cos - $this->y1 * $sin;
-        $new_y1 = $this->x1 * $sin + $this->y1 * $cos;
-        $new_x2 = $this->x2 * $cos - $this->y2 * $sin;
-        $new_y2 = $this->x2 * $sin + $this->y2 * $cos;
-        $new_x3 = $this->x3 * $cos - $this->y3 * $sin;
-        $new_y3 = $this->x3 * $sin + $this->y3 * $cos;
+        $x1r = $this->x1 * $cos - $this->y1 * $sin;
+        $y1r = $this->x1 * $sin + $this->y1 * $cos;
+        $x2r = $this->x2 * $cos - $this->y2 * $sin;
+        $y2r = $this->x2 * $sin + $this->y2 * $cos;
+        $x3r = $this->x3 * $cos - $this->y3 * $sin;
+        $y3r = $this->x3 * $sin + $this->y3 * $cos;
         return new self(
-            $new_x1,
-            $new_y1,
-            $new_x2,
-            $new_y2,
-            $new_x3,
-            $new_y3
+            $x1r,
+            $y1r,
+            $x2r,
+            $y2r,
+            $x3r,
+            $y3r
         );
     }
 }
