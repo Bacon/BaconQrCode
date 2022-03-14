@@ -82,7 +82,7 @@ final class ImagickRenderingTest extends TestCase
         $writer1->writeFile('rotation without eye color', $tempName1);
 
         $this->assertMatchesFileSnapshot($tempName1);
-        //unlink($tempName1);
+        unlink($tempName1);
 
         $eyeFill = new EyeFill(new Rgb(255, 0, 0), new Rgb(0, 255, 0));
 
