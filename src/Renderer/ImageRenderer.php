@@ -50,21 +50,21 @@ final class ImageRenderer implements RendererInterface
         $cutoutWidth = $this->rendererStyle->getCutoutWidth();
         $cutoutHeight = $this->rendererStyle->getCutoutHeight();
         if ($cutoutWidth > 0 && $cutoutHeight > 0) {
-          $cutoutModuleWidth = (int) ($cutoutWidth / $moduleSize);
-          if ($cutoutModuleWidth % 2 == 0) {
-              $cutoutModuleWidth++;
-          }
-          $cutoutModuleHeight = (int) ($cutoutHeight / $moduleSize);
-          if ($cutoutModuleHeight % 2 == 0) {
-              $cutoutModuleHeight++;
-          }
-          $xStart = (int) ($totalSize / 2 - $cutoutModuleWidth / 2);
-          $yStart = (int) ($totalSize / 2 - $cutoutModuleHeight / 2);
-          for ($y = 0; $y < $cutoutModuleHeight; ++$y) {
-              for ($x = 0; $x < $cutoutModuleWidth; ++$x) {
-                  $matrix->set($xStart + $x, $yStart + $y, 0);
-              }
-          }
+            $cutoutModuleWidth = (int) ($cutoutWidth / $moduleSize);
+            if ($cutoutModuleWidth % 2 == 0) {
+                $cutoutModuleWidth++;
+            }
+            $cutoutModuleHeight = (int) ($cutoutHeight / $moduleSize);
+            if ($cutoutModuleHeight % 2 == 0) {
+                $cutoutModuleHeight++;
+            }
+            $xStart = (int) ($totalSize / 2 - $cutoutModuleWidth / 2);
+            $yStart = (int) ($totalSize / 2 - $cutoutModuleHeight / 2);
+            for ($y = 0; $y < $cutoutModuleHeight; ++$y) {
+                for ($x = 0; $x < $cutoutModuleWidth; ++$x) {
+                    $matrix->set($xStart + $x, $yStart + $y, 0);
+                }
+            }
         }
 
         $this->imageBackEnd->new($size, $fill->getBackgroundColor());
