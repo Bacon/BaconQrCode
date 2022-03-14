@@ -38,4 +38,17 @@ final class Move implements OperationInterface
     {
         return new self($this->x + $x, $this->y + $y);
     }
+
+    /**
+     * @return self
+     */
+    public function rotate(int $degrees) : OperationInterface
+    {
+        $radians = deg2rad($degrees);
+        $sin = sin($radians);
+        $cos = cos($radians);
+        $new_x = $this->x * $cos - $this->y * $sin;
+        $new_y = $this->x * $sin + $this->y * $cos;
+        return new self($new_x, $new_y);
+    }
 }
