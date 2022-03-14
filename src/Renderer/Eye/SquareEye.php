@@ -24,7 +24,7 @@ final class SquareEye implements EyeInterface
         return self::$instance ?: self::$instance = new self();
     }
 
-    public function getExternalPath() : Path
+    public function getExternalPath($location) : Path
     {
         return (new Path())
             ->move(-3.5, -3.5)
@@ -40,7 +40,7 @@ final class SquareEye implements EyeInterface
         ;
     }
 
-    public function getInternalPath() : Path
+    public function getInternalPath($location) : Path
     {
         return (new Path())
             ->move(-1.5, -1.5)
