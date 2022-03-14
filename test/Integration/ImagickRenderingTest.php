@@ -83,7 +83,7 @@ final class ImagickRenderingTest extends TestCase
 
         $this->assertMatchesFileSnapshot($tempName1);
         unlink($tempName1);
-        
+
         $eyeFill = new EyeFill(new Rgb(255, 0, 0), new Rgb(0, 255, 0));
 
         $renderer2 = new ImageRenderer(
