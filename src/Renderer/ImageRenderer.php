@@ -75,14 +75,11 @@ final class ImageRenderer implements RendererInterface
     private function drawEyes(int $matrixSize, Path $modulePath) : Path
     {
         $fill = $this->rendererStyle->getFill();
-
         $eye = $this->rendererStyle->getEye();
-        $externalPath = $eye->getExternalPath();
-        $internalPath = $eye->getInternalPath();
 
         $modulePath = $this->drawEye(
-            $externalPath,
-            $internalPath,
+            $eye->getExternalPath('topLeft'),
+            $eye->getInternalPath('topLeft'),
             $fill->getTopLeftEyeFill(),
             3.5,
             3.5,
@@ -90,8 +87,8 @@ final class ImageRenderer implements RendererInterface
             $modulePath
         );
         $modulePath = $this->drawEye(
-            $externalPath,
-            $internalPath,
+            $eye->getExternalPath('topRight'),
+            $eye->getInternalPath('topRight'),
             $fill->getTopRightEyeFill(),
             $matrixSize - 3.5,
             3.5,
@@ -99,8 +96,8 @@ final class ImageRenderer implements RendererInterface
             $modulePath
         );
         $modulePath = $this->drawEye(
-            $externalPath,
-            $internalPath,
+            $eye->getExternalPath('bottomLeft'),
+            $eye->getInternalPath('bottomLeft'),
             $fill->getBottomLeftEyeFill(),
             3.5,
             $matrixSize - 3.5,
