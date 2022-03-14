@@ -112,6 +112,27 @@ final class EllipticArc implements OperationInterface
     }
 
     /**
+     * @return self
+     */
+    public function rotate(int $degrees) : OperationInterface
+    {
+        $radians = deg2rad($degrees);
+        $sin = sin($radians);
+        $cos = cos($radians);
+        $new_x = $this->x * $cos - $this->y * $sin;
+        $new_y = $this->x * $sin + $this->y * $cos;
+        return new self(
+            $this->xRadius,
+            $this->yRadius,
+            $this->xAxisAngle,
+            $this->largeArc,
+            $this->sweep,
+            $new_x,
+            $new_y
+        );
+    }
+
+    /**
      * Converts the elliptic arc to multiple curves.
      *
      * Since not all image back ends support elliptic arcs, this method allows to convert the arc into multiple curves
