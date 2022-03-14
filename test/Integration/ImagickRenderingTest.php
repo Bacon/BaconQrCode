@@ -5,6 +5,7 @@ namespace BaconQrCodeTest\Integration;
 
 use BaconQrCode\Renderer\Color\Rgb;
 use BaconQrCode\Renderer\Eye\SquareEye;
+use BaconQrCode\Renderer\Eye\GridEye;
 use BaconQrCode\Renderer\Image\ImagickImageBackEnd;
 use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\Module\SquareModule;
