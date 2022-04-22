@@ -19,6 +19,8 @@ use XMLWriter;
 final class SvgImageBackEnd implements ImageBackEndInterface
 {
     private const PRECISION = 3;
+    private const SCALE_FORMAT = 'scale(%.' . self::PRECISION . 'F)';
+    private const TRANSLATE_FORMAT = 'translate(%.' . self::PRECISION . 'F,%.' . self::PRECISION . 'F)';
 
     /**
      * @var XMLWriter|null
@@ -97,7 +99,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         $this->xmlWriter->startElement('g');
         $this->xmlWriter->writeAttribute(
             'transform',
-            sprintf('scale(%.' . self::PRECISION . 'F)', round($size, self::PRECISION))
+            sprintf(self::SCALE_FORMAT, round($size, self::PRECISION))
         );
         ++$this->stack[$this->currentStack];
     }
@@ -111,7 +113,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         $this->xmlWriter->startElement('g');
         $this->xmlWriter->writeAttribute(
             'transform',
-            sprintf('translate(%.' . self::PRECISION . 'F,%.' . self::PRECISION . 'F)', round($x, self::PRECISION), round($y, self::PRECISION))
+            sprintf(self::TRANSLATE_FORMAT, round($x, self::PRECISION), round($y, self::PRECISION))
         );
         ++$this->stack[$this->currentStack];
     }
