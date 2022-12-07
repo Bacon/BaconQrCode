@@ -21,6 +21,9 @@ final class ImagickRenderingTest extends TestCase
 {
     use MatchesSnapshots;
 
+    /**
+     * @requires extension imagick
+     */
     public function testGenericQrCode() : void
     {
         $renderer = new ImageRenderer(
@@ -35,6 +38,9 @@ final class ImagickRenderingTest extends TestCase
         unlink($tempName);
     }
 
+    /**
+     * @requires extension imagick
+     */
     public function testIssue79() : void
     {
         $eye = SquareEye::instance();
