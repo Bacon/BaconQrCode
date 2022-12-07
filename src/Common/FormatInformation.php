@@ -62,7 +62,7 @@ class FormatInformation
     /**
      * Offset i holds the number of 1 bits in the binary representation of i.
      *
-     * @var array
+     * @var int[]
      */
     private const BITS_SET_IN_HALF_BYTE = [0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4];
 
