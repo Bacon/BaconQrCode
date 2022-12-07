@@ -34,5 +34,11 @@
         "allow-plugins": {
             "ocramius/package-versions": true
         }
+    },
+    "archive": {
+        "exclude": [
+            "/test",
+            "/phpunit.xml.dist"
+        ]
     }
 }
