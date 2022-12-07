@@ -334,7 +334,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         $this->xmlWriter->writeAttribute('stop-color', $this->getColorString($startColor));
 
         if ($startColor instanceof Alpha) {
-            $this->xmlWriter->writeAttribute('stop-opacity', $startColor->getAlpha());
+            $this->xmlWriter->writeAttribute('stop-opacity', (string) $startColor->getAlpha());
         }
 
         $this->xmlWriter->endElement();
@@ -344,7 +344,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         $this->xmlWriter->writeAttribute('stop-color', $this->getColorString($endColor));
 
         if ($endColor instanceof Alpha) {
-            $this->xmlWriter->writeAttribute('stop-opacity', $endColor->getAlpha());
+            $this->xmlWriter->writeAttribute('stop-opacity', (string) $endColor->getAlpha());
         }
 
         $this->xmlWriter->endElement();
