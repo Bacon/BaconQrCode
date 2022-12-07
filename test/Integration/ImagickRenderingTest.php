@@ -17,6 +17,9 @@ use BaconQrCode\Writer;
 use PHPUnit\Framework\TestCase;
 use Spatie\Snapshots\MatchesSnapshots;
 
+/**
+ * @group integration
+ */
 final class ImagickRenderingTest extends TestCase
 {
     use MatchesSnapshots;
