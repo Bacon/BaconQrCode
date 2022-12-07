@@ -136,7 +136,7 @@ final class EllipticArc implements OperationInterface
     /**
      * @return Curve[]
      */
-    private function createCurves(float $fromX, $fromY) : array
+    private function createCurves(float $fromX, float $fromY) : array
     {
         $xAngle = deg2rad($this->xAxisAngle);
         list($centerX, $centerY, $radiusX, $radiusY, $startAngle, $deltaAngle) =

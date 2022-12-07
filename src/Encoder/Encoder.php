@@ -37,7 +37,7 @@ final class Encoder
     /**
      * Codec cache.
      *
-     * @var array
+     * @var array<string,ReedSolomonCodec>
      */
     private static $codecs = [];
 
