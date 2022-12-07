@@ -42,6 +42,9 @@ final class Mode extends AbstractEnum
      */
     private $bits;
 
+    /**
+     * @param int[] $characterCountBitsForVersions
+     */
     protected function __construct(array $characterCountBitsForVersions, int $bits)
     {
         $this->characterCountBitsForVersions = $characterCountBitsForVersions;

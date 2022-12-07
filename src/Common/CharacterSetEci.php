@@ -89,6 +89,9 @@ final class CharacterSetEci extends AbstractEnum
      */
     private static $nameToEci;
 
+    /**
+     * @param int[] $values
+     */
     public function __construct(array $values, string ...$otherEncodingNames)
     {
         $this->values = $values;
