@@ -37,3 +37,10 @@ BaconQrCode comes with multiple back ends for rendering images. Currently includ
 - `ImagickImageBackEnd`: renders raster images using the Imagick library
 - `SvgImageBackEnd`: renders SVG files using XMLWriter
 - `EpsImageBackEnd`: renders EPS files
+
+### GDLib Renderer
+GD library has so many limitations, that GD support is not added as backend, but as separated rendered.
+Use `GDLibRendered` instead of `ImageRenderer`. Here are limitations:
+
+    - Does not support gradient.
+    - Does not support any curves, so you QR code is always squared.
