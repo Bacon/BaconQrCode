@@ -36,7 +36,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
-          extensions: iconv, imagick
+          extensions: iconv, imagick, gd
           coverage: xdebug
 
       - name: Get composer cache directory
