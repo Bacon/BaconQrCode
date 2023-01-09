@@ -484,4 +484,16 @@ final class EncoderTest extends TestCase
         );
         $this->assertEquals($expected, $ecBytes);
     }
+
+    public function testIsOnlyDoubleByteKanji() : void
+    {
+        // No Double-Byte Kanji
+        $this->assertFalse($this->methods['isOnlyDoubleByteKanji']->invoke(null, "1"));
+
+        // Mixed Double-Byte Kanji and ASCII
+        $this->assertFalse($this->methods['isOnlyDoubleByteKanji']->invoke(null, "文字 ASCII 123"));
+
+        // Only Double-Byte Kanji
+        $this->assertTrue($this->methods['isOnlyDoubleByteKanji']->invoke(null, "こんにちは"));
+    }
 }
