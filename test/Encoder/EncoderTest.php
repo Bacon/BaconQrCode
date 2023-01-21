@@ -253,11 +253,11 @@ final class EncoderTest extends TestCase
         $this->assertSame(' .XX....X .XX...X. .XX...XX', (string) $bits);
 
         // Should use appendKanjiBytes.
-        // 0x93, 0x5f
+        // 0x93, 0x5f : 点
         $bits = new BitArray();
         $this->methods['appendBytes']->invoke(
             null,
-            "\x93\x5f",
+            "点",
             Mode::KANJI(),
             $bits,
             Encoder::DEFAULT_BYTE_MODE_ECODING
@@ -443,12 +443,12 @@ final class EncoderTest extends TestCase
 
     public function testAppendKanjiBytes() : void
     {
-        // Numbers are from page 21 of JISX0510:2004
+        // Numbers are from page 21 of JISX0510:2004 character: 点 and 茗
         $bits = new BitArray();
-        $this->methods['appendKanjiBytes']->invoke(null, "\x93\x5f", $bits);
+        $this->methods['appendKanjiBytes']->invoke(null, "点", $bits);
         $this->assertSame(' .XX.XX.. XXXXX', (string) $bits);
 
-        $this->methods['appendKanjiBytes']->invoke(null, "\xe4\xaa", $bits);
+        $this->methods['appendKanjiBytes']->invoke(null, "茗", $bits);
         $this->assertSame(' .XX.XX.. XXXXXXX. X.X.X.X. X.', (string) $bits);
     }
 
@@ -483,5 +483,20 @@ final class EncoderTest extends TestCase
             false
         );
         $this->assertEquals($expected, $ecBytes);
+    }
+
+    public function testIsOnlyDoubleByteKanji() : void
+    {
+        // No Double-Byte Kanji
+        $this->assertFalse($this->methods['isOnlyDoubleByteKanji']->invoke(null, '1'));
+
+        // Mixed Double-Byte Kanji and ASCII
+        $this->assertFalse($this->methods['isOnlyDoubleByteKanji']->invoke(null, '文字 ASCII 123'));
+
+        // Only Double-Byte Kanji : JAPAN
+        $this->assertTrue($this->methods['isOnlyDoubleByteKanji']->invoke(null, '日本'));
+
+        // Only Double-Byte Kanji : SEKIRO
+        $this->assertTrue($this->methods['isOnlyDoubleByteKanji']->invoke(null, '隻狼'));
     }
 }
