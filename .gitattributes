@@ -4,3 +4,5 @@
 /phpcs.xml export-ignore
 /CHANGELOG.md export-ignore
 /Dockerfile export-ignore
+/test/ export-ignore
+phpunit.xml.dist export-ignore
