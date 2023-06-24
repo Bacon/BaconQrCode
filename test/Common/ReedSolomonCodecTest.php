@@ -7,7 +7,7 @@ use BaconQrCode\Common\ReedSolomonCodec;
 use PHPUnit\Framework\TestCase;
 use SplFixedArray;
 
-class ReedSolomonTest extends TestCase
+class ReedSolomonCodecTest extends TestCase
 {
     public function tabs() : array
     {
