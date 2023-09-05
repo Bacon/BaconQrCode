@@ -300,7 +300,7 @@ final class Version
                 [6, 26],
                 new EcBlocks(20, new EcBlock(1, 80)),
                 new EcBlocks(18, new EcBlock(2, 32)),
-                new EcBlocks(26, new EcBlock(3, 24)),
+                new EcBlocks(26, new EcBlock(2, 24)),
                 new EcBlocks(16, new EcBlock(4, 9))
             ),
             new self(
