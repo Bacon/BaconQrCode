@@ -160,6 +160,41 @@ final class EncoderTest extends TestCase
         $this->assertSame($expected, (string) $qrCode);
     }
 
+    public function testSimpleUtf8WithoutEci() : void
+    {
+        $qrCode = Encoder::encode('hello', ErrorCorrectionLevel::H(), 'utf-8', null, false);
+        $expected = "<<\n"
+            . " mode: BYTE\n"
+            . " ecLevel: H\n"
+            . " version: 1\n"
+            . " maskPattern: 6\n"
+            . " matrix:\n"
+            . " 1 1 1 1 1 1 1 0 0 0 0 0 1 0 1 1 1 1 1 1 1\n"
+            . " 1 0 0 0 0 0 1 0 0 0 0 0 0 0 1 0 0 0 0 0 1\n"
+            . " 1 0 1 1 1 0 1 0 1 1 0 1 0 0 1 0 1 1 1 0 1\n"
+            . " 1 0 1 1 1 0 1 0 1 0 1 0 0 0 1 0 1 1 1 0 1\n"
+            . " 1 0 1 1 1 0 1 0 0 0 1 1 1 0 1 0 1 1 1 0 1\n"
+            . " 1 0 0 0 0 0 1 0 0 0 1 0 0 0 1 0 0 0 0 0 1\n"
+            . " 1 1 1 1 1 1 1 0 1 0 1 0 1 0 1 1 1 1 1 1 1\n"
+            . " 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 0 0 0 0 0\n"
+            . " 0 0 0 1 1 0 1 1 0 1 1 1 0 0 0 0 0 1 1 0 0\n"
+            . " 1 0 1 0 0 1 0 1 0 1 1 0 0 0 1 1 1 1 1 0 0\n"
+            . " 1 1 0 1 0 1 1 0 1 1 0 1 0 1 0 1 0 0 1 1 1\n"
+            . " 1 1 0 0 1 1 0 1 0 1 0 0 1 1 0 1 1 0 1 0 0\n"
+            . " 0 1 0 0 1 1 1 1 1 0 0 0 0 0 1 1 1 1 0 1 0\n"
+            . " 0 0 0 0 0 0 0 0 1 0 1 0 1 1 1 0 0 1 0 1 0\n"
+            . " 1 1 1 1 1 1 1 0 1 0 1 0 0 0 1 0 0 0 1 0 0\n"
+            . " 1 0 0 0 0 0 1 0 0 1 1 1 0 1 0 0 0 1 1 1 1\n"
+            . " 1 0 1 1 1 0 1 0 1 0 1 0 1 0 0 0 1 1 0 1 1\n"
+            . " 1 0 1 1 1 0 1 0 1 0 1 1 1 1 0 0 1 0 0 0 0\n"
+            . " 1 0 1 1 1 0 1 0 0 0 1 1 0 1 1 1 1 1 1 1 1\n"
+            . " 1 0 0 0 0 0 1 0 0 1 1 1 1 1 1 1 1 1 1 1 1\n"
+            . " 1 1 1 1 1 1 1 0 0 0 1 0 0 1 0 0 0 0 0 0 0\n"
+            . ">>\n";
+
+        $this->assertSame($expected, (string) $qrCode);
+    }
+
     public function testAppendModeInfo() : void
     {
         $bits = new BitArray();

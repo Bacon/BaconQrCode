@@ -48,7 +48,9 @@ final class Encoder
         string $content,
         ErrorCorrectionLevel $ecLevel,
         string $encoding = self::DEFAULT_BYTE_MODE_ECODING,
-        ?Version $forcedVersion = null
+        ?Version $forcedVersion = null,
+        // Barcode scanner might not be able to read the encoded message of the QR code with the prefix ECI of UTF-8
+        bool $prefixEci = true
     ) : QrCode {
         // Pick an encoding mode appropriate for the content. Note that this
         // will not attempt to use multiple modes / segments even if that were
@@ -60,7 +62,7 @@ final class Encoder
         $headerBits = new BitArray();
 
         // Append ECI segment if applicable
-        if (Mode::BYTE() === $mode && self::DEFAULT_BYTE_MODE_ECODING !== $encoding) {
+        if ($prefixEci && Mode::BYTE() === $mode && self::DEFAULT_BYTE_MODE_ECODING !== $encoding) {
             $eci = CharacterSetEci::getCharacterSetEciByName($encoding);
 
             if (null !== $eci) {
