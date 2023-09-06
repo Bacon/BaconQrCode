@@ -253,11 +253,11 @@ final class EncoderTest extends TestCase
         $this->assertSame(' .XX....X .XX...X. .XX...XX', (string) $bits);
 
         // Should use appendKanjiBytes.
-        // 0x93, 0x5f
+        // 0x93, 0x5f : 点
         $bits = new BitArray();
         $this->methods['appendBytes']->invoke(
             null,
-            "\x93\x5f",
+            "点",
             Mode::KANJI(),
             $bits,
             Encoder::DEFAULT_BYTE_MODE_ECODING
@@ -443,12 +443,12 @@ final class EncoderTest extends TestCase
 
     public function testAppendKanjiBytes() : void
     {
-        // Numbers are from page 21 of JISX0510:2004
+        // Numbers are from page 21 of JISX0510:2004 character: "\x93\x5f" 点 and "\xe4\xaa" 茗
         $bits = new BitArray();
-        $this->methods['appendKanjiBytes']->invoke(null, "\x93\x5f", $bits);
+        $this->methods['appendKanjiBytes']->invoke(null, "点", $bits);
         $this->assertSame(' .XX.XX.. XXXXX', (string) $bits);
 
-        $this->methods['appendKanjiBytes']->invoke(null, "\xe4\xaa", $bits);
+        $this->methods['appendKanjiBytes']->invoke(null, "茗", $bits);
         $this->assertSame(' .XX.XX.. XXXXXXX. X.X.X.X. X.', (string) $bits);
     }
 
