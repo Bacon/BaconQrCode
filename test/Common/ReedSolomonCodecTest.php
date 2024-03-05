@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace BaconQrCodeTest\Common;
 
 use BaconQrCode\Common\ReedSolomonCodec;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use SplFixedArray;
 
@@ -25,6 +26,7 @@ class ReedSolomonCodecTest extends TestCase
     /**
      * @dataProvider tabs
      */
+    #[DataProvider('tabs')]
     public function testCodec(int $symbolSize, int $generatorPoly, int $firstRoot, int $primitive, int $numRoots) : void
     {
         mt_srand(0xdeadbeef, MT_RAND_PHP);
