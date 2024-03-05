@@ -5,6 +5,11 @@
       <directory suffix=".php">src</directory>
     </include>
   </coverage>
+  <source>
+    <include>
+      <directory>../../src</directory>
+    </include>
+  </source>
   <testsuites>
     <testsuite name="BaconQrCode Tests">
       <directory>./test</directory>
