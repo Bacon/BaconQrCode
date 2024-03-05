@@ -22,10 +22,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
 {
     private const PRECISION = 3;
 
-    /**
-     * @var string|null
-     */
-    private $eps;
+    private ?string $eps;
 
     public function new(int $size, ColorInterface $backgroundColor) : void
     {

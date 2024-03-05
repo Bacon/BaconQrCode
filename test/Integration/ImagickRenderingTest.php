@@ -14,19 +14,17 @@ use BaconQrCode\Renderer\RendererStyle\Gradient;
 use BaconQrCode\Renderer\RendererStyle\GradientType;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Writer;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use PHPUnit\Framework\TestCase;
 use Spatie\Snapshots\MatchesSnapshots;
 
-/**
- * @group integration
- */
+#[Group('integration')]
 final class ImagickRenderingTest extends TestCase
 {
     use MatchesSnapshots;
 
-    /**
-     * @requires extension imagick
-     */
+    #[RequiresPhpExtension('imagick')]
     public function testGenericQrCode() : void
     {
         $renderer = new ImageRenderer(
@@ -41,9 +39,7 @@ final class ImagickRenderingTest extends TestCase
         unlink($tempName);
     }
 
-    /**
-     * @requires extension imagick
-     */
+    #[RequiresPhpExtension('imagick')]
     public function testIssue79() : void
     {
         $eye = SquareEye::instance();

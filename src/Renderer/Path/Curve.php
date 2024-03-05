@@ -5,44 +5,14 @@ namespace BaconQrCode\Renderer\Path;
 
 final class Curve implements OperationInterface
 {
-    /**
-     * @var float
-     */
-    private $x1;
-
-    /**
-     * @var float
-     */
-    private $y1;
-
-    /**
-     * @var float
-     */
-    private $x2;
-
-    /**
-     * @var float
-     */
-    private $y2;
-
-    /**
-     * @var float
-     */
-    private $x3;
-
-    /**
-     * @var float
-     */
-    private $y3;
-
-    public function __construct(float $x1, float $y1, float $x2, float $y2, float $x3, float $y3)
-    {
-        $this->x1 = $x1;
-        $this->y1 = $y1;
-        $this->x2 = $x2;
-        $this->y2 = $y2;
-        $this->x3 = $x3;
-        $this->y3 = $y3;
+    public function __construct(
+        private readonly float $x1,
+        private readonly float $y1,
+        private readonly float $x2,
+        private readonly float $y2,
+        private readonly float $x3,
+        private readonly float $y3
+    ) {
     }
 
     public function getX1() : float

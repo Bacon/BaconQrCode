@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 3.0.0 - 2022-03-14
+
+### Changed
+
+- Add strong php Types
+- Fix spelling of DEFAULT_BYTE_MODE_ENCODING => DEFAULT_BYTE_MODE_ENCODING
+- Constructor names of BlockPair
+- Drop support for PHP < 8.1
+
 ## 2.0.7 - 2022-03-14
 
 ### Fixed

@@ -10,10 +10,7 @@ use BaconQrCode\Renderer\Path\Path;
  */
 final class SquareEye implements EyeInterface
 {
-    /**
-     * @var self|null
-     */
-    private static $instance;
+    private static ?SquareEye $instance = null;
 
     private function __construct()
     {
