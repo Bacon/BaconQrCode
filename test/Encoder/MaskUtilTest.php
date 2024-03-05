@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class MaskUtilTest extends TestCase
 {
-    public function dataMaskBits() : array
+    public static function dataMaskBits() : array
     {
         return [
             [0, [

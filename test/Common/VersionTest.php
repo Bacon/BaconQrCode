@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class VersionTest extends TestCase
 {
-    public function versions() : array
+    public static function versions() : array
     {
         $array = [];
 
@@ -20,7 +20,7 @@ class VersionTest extends TestCase
         return $array;
     }
 
-    public function decodeInformation() : array
+    public static function decodeInformation() : array
     {
         return [
             [7, 0x07c94],

@@ -9,7 +9,7 @@ use SplFixedArray;
 
 class ReedSolomonCodecTest extends TestCase
 {
-    public function tabs() : array
+    public static function tabs() : array
     {
         return [
             [2, 0x7, 1, 1, 1],
