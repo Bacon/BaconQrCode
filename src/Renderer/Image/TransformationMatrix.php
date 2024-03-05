@@ -8,7 +8,7 @@ final class TransformationMatrix
     /**
      * @var float[]
      */
-    private $values;
+    private array $values;
 
     public function __construct()
     {

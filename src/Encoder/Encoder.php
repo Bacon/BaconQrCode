@@ -20,7 +20,10 @@ final class Encoder
     /**
      * Default byte encoding.
      */
-    public const DEFAULT_BYTE_MODE_ECODING = 'ISO-8859-1';
+    public const DEFAULT_BYTE_MODE_ENCODING = 'ISO-8859-1';
+
+    /** @deprecated use DEFAULT_BYTE_MODE_ENCODING */
+    public const DEFAULT_BYTE_MODE_ECODING = self::DEFAULT_BYTE_MODE_ENCODING;
 
     /**
      * The original table is defined in the table 5 of JISX0510:2004 (p.19).
@@ -39,7 +42,7 @@ final class Encoder
      *
      * @var array<string,ReedSolomonCodec>
      */
-    private static $codecs = [];
+    private static array $codecs = [];
 
     /**
      * Encodes "content" with the error correction level "ecLevel".
@@ -47,7 +50,7 @@ final class Encoder
     public static function encode(
         string $content,
         ErrorCorrectionLevel $ecLevel,
-        string $encoding = self::DEFAULT_BYTE_MODE_ECODING,
+        string $encoding = self::DEFAULT_BYTE_MODE_ENCODING,
         ?Version $forcedVersion = null,
         // Barcode scanner might not be able to read the encoded message of the QR code with the prefix ECI of UTF-8
         bool $prefixEci = true
@@ -62,7 +65,7 @@ final class Encoder
         $headerBits = new BitArray();
 
         // Append ECI segment if applicable
-        if ($prefixEci && Mode::BYTE() === $mode && self::DEFAULT_BYTE_MODE_ECODING !== $encoding) {
+        if ($prefixEci && Mode::BYTE() === $mode && self::DEFAULT_BYTE_MODE_ENCODING !== $encoding) {
             $eci = CharacterSetEci::getCharacterSetEciByName($encoding);
 
             if (null !== $eci) {

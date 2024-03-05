@@ -33,22 +33,12 @@ final class Mode extends AbstractEnum
     protected const HANZI = [[8, 10, 12], 0x0d];
 
     /**
-     * @var int[]
-     */
-    private $characterCountBitsForVersions;
-
-    /**
-     * @var int
-     */
-    private $bits;
-
-    /**
      * @param int[] $characterCountBitsForVersions
      */
-    protected function __construct(array $characterCountBitsForVersions, int $bits)
-    {
-        $this->characterCountBitsForVersions = $characterCountBitsForVersions;
-        $this->bits = $bits;
+    protected function __construct(
+        private readonly array $characterCountBitsForVersions,
+        private readonly int   $bits
+    ) {
     }
 
     /**
