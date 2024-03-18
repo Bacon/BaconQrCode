@@ -5,11 +5,12 @@ namespace BaconQrCodeTest\Common;
 
 use BaconQrCode\Common\ErrorCorrectionLevel;
 use BaconQrCode\Common\Version;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class VersionTest extends TestCase
 {
-    public function versions() : array
+    public static function versions() : array
     {
         $array = [];
 
@@ -20,7 +21,7 @@ class VersionTest extends TestCase
         return $array;
     }
 
-    public function decodeInformation() : array
+    public static function decodeInformation() : array
     {
         return [
             [7, 0x07c94],
@@ -32,9 +33,7 @@ class VersionTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider versions
-     */
+    #[DataProvider('versions')]
     public function testVersionForNumber(int $versionNumber, int $dimension) : void
     {
         $version = Version::getVersionForNumber($versionNumber);
@@ -55,9 +54,7 @@ class VersionTest extends TestCase
         $this->assertNotNull($version->buildFunctionPattern());
     }
 
-    /**
-     * @dataProvider versions
-     */
+    #[DataProvider('versions')]
     public function testGetProvisionalVersionForDimension(int $versionNumber, int $dimension) : void
     {
         $this->assertSame(
@@ -66,9 +63,7 @@ class VersionTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider decodeInformation
-     */
+    #[DataProvider('decodeInformation')]
     public function testDecodeVersionInformation(int $expectedVersion, int $mask) : void
     {
         $version = Version::decodeVersionInformation($mask);

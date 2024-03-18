@@ -17,31 +17,25 @@ class BitMatrix
 {
     /**
      * Width of the bit matrix.
-     *
-     * @var int
      */
-    private $width;
+    private int $width;
 
     /**
      * Height of the bit matrix.
-     *
-     * @var int
      */
-    private $height;
+    private ?int $height;
 
     /**
      * Size in bits of each individual row.
-     *
-     * @var int
      */
-    private $rowSize;
+    private int $rowSize;
 
     /**
      * Bits representation.
      *
      * @var SplFixedArray<int>
      */
-    private $bits;
+    private SplFixedArray $bits;
 
     /**
      * @throws InvalidArgumentException if a dimension is smaller than zero

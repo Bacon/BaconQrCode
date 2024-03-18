@@ -19,7 +19,7 @@ final class EncoderTest extends TestCase
     /**
      * @var ReflectionMethod[]
      */
-    protected $methods = [];
+    protected array $methods = [];
 
     public function setUp() : void
     {
@@ -27,7 +27,6 @@ final class EncoderTest extends TestCase
         $reflection = new ReflectionClass(Encoder::class);
 
         foreach ($reflection->getMethods(ReflectionMethod::IS_STATIC) as $method) {
-            $method->setAccessible(true);
             $this->methods[$method->getName()] = $method;
         }
     }
@@ -259,7 +258,7 @@ final class EncoderTest extends TestCase
             '1',
             Mode::NUMERIC(),
             $bits,
-            Encoder::DEFAULT_BYTE_MODE_ECODING
+            Encoder::DEFAULT_BYTE_MODE_ENCODING
         );
         $this->assertSame(' ...X', (string) $bits);
 
@@ -271,7 +270,7 @@ final class EncoderTest extends TestCase
             'A',
             Mode::ALPHANUMERIC(),
             $bits,
-            Encoder::DEFAULT_BYTE_MODE_ECODING
+            Encoder::DEFAULT_BYTE_MODE_ENCODING
         );
         $this->assertSame(' ..X.X.', (string) $bits);
 
@@ -283,7 +282,7 @@ final class EncoderTest extends TestCase
             'abc',
             Mode::BYTE(),
             $bits,
-            Encoder::DEFAULT_BYTE_MODE_ECODING
+            Encoder::DEFAULT_BYTE_MODE_ENCODING
         );
         $this->assertSame(' .XX....X .XX...X. .XX...XX', (string) $bits);
 
@@ -295,7 +294,7 @@ final class EncoderTest extends TestCase
             "\x93\x5f",
             Mode::KANJI(),
             $bits,
-            Encoder::DEFAULT_BYTE_MODE_ECODING
+            Encoder::DEFAULT_BYTE_MODE_ENCODING
         );
         $this->assertSame(' .XX.XX.. XXXXX', (string) $bits);
 
@@ -306,7 +305,7 @@ final class EncoderTest extends TestCase
             'a',
             Mode::ALPHANUMERIC(),
             $bits,
-            Encoder::DEFAULT_BYTE_MODE_ECODING
+            Encoder::DEFAULT_BYTE_MODE_ENCODING
         );
     }
 
@@ -467,12 +466,12 @@ final class EncoderTest extends TestCase
     {
         // 0x61, 0x62, 0x63
         $bits = new BitArray();
-        $this->methods['append8BitBytes']->invoke(null, 'abc', $bits, Encoder::DEFAULT_BYTE_MODE_ECODING);
+        $this->methods['append8BitBytes']->invoke(null, 'abc', $bits, Encoder::DEFAULT_BYTE_MODE_ENCODING);
         $this->assertSame(' .XX....X .XX...X. .XX...XX', (string) $bits);
 
         // Empty
         $bits = new BitArray();
-        $this->methods['append8BitBytes']->invoke(null, '', $bits, Encoder::DEFAULT_BYTE_MODE_ECODING);
+        $this->methods['append8BitBytes']->invoke(null, '', $bits, Encoder::DEFAULT_BYTE_MODE_ENCODING);
         $this->assertSame('', (string) $bits);
     }
 

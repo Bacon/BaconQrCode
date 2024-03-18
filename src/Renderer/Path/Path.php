@@ -14,7 +14,7 @@ final class Path implements IteratorAggregate
     /**
      * @var OperationInterface[]
      */
-    private $operations = [];
+    private array $operations = [];
 
     /**
      * Moves the drawing operation to a certain position.
@@ -95,7 +95,7 @@ final class Path implements IteratorAggregate
     }
 
     /**
-     * @return OperationInterface[]|Traversable
+     * @return Traversable<int, OperationInterface>
      */
     public function getIterator() : Traversable
     {

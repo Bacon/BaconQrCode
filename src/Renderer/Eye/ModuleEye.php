@@ -12,14 +12,8 @@ use BaconQrCode\Renderer\Path\Path;
  */
 final class ModuleEye implements EyeInterface
 {
-    /**
-     * @var ModuleInterface
-     */
-    private $module;
-
-    public function __construct(ModuleInterface $module)
+    public function __construct(private readonly ModuleInterface $module)
     {
-        $this->module = $module;
     }
 
     public function getExternalPath() : Path
