@@ -636,11 +636,11 @@ final class Encoder
     {
         $bytes = @iconv('utf-8', 'SHIFT-JIS', $content);
 
-         if (false === $bytes) {
-             throw new WriterException('Content could not be converted to SHIFT-JIS');
-         }
+        if (false === $bytes) {
+            throw new WriterException('Content could not be converted to SHIFT-JIS');
+        }
 
-         if (strlen($bytes) % 2 > 0) {
+        if (strlen($bytes) % 2 > 0) {
             // We just do a simple length check here. The for loop will check
             // individual characters.
             throw new WriterException('Content does not seem to be encoded in SHIFT-JIS');
