@@ -1,7 +1,7 @@
-name: CI
+name: Pull Request
 
 on:
-  push:
+  pull_request:
     branches:
       - main
 
@@ -58,11 +58,4 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./clover.xml
-          
-  release:
-    needs: [lint, test]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: google-github-actions/release-please-action@v4
-        with:
-          release-type: php
+
