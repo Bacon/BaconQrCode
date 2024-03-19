@@ -291,7 +291,7 @@ final class EncoderTest extends TestCase
         $bits = new BitArray();
         $this->methods['appendBytes']->invoke(
             null,
-            "点",
+            '点',
             Mode::KANJI(),
             $bits,
             Encoder::DEFAULT_BYTE_MODE_ENCODING
@@ -479,10 +479,10 @@ final class EncoderTest extends TestCase
     {
         // Numbers are from page 21 of JISX0510:2004 点 and 茗
         $bits = new BitArray();
-        $this->methods['appendKanjiBytes']->invoke(null, "点", $bits);
+        $this->methods['appendKanjiBytes']->invoke(null, '点', $bits);
         $this->assertSame(' .XX.XX.. XXXXX', (string) $bits);
 
-        $this->methods['appendKanjiBytes']->invoke(null, "茗", $bits);
+        $this->methods['appendKanjiBytes']->invoke(null, '茗', $bits);
         $this->assertSame(' .XX.XX.. XXXXXXX. X.X.X.X. X.', (string) $bits);
     }
 
