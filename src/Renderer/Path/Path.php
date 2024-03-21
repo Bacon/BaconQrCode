@@ -94,6 +94,17 @@ final class Path implements IteratorAggregate
         return $path;
     }
 
+    public function rotate(int $degrees) : self
+    {
+        $path = new self();
+
+        foreach ($this->operations as $operation) {
+            $path->operations[] = $operation->rotate($degrees);
+        }
+
+        return $path;
+    }
+
     /**
      * @return Traversable<int, OperationInterface>
      */
