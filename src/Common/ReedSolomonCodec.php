@@ -208,7 +208,7 @@ final class ReedSolomonCodec
     /**
      * Decodes received data.
      */
-    public function decode(SplFixedArray $data, SplFixedArray $erasures = null) : ?int
+    public function decode(SplFixedArray $data, ?SplFixedArray $erasures = null) : ?int
     {
         // This speeds up the initialization a bit.
         $numRootsPlusOne = SplFixedArray::fromArray(array_fill(0, $this->numRoots + 1, 0), false);

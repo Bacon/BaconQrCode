@@ -40,7 +40,7 @@ class BitMatrix
     /**
      * @throws InvalidArgumentException if a dimension is smaller than zero
      */
-    public function __construct(int $width, int $height = null)
+    public function __construct(int $width, ?int $height = null)
     {
         if (null === $height) {
             $height = $width;
@@ -132,7 +132,7 @@ class BitMatrix
     /**
      * A fast method to retrieve one row of data from the matrix as a BitArray.
      */
-    public function getRow(int $y, BitArray $row = null) : BitArray
+    public function getRow(int $y, ?BitArray $row = null) : BitArray
     {
         if (null === $row || $row->getSize() < $this->width) {
             $row = new BitArray($this->width);
