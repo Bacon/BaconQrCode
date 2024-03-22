@@ -59,4 +59,28 @@ final class Curve implements OperationInterface
             $this->y3 + $y
         );
     }
+
+    /**
+     * @return self
+     */
+    public function rotate(int $degrees) : OperationInterface
+    {
+        $radians = deg2rad($degrees);
+        $sin = sin($radians);
+        $cos = cos($radians);
+        $x1r = $this->x1 * $cos - $this->y1 * $sin;
+        $y1r = $this->x1 * $sin + $this->y1 * $cos;
+        $x2r = $this->x2 * $cos - $this->y2 * $sin;
+        $y2r = $this->x2 * $sin + $this->y2 * $cos;
+        $x3r = $this->x3 * $cos - $this->y3 * $sin;
+        $y3r = $this->x3 * $sin + $this->y3 * $cos;
+        return new self(
+            $x1r,
+            $y1r,
+            $x2r,
+            $y2r,
+            $x3r,
+            $y3r
+        );
+    }
 }

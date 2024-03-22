@@ -23,4 +23,12 @@ final class Close implements OperationInterface
     {
         return $this;
     }
+
+    /**
+     * @return self
+     */
+    public function rotate(int $degrees) : OperationInterface
+    {
+        return $this;
+    }
 }
