@@ -19,8 +19,15 @@ use XMLWriter;
 final class SvgImageBackEnd implements ImageBackEndInterface
 {
     private const PRECISION = 3;
+    private const S_SAFE = '%.' . self::PRECISION . 'F';
+    private const SS_SAFE = self::S_SAFE.' '.self::S_SAFE;
+    private const SSS_SAFE = self::S_SAFE.' '.self::S_SAFE;
     private const SCALE_FORMAT = 'scale(%.' . self::PRECISION . 'F)';
     private const TRANSLATE_FORMAT = 'translate(%.' . self::PRECISION . 'F,%.' . self::PRECISION . 'F)';
+    private const MOVE_FORMAT = 'M'.self::SS_SAFE;
+    private const LINE_FORMAT = 'L'.self::SS_SAFE;
+    private const ARC_FORMAT = 'A'.self::SSS_SAFE.' %u %u '.self::SS_SAFE;
+    private const CURVE_FORMAT = 'C'.self::SSS_SAFE.' '.self::SSS_SAFE;
 
     private ?XMLWriter $xmlWriter;
 
@@ -212,7 +219,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
             switch (true) {
                 case $op instanceof Move:
                     $pathData[] = sprintf(
-                        'M%s %s',
+                        self::MOVE_FORMAT,
                         round($op->getX(), self::PRECISION),
                         round($op->getY(), self::PRECISION)
                     );
@@ -220,7 +227,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
 
                 case $op instanceof Line:
                     $pathData[] = sprintf(
-                        'L%s %s',
+                        self::LINE_FORMAT,
                         round($op->getX(), self::PRECISION),
                         round($op->getY(), self::PRECISION)
                     );
@@ -228,7 +235,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
 
                 case $op instanceof EllipticArc:
                     $pathData[] = sprintf(
-                        'A%s %s %s %u %u %s %s',
+                        self::ARC_FORMAT,
                         round($op->getXRadius(), self::PRECISION),
                         round($op->getYRadius(), self::PRECISION),
                         round($op->getXAxisAngle(), self::PRECISION),
@@ -241,7 +248,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
 
                 case $op instanceof Curve:
                     $pathData[] = sprintf(
-                        'C%s %s %s %s %s %s',
+                        self::CURVE_FORMAT,
                         round($op->getX1(), self::PRECISION),
                         round($op->getY1(), self::PRECISION),
                         round($op->getX2(), self::PRECISION),
