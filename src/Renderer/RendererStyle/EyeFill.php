@@ -8,25 +8,12 @@ use BaconQrCode\Renderer\Color\ColorInterface;
 
 final class EyeFill
 {
-    /**
-     * @var ColorInterface|null
-     */
-    private $externalColor;
+    private static ?EyeFill $inherit = null;
 
-    /**
-     * @var ColorInterface|null
-     */
-    private $internalColor;
-
-    /**
-     * @var self|null
-     */
-    private static $inherit;
-
-    public function __construct(?ColorInterface $externalColor, ?ColorInterface $internalColor)
-    {
-        $this->externalColor = $externalColor;
-        $this->internalColor = $internalColor;
+    public function __construct(
+        private readonly ?ColorInterface $externalColor,
+        private readonly ?ColorInterface $internalColor
+    ) {
     }
 
     public static function uniform(ColorInterface $color) : self

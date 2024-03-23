@@ -7,57 +7,22 @@ final class EllipticArc implements OperationInterface
 {
     private const ZERO_TOLERANCE = 1e-05;
 
-    /**
-     * @var float
-     */
-    private $xRadius;
-
-    /**
-     * @var float
-     */
-    private $yRadius;
-
-    /**
-     * @var float
-     */
-    private $xAxisAngle;
-
-    /**
-     * @var bool
-     */
-    private $largeArc;
-
-    /**
-     * @var bool
-     */
-    private $sweep;
-
-    /**
-     * @var float
-     */
-    private $x;
-
-    /**
-     * @var float
-     */
-    private $y;
+    private float $xRadius;
+    private float $yRadius;
+    private float $xAxisAngle;
 
     public function __construct(
-        float $xRadius,
-        float $yRadius,
-        float $xAxisAngle,
-        bool $largeArc,
-        bool $sweep,
-        float $x,
-        float $y
+        float                  $xRadius,
+        float                  $yRadius,
+        float                  $xAxisAngle,
+        private readonly bool  $largeArc,
+        private readonly bool  $sweep,
+        private readonly float $x,
+        private readonly float $y
     ) {
         $this->xRadius = abs($xRadius);
         $this->yRadius = abs($yRadius);
         $this->xAxisAngle = $xAxisAngle % 360;
-        $this->largeArc = $largeArc;
-        $this->sweep = $sweep;
-        $this->x = $x;
-        $this->y = $y;
     }
 
     public function getXRadius() : float
@@ -112,6 +77,27 @@ final class EllipticArc implements OperationInterface
     }
 
     /**
+     * @return self
+     */
+    public function rotate(int $degrees) : OperationInterface
+    {
+        $radians = deg2rad($degrees);
+        $sin = sin($radians);
+        $cos = cos($radians);
+        $xr = $this->x * $cos - $this->y * $sin;
+        $yr = $this->x * $sin + $this->y * $cos;
+        return new self(
+            $this->xRadius,
+            $this->yRadius,
+            $this->xAxisAngle,
+            $this->largeArc,
+            $this->sweep,
+            $xr,
+            $yr
+        );
+    }
+
+    /**
      * Converts the elliptic arc to multiple curves.
      *
      * Since not all image back ends support elliptic arcs, this method allows to convert the arc into multiple curves
@@ -136,7 +122,7 @@ final class EllipticArc implements OperationInterface
     /**
      * @return Curve[]
      */
-    private function createCurves(float $fromX, $fromY) : array
+    private function createCurves(float $fromX, float $fromY) : array
     {
         $xAngle = deg2rad($this->xAxisAngle);
         list($centerX, $centerY, $radiusX, $radiusY, $startAngle, $deltaAngle) =
@@ -179,7 +165,7 @@ final class EllipticArc implements OperationInterface
     /**
      * @return float[]
      */
-    private function calculateCenterPointParameters(float $fromX, float $fromY, float $xAngle)
+    private function calculateCenterPointParameters(float $fromX, float $fromY, float $xAngle): array
     {
         $rX = $this->xRadius;
         $rY = $this->yRadius;

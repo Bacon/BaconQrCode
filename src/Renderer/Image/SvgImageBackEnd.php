@@ -19,26 +19,16 @@ use XMLWriter;
 final class SvgImageBackEnd implements ImageBackEndInterface
 {
     private const PRECISION = 3;
+    private const SCALE_FORMAT = 'scale(%.' . self::PRECISION . 'F)';
+    private const TRANSLATE_FORMAT = 'translate(%.' . self::PRECISION . 'F,%.' . self::PRECISION . 'F)';
 
-    /**
-     * @var XMLWriter|null
-     */
-    private $xmlWriter;
+    private ?XMLWriter $xmlWriter;
 
-    /**
-     * @var int[]|null
-     */
-    private $stack;
+    private ?array $stack;
 
-    /**
-     * @var int|null
-     */
-    private $currentStack;
+    private ?int $currentStack;
 
-    /**
-     * @var int|null
-     */
-    private $gradientCount;
+    private ?int $gradientCount;
 
     public function __construct()
     {
@@ -97,7 +87,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         $this->xmlWriter->startElement('g');
         $this->xmlWriter->writeAttribute(
             'transform',
-            sprintf('scale(%1.'.self::PRECISION.'F)', round($size, self::PRECISION))
+            sprintf(self::SCALE_FORMAT, round($size, self::PRECISION))
         );
         ++$this->stack[$this->currentStack];
     }
@@ -111,7 +101,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         $this->xmlWriter->startElement('g');
         $this->xmlWriter->writeAttribute(
             'transform',
-            sprintf('translate(%1.'.self::PRECISION.'F,%1.'.self::PRECISION.'F)', round($x, self::PRECISION), round($y, self::PRECISION))
+            sprintf(self::TRANSLATE_FORMAT, round($x, self::PRECISION), round($y, self::PRECISION))
         );
         ++$this->stack[$this->currentStack];
     }
@@ -334,7 +324,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         $this->xmlWriter->writeAttribute('stop-color', $this->getColorString($startColor));
 
         if ($startColor instanceof Alpha) {
-            $this->xmlWriter->writeAttribute('stop-opacity', $startColor->getAlpha());
+            $this->xmlWriter->writeAttribute('stop-opacity', (string) $startColor->getAlpha());
         }
 
         $this->xmlWriter->endElement();
@@ -344,7 +334,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         $this->xmlWriter->writeAttribute('stop-color', $this->getColorString($endColor));
 
         if ($endColor instanceof Alpha) {
-            $this->xmlWriter->writeAttribute('stop-opacity', $endColor->getAlpha());
+            $this->xmlWriter->writeAttribute('stop-opacity', (string) $endColor->getAlpha());
         }
 
         $this->xmlWriter->endElement();

@@ -17,7 +17,7 @@ class MatrixUtilTest extends TestCase
     /**
      * @var ReflectionMethod[]
      */
-    protected $methods = [];
+    protected array $methods = [];
 
     public function setUp() : void
     {
@@ -25,7 +25,6 @@ class MatrixUtilTest extends TestCase
         $reflection = new ReflectionClass(MatrixUtil::class);
 
         foreach ($reflection->getMethods(ReflectionMethod::IS_STATIC) as $method) {
-            $method->setAccessible(true);
             $this->methods[$method->getName()] = $method;
         }
     }

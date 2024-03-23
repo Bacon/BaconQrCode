@@ -19,7 +19,7 @@ final class EncoderTest extends TestCase
     /**
      * @var ReflectionMethod[]
      */
-    protected $methods = [];
+    protected array $methods = [];
 
     public function setUp() : void
     {
@@ -27,7 +27,6 @@ final class EncoderTest extends TestCase
         $reflection = new ReflectionClass(Encoder::class);
 
         foreach ($reflection->getMethods(ReflectionMethod::IS_STATIC) as $method) {
-            $method->setAccessible(true);
             $this->methods[$method->getName()] = $method;
         }
     }
@@ -160,6 +159,41 @@ final class EncoderTest extends TestCase
         $this->assertSame($expected, (string) $qrCode);
     }
 
+    public function testSimpleUtf8WithoutEci() : void
+    {
+        $qrCode = Encoder::encode('hello', ErrorCorrectionLevel::H(), 'utf-8', null, false);
+        $expected = "<<\n"
+            . " mode: BYTE\n"
+            . " ecLevel: H\n"
+            . " version: 1\n"
+            . " maskPattern: 6\n"
+            . " matrix:\n"
+            . " 1 1 1 1 1 1 1 0 0 0 0 0 1 0 1 1 1 1 1 1 1\n"
+            . " 1 0 0 0 0 0 1 0 0 0 0 0 0 0 1 0 0 0 0 0 1\n"
+            . " 1 0 1 1 1 0 1 0 1 1 0 1 0 0 1 0 1 1 1 0 1\n"
+            . " 1 0 1 1 1 0 1 0 1 0 1 0 0 0 1 0 1 1 1 0 1\n"
+            . " 1 0 1 1 1 0 1 0 0 0 1 1 1 0 1 0 1 1 1 0 1\n"
+            . " 1 0 0 0 0 0 1 0 0 0 1 0 0 0 1 0 0 0 0 0 1\n"
+            . " 1 1 1 1 1 1 1 0 1 0 1 0 1 0 1 1 1 1 1 1 1\n"
+            . " 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 0 0 0 0 0\n"
+            . " 0 0 0 1 1 0 1 1 0 1 1 1 0 0 0 0 0 1 1 0 0\n"
+            . " 1 0 1 0 0 1 0 1 0 1 1 0 0 0 1 1 1 1 1 0 0\n"
+            . " 1 1 0 1 0 1 1 0 1 1 0 1 0 1 0 1 0 0 1 1 1\n"
+            . " 1 1 0 0 1 1 0 1 0 1 0 0 1 1 0 1 1 0 1 0 0\n"
+            . " 0 1 0 0 1 1 1 1 1 0 0 0 0 0 1 1 1 1 0 1 0\n"
+            . " 0 0 0 0 0 0 0 0 1 0 1 0 1 1 1 0 0 1 0 1 0\n"
+            . " 1 1 1 1 1 1 1 0 1 0 1 0 0 0 1 0 0 0 1 0 0\n"
+            . " 1 0 0 0 0 0 1 0 0 1 1 1 0 1 0 0 0 1 1 1 1\n"
+            . " 1 0 1 1 1 0 1 0 1 0 1 0 1 0 0 0 1 1 0 1 1\n"
+            . " 1 0 1 1 1 0 1 0 1 0 1 1 1 1 0 0 1 0 0 0 0\n"
+            . " 1 0 1 1 1 0 1 0 0 0 1 1 0 1 1 1 1 1 1 1 1\n"
+            . " 1 0 0 0 0 0 1 0 0 1 1 1 1 1 1 1 1 1 1 1 1\n"
+            . " 1 1 1 1 1 1 1 0 0 0 1 0 0 1 0 0 0 0 0 0 0\n"
+            . ">>\n";
+
+        $this->assertSame($expected, (string) $qrCode);
+    }
+
     public function testAppendModeInfo() : void
     {
         $bits = new BitArray();
@@ -224,7 +258,7 @@ final class EncoderTest extends TestCase
             '1',
             Mode::NUMERIC(),
             $bits,
-            Encoder::DEFAULT_BYTE_MODE_ECODING
+            Encoder::DEFAULT_BYTE_MODE_ENCODING
         );
         $this->assertSame(' ...X', (string) $bits);
 
@@ -236,7 +270,7 @@ final class EncoderTest extends TestCase
             'A',
             Mode::ALPHANUMERIC(),
             $bits,
-            Encoder::DEFAULT_BYTE_MODE_ECODING
+            Encoder::DEFAULT_BYTE_MODE_ENCODING
         );
         $this->assertSame(' ..X.X.', (string) $bits);
 
@@ -248,19 +282,19 @@ final class EncoderTest extends TestCase
             'abc',
             Mode::BYTE(),
             $bits,
-            Encoder::DEFAULT_BYTE_MODE_ECODING
+            Encoder::DEFAULT_BYTE_MODE_ENCODING
         );
         $this->assertSame(' .XX....X .XX...X. .XX...XX', (string) $bits);
 
         // Should use appendKanjiBytes.
-        // 0x93, 0x5f
+        // 0x93, 0x5f :点
         $bits = new BitArray();
         $this->methods['appendBytes']->invoke(
             null,
-            "\x93\x5f",
+            '点',
             Mode::KANJI(),
             $bits,
-            Encoder::DEFAULT_BYTE_MODE_ECODING
+            Encoder::DEFAULT_BYTE_MODE_ENCODING
         );
         $this->assertSame(' .XX.XX.. XXXXX', (string) $bits);
 
@@ -271,7 +305,7 @@ final class EncoderTest extends TestCase
             'a',
             Mode::ALPHANUMERIC(),
             $bits,
-            Encoder::DEFAULT_BYTE_MODE_ECODING
+            Encoder::DEFAULT_BYTE_MODE_ENCODING
         );
     }
 
@@ -432,23 +466,23 @@ final class EncoderTest extends TestCase
     {
         // 0x61, 0x62, 0x63
         $bits = new BitArray();
-        $this->methods['append8BitBytes']->invoke(null, 'abc', $bits, Encoder::DEFAULT_BYTE_MODE_ECODING);
+        $this->methods['append8BitBytes']->invoke(null, 'abc', $bits, Encoder::DEFAULT_BYTE_MODE_ENCODING);
         $this->assertSame(' .XX....X .XX...X. .XX...XX', (string) $bits);
 
         // Empty
         $bits = new BitArray();
-        $this->methods['append8BitBytes']->invoke(null, '', $bits, Encoder::DEFAULT_BYTE_MODE_ECODING);
+        $this->methods['append8BitBytes']->invoke(null, '', $bits, Encoder::DEFAULT_BYTE_MODE_ENCODING);
         $this->assertSame('', (string) $bits);
     }
 
     public function testAppendKanjiBytes() : void
     {
-        // Numbers are from page 21 of JISX0510:2004
+        // Numbers are from page 21 of JISX0510:2004 点 and 茗
         $bits = new BitArray();
-        $this->methods['appendKanjiBytes']->invoke(null, "\x93\x5f", $bits);
+        $this->methods['appendKanjiBytes']->invoke(null, '点', $bits);
         $this->assertSame(' .XX.XX.. XXXXX', (string) $bits);
 
-        $this->methods['appendKanjiBytes']->invoke(null, "\xe4\xaa", $bits);
+        $this->methods['appendKanjiBytes']->invoke(null, '茗', $bits);
         $this->assertSame(' .XX.XX.. XXXXXXX. X.X.X.X. X.', (string) $bits);
     }
 

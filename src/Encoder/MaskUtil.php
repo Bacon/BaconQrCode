@@ -14,10 +14,10 @@ final class MaskUtil
     /**#@+
      * Penalty weights from section 6.8.2.1
      */
-    const N1 = 3;
-    const N2 = 3;
-    const N3 = 40;
-    const N4 = 10;
+    public const N1 = 3;
+    public const N2 = 3;
+    public const N3 = 40;
+    public const N4 = 10;
     /**#@-*/
 
     private function __construct()
@@ -204,7 +204,7 @@ final class MaskUtil
                 break;
 
             case 4:
-                $intermediate = (BitUtils::unsignedRightShift($y, 1) + ($x / 3)) & 0x1;
+                $intermediate = (BitUtils::unsignedRightShift($y, 1) + (int) ($x / 3)) & 0x1;
                 break;
 
             case 5:

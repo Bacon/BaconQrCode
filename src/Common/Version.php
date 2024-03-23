@@ -50,38 +50,34 @@ final class Version
 
     /**
      * Version number of this version.
-     *
-     * @var int
      */
-    private $versionNumber;
+    private int $versionNumber;
 
     /**
      * Alignment pattern centers.
      *
-     * @var SplFixedArray
+     * @var SplFixedArray|array
      */
-    private $alignmentPatternCenters;
+    private SplFixedArray|array $alignmentPatternCenters;
 
     /**
      * Error correction blocks.
      *
      * @var EcBlocks[]
      */
-    private $ecBlocks;
+    private array $ecBlocks;
 
     /**
      * Total number of codewords.
-     *
-     * @var int
      */
-    private $totalCodewords;
+    private null|int|float $totalCodewords;
 
     /**
      * Cached version instances.
      *
      * @var array<int, self>|null
      */
-    private static $versions;
+    private static ?array $versions = null;
 
     /**
      * @param int[] $alignmentPatternCenters
@@ -300,7 +296,7 @@ final class Version
                 [6, 26],
                 new EcBlocks(20, new EcBlock(1, 80)),
                 new EcBlocks(18, new EcBlock(2, 32)),
-                new EcBlocks(26, new EcBlock(3, 24)),
+                new EcBlocks(26, new EcBlock(2, 24)),
                 new EcBlocks(16, new EcBlock(4, 9))
             ),
             new self(

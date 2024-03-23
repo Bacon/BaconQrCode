@@ -10,10 +10,7 @@ use BaconQrCode\Renderer\Path\Path;
  */
 final class SimpleCircleEye implements EyeInterface
 {
-    /**
-     * @var self|null
-     */
-    private static $instance;
+    private static ?SimpleCircleEye $instance = null;
 
     private function __construct()
     {

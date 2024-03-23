@@ -5,15 +5,9 @@ namespace BaconQrCodeTest\Common;
 
 use BaconQrCode\Common\BitArray;
 use PHPUnit\Framework\TestCase;
-use PHPUnit\Runner\Version as PHPUnitVersion;
 
 final class BitArrayTest extends TestCase
 {
-    private function getPhpUnitMajorVersion(): int
-    {
-        return (int) explode('.', PHPUnitVersion::id())[0];
-    }
-
     public function testGetSet() : void
     {
         $array = new BitArray(33);
@@ -30,21 +24,13 @@ final class BitArrayTest extends TestCase
         $array = new BitArray(32);
 
         for ($i = 0; $i < $array->getSize(); ++$i) {
-            if ($this->getPhpUnitMajorVersion() === 7) {
-                $this->assertEquals($i, 32, '', $array->getNextSet($i));
-            } else {
-                $this->assertEqualsWithDelta($i, 32, $array->getNextSet($i));
-            }
+            $this->assertEqualsWithDelta(32, $i, $array->getNextSet($i));
         }
 
         $array = new BitArray(33);
 
         for ($i = 0; $i < $array->getSize(); ++$i) {
-            if ($this->getPhpUnitMajorVersion() === 7) {
-                $this->assertEquals($i, 33, '', $array->getNextSet($i));
-            } else {
-                $this->assertEqualsWithDelta($i, 33, $array->getNextSet($i));
-            }
+            $this->assertEqualsWithDelta(33, $i, $array->getNextSet($i));
         }
     }
 
@@ -53,21 +39,13 @@ final class BitArrayTest extends TestCase
         $array = new BitArray(33);
 
         for ($i = 0; $i < $array->getSize(); ++$i) {
-            if ($this->getPhpUnitMajorVersion() === 7) {
-                $this->assertEquals($i, $i <= 31 ? 31 : 33, '', $array->getNextSet($i));
-            } else {
-                $this->assertEqualsWithDelta($i, $i <= 31 ? 31 : 33, $array->getNextSet($i));
-            }
+            $this->assertEqualsWithDelta($i, $i <= 31 ? 31 : 33, $array->getNextSet($i));
         }
 
         $array = new BitArray(33);
 
         for ($i = 0; $i < $array->getSize(); ++$i) {
-            if ($this->getPhpUnitMajorVersion() === 7) {
-                $this->assertEquals($i, 32, '', $array->getNextSet($i));
-            } else {
-                $this->assertEqualsWithDelta($i, 32, $array->getNextSet($i));
-            }
+            $this->assertEqualsWithDelta(32, $i, $array->getNextSet($i));
         }
     }
 
@@ -86,11 +64,7 @@ final class BitArrayTest extends TestCase
                 $expected = 63;
             }
 
-            if ($this->getPhpUnitMajorVersion() === 7) {
-                $this->assertEquals($i, $expected, '', $array->getNextSet($i));
-            } else {
-                $this->assertEqualsWithDelta($i, $expected, $array->getNextSet($i));
-            }
+            $this->assertEqualsWithDelta($expected, $i, $array->getNextSet($i));
         }
     }
 
@@ -109,11 +83,7 @@ final class BitArrayTest extends TestCase
                 $expected = 63;
             }
 
-            if ($this->getPhpUnitMajorVersion() === 7) {
-                $this->assertEquals($i, $expected, '', $array->getNextSet($i));
-            } else {
-                $this->assertEqualsWithDelta($i, $expected, $array->getNextSet($i));
-            }
+            $this->assertEqualsWithDelta($expected, $i, $array->getNextSet($i));
         }
     }
 

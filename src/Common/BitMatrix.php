@@ -17,36 +17,30 @@ class BitMatrix
 {
     /**
      * Width of the bit matrix.
-     *
-     * @var int
      */
-    private $width;
+    private int $width;
 
     /**
      * Height of the bit matrix.
-     *
-     * @var int
      */
-    private $height;
+    private ?int $height;
 
     /**
      * Size in bits of each individual row.
-     *
-     * @var int
      */
-    private $rowSize;
+    private int $rowSize;
 
     /**
      * Bits representation.
      *
      * @var SplFixedArray<int>
      */
-    private $bits;
+    private SplFixedArray $bits;
 
     /**
      * @throws InvalidArgumentException if a dimension is smaller than zero
      */
-    public function __construct(int $width, int $height = null)
+    public function __construct(int $width, ?int $height = null)
     {
         if (null === $height) {
             $height = $width;
@@ -138,7 +132,7 @@ class BitMatrix
     /**
      * A fast method to retrieve one row of data from the matrix as a BitArray.
      */
-    public function getRow(int $y, BitArray $row = null) : BitArray
+    public function getRow(int $y, ?BitArray $row = null) : BitArray
     {
         if (null === $row || $row->getSize() < $this->width) {
             $row = new BitArray($this->width);

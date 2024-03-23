@@ -5,11 +5,12 @@ namespace BaconQrCodeTest\Encoder;
 
 use BaconQrCode\Encoder\ByteMatrix;
 use BaconQrCode\Encoder\MaskUtil;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class MaskUtilTest extends TestCase
 {
-    public function dataMaskBits() : array
+    public static function dataMaskBits() : array
     {
         return [
             [0, [
@@ -82,6 +83,7 @@ class MaskUtilTest extends TestCase
     /**
      * @dataProvider dataMaskBits
      */
+    #[DataProvider('dataMaskBits')]
     public function testGetDatMaskBit(int $maskPattern, array $expected) : void
     {
         for ($x = 0; $x < 6; ++$x) {

@@ -23,40 +23,22 @@ use ImagickPixel;
 
 final class ImagickImageBackEnd implements ImageBackEndInterface
 {
-    /**
-     * @var string
-     */
-    private $imageFormat;
+    private string $imageFormat;
 
-    /**
-     * @var int
-     */
-    private $compressionQuality;
+    private int $compressionQuality;
 
-    /**
-     * @var Imagick|null
-     */
-    private $image;
+    private ?Imagick $image;
 
-    /**
-     * @var ImagickDraw|null
-     */
-    private $draw;
+    private ?ImagickDraw $draw;
 
-    /**
-     * @var int|null
-     */
-    private $gradientCount;
+    private ?int $gradientCount;
 
     /**
      * @var TransformationMatrix[]|null
      */
-    private $matrices;
+    private ?array $matrices;
 
-    /**
-     * @var int|null
-     */
-    private $matrixIndex;
+    private ?int $matrixIndex;
 
     public function __construct(string $imageFormat = 'png', int $compressionQuality = 100)
     {
@@ -227,10 +209,7 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
 
     private function createGradientFill(Gradient $gradient, float $x, float $y, float $width, float $height) : string
     {
-        list($width, $height) = $this->matrices[$this->matrixIndex]->apply($x + $width, $y + $height);
-        list($x, $y) = $this->matrices[$this->matrixIndex]->apply($x, $y);
-        $width -= $x;
-        $height -= $y;
+        list($width, $height) = $this->matrices[$this->matrixIndex]->apply($width, $height);
 
         $startColor = $this->getColorPixel($gradient->getStartColor())->getColorAsString();
         $endColor = $this->getColorPixel($gradient->getEndColor())->getColorAsString();
@@ -290,8 +269,8 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
         }
 
         $id = sprintf('g%d', ++$this->gradientCount);
-        $this->draw->pushPattern($id, 0, 0, $x + $width, $y + $height);
-        $this->draw->composite(Imagick::COMPOSITE_COPY, $x, $y, $width, $height, $gradientImage);
+        $this->draw->pushPattern($id, 0, 0, $width, $height);
+        $this->draw->composite(Imagick::COMPOSITE_COPY, 0, 0, $width, $height, $gradientImage);
         $this->draw->popPattern();
         return $id;
     }

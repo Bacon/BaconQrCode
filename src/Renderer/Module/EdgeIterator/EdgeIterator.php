@@ -15,22 +15,13 @@ final class EdgeIterator implements IteratorAggregate
     /**
      * @var int[]
      */
-    private $bytes = [];
+    private array $bytes = [];
 
-    /**
-     * @var int
-     */
-    private $size;
+    private ?int $size;
 
-    /**
-     * @var int
-     */
-    private $width;
+    private int $width;
 
-    /**
-     * @var int
-     */
-    private $height;
+    private int $height;
 
     public function __construct(ByteMatrix $matrix)
     {
@@ -41,7 +32,7 @@ final class EdgeIterator implements IteratorAggregate
     }
 
     /**
-     * @return Edge[]
+     * @return Traversable<Edge>
      */
     public function getIterator() : Traversable
     {

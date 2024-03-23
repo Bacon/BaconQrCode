@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace BaconQrCode;
 
 use BaconQrCode\Common\ErrorCorrectionLevel;
+use BaconQrCode\Common\Version;
 use BaconQrCode\Encoder\Encoder;
 use BaconQrCode\Exception\InvalidArgumentException;
 use BaconQrCode\Renderer\RendererInterface;
@@ -14,18 +15,10 @@ use BaconQrCode\Renderer\RendererInterface;
 final class Writer
 {
     /**
-     * Renderer instance.
-     *
-     * @var RendererInterface
-     */
-    private $renderer;
-
-    /**
      * Creates a new writer with a specific renderer.
      */
-    public function __construct(RendererInterface $renderer)
+    public function __construct(private readonly RendererInterface $renderer)
     {
-        $this->renderer = $renderer;
     }
 
     /**
@@ -38,8 +31,9 @@ final class Writer
      */
     public function writeString(
         string $content,
-        string $encoding = Encoder::DEFAULT_BYTE_MODE_ECODING,
-        ?ErrorCorrectionLevel $ecLevel = null
+        string $encoding = Encoder::DEFAULT_BYTE_MODE_ENCODING,
+        ?ErrorCorrectionLevel $ecLevel = null,
+        ?Version $forcedVersion = null
     ) : string {
         if (strlen($content) === 0) {
             throw new InvalidArgumentException('Found empty contents');
@@ -49,7 +43,7 @@ final class Writer
             $ecLevel = ErrorCorrectionLevel::L();
         }
 
-        return $this->renderer->render(Encoder::encode($content, $ecLevel, $encoding));
+        return $this->renderer->render(Encoder::encode($content, $ecLevel, $encoding, $forcedVersion));
     }
 
     /**
@@ -60,9 +54,10 @@ final class Writer
     public function writeFile(
         string $content,
         string $filename,
-        string $encoding = Encoder::DEFAULT_BYTE_MODE_ECODING,
-        ?ErrorCorrectionLevel $ecLevel = null
+        string $encoding = Encoder::DEFAULT_BYTE_MODE_ENCODING,
+        ?ErrorCorrectionLevel $ecLevel = null,
+        ?Version $forcedVersion = null
     ) : void {
-        file_put_contents($filename, $this->writeString($content, $encoding, $ecLevel));
+        file_put_contents($filename, $this->writeString($content, $encoding, $ecLevel, $forcedVersion));
     }
 }
