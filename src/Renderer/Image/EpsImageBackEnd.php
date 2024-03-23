@@ -35,6 +35,8 @@ final class EpsImageBackEnd implements ImageBackEndInterface
     private const GRADIENTD_FORMAT = " /Coords [ ".self::SSSS_SAFE." ]\n";
     private const GRADIENTID_FORMAT = " /Coords [ ".self::SSSS_SAFE." ]\n";
     private const GRADIENTR_FORMAT = " /Coords [ ".self::SS_SAFE." 0 ".self::SSS_SAFE." ]\n";
+    private const RGBCOLOR_FORMAT = self::SSS_SAFE;
+    private const CMYKCOLOR_FORMAT = self::SSSS_SAFE;
     
 
     private ?string $eps;
@@ -366,12 +368,12 @@ final class EpsImageBackEnd implements ImageBackEndInterface
     private function getColorString(ColorInterface $color) : string
     {
         if ($color instanceof Rgb) {
-            return sprintf("%1.".self::PRECISION."F %1.".self::PRECISION."F %1.".self::PRECISION."F", $color->getRed() / 255, $color->getGreen() / 255, $color->getBlue() / 255);
+            return sprintf(self::RGBCOLOR_FORMAT, $color->getRed() / 255, $color->getGreen() / 255, $color->getBlue() / 255);
         }
 
         if ($color instanceof Cmyk) {
             return sprintf(
-                "% %1.".self::PRECISION."F %1.".self::PRECISION."F %1.".self::PRECISION."F",
+                self::CMYKCOLOR_FORMAT,
                 $color->getCyan() / 100,
                 $color->getMagenta() / 100,
                 $color->getYellow() / 100,
