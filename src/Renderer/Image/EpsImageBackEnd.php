@@ -26,7 +26,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
     private const SSS_SAFE = self::SS_SAFE." ".self::S_SAFE;
     private const SSSS_SAFE = self::SS_SAFE." ".self::SS_SAFE;
     private const SCALE_FORMAT = "%1\$1.".self::PRECISION."F %1\$1.".self::PRECISION."F s\n";
-    private const TRANSLATE_FORMAT = self:SS_SAFE." t\n";
+    private const TRANSLATE_FORMAT = self::SS_SAFE." t\n";
     private const MOVE_FORMAT = self::SS_SAFE." m";
     private const LINE_FORMAT = self::SS_SAFE." l";
     private const CURVE_FORMAT = self::SSS_SAFE." ".self::SSS_SAFE." c";

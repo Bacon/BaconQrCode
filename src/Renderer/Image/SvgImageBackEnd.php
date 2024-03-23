@@ -20,8 +20,8 @@ final class SvgImageBackEnd implements ImageBackEndInterface
 {
     private const PRECISION = 3;
     private const S_SAFE = '%.' . self::PRECISION . 'F';
-    private const SS_SAFE = self::S_SAFE.' 'self::S_SAFE;
-    private const SSS_SAFE = self::S_SAFE.' 'self::S_SAFE;
+    private const SS_SAFE = self::S_SAFE.' '.self::S_SAFE;
+    private const SSS_SAFE = self::S_SAFE.' '.self::S_SAFE;
     private const SCALE_FORMAT = 'scale(%.' . self::PRECISION . 'F)';
     private const TRANSLATE_FORMAT = 'translate(%.' . self::PRECISION . 'F,%.' . self::PRECISION . 'F)';
     private const MOVE_FORMAT = 'M'.self::SS_SAFE;
