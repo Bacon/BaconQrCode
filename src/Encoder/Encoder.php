@@ -529,7 +529,7 @@ final class Encoder
                 break;
 
             case Mode::BYTE():
-                self::append8BitBytes($content, $bits, $encoding);
+                self::append8BitBytes($content, $bits);
                 break;
 
             case Mode::KANJI():
@@ -608,17 +608,9 @@ final class Encoder
 
     /**
      * Appends regular 8-bit bytes to a bit array.
-     *
-     * @throws WriterException if content cannot be encoded to target encoding
      */
-    private static function append8BitBytes(string $content, BitArray $bits, string $encoding) : void
+    private static function append8BitBytes(string $bytes, BitArray $bits) : void
     {
-        $bytes = @iconv('utf-8', $encoding, $content);
-
-        if (false === $bytes) {
-            throw new WriterException('Could not encode content to ' . $encoding);
-        }
-
         $length = strlen($bytes);
 
         for ($i = 0; $i < $length; $i++) {
