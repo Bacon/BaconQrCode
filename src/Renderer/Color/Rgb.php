@@ -54,6 +54,10 @@ final class Rgb implements ColorInterface
         $y = 1 - ($this->blue / 255);
         $k = min($c, $m, $y);
 
+        if ($k === 0) {
+            return new Cmyk(0, 0, 0, 0);
+        }
+
         return new Cmyk(
             (int) (100 * ($c - $k) / (1 - $k)),
             (int) (100 * ($m - $k) / (1 - $k)),
