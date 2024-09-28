@@ -316,7 +316,11 @@ final class SvgImageBackEnd implements ImageBackEndInterface
                 break;
         }
 
-        $id = sprintf('g%d', ++$this->gradientCount);
+        $toBeHashed = $this->getColorString($startColor) . $this->getColorString($endColor) . $gradient->getType();
+        if ($startColor instanceof Alpha) {
+            $toBeHashed .= (string) $startColor->getAlpha();
+        }
+        $id = sprintf('g%d-%s', ++$this->gradientCount, hash('xxh64', $toBeHashed));
         $this->xmlWriter->writeAttribute('id', $id);
 
         $this->xmlWriter->startElement('stop');
