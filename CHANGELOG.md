@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 This file is automatically maintained by release-please.
 
+## [3.0.1](https://github.com/Bacon/BaconQrCode/compare/v3.0.0...v3.0.1) (2024-10-01)
+
+
+### Bug Fixes
+
+* **svg:** generate unique IDs for gradients based on their properties ([#187](https://github.com/Bacon/BaconQrCode/issues/187)) ([fb48e26](https://github.com/Bacon/BaconQrCode/commit/fb48e26b6004ca8dee5002dfaa9ca9147f6ebef9)), closes [#186](https://github.com/Bacon/BaconQrCode/issues/186)
+
 ## [3.0.0](https://github.com/Bacon/BaconQrCode/compare/2.0.7...v3.0.0) (2024-04-18)
 
 
