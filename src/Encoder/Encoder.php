@@ -115,7 +115,7 @@ final class Encoder
         $headerAndDataBits->appendBitArray($headerBits);
 
         // Find "length" of main segment and write it.
-        $numLetters = (Mode::BYTE() === $mode ? $dataBits->getSizeInBytes() : strlen($content));
+        $numLetters = (Mode::BYTE() === $mode ? $dataBits->getSizeInBytes() : iconv_strlen($content, 'utf-8'));
         self::appendLengthInfo($numLetters, $version, $mode, $headerAndDataBits);
 
         // Put data together into the overall payload.
