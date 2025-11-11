@@ -162,6 +162,10 @@ final class Encoder
      */
     private static function chooseMode(string $content, ?string $encoding = null) : Mode
     {
+        if ('' === $content) {
+            return Mode::BYTE();
+        }
+
         if (null !== $encoding && 0 === strcasecmp($encoding, 'SHIFT-JIS')) {
             return self::isOnlyDoubleByteKanji($content) ? Mode::KANJI() : Mode::BYTE();
         }
