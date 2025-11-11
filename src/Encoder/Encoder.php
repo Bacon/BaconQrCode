@@ -166,29 +166,21 @@ final class Encoder
             return self::isOnlyDoubleByteKanji($content) ? Mode::KANJI() : Mode::BYTE();
         }
 
-        $hasNumeric = false;
-        $hasAlphanumeric = false;
+        if (ctype_digit($content)) {
+            return Mode::NUMERIC();
+        }
+
         $contentLength = strlen($content);
 
         for ($i = 0; $i < $contentLength; ++$i) {
             $char = $content[$i];
 
-            if (ctype_digit($char)) {
-                $hasNumeric = true;
-            } elseif (-1 !== self::getAlphanumericCode(ord($char))) {
-                $hasAlphanumeric = true;
-            } else {
+            if (-1 === self::getAlphanumericCode(ord($char))) {
                 return Mode::BYTE();
             }
         }
 
-        if ($hasAlphanumeric) {
-            return Mode::ALPHANUMERIC();
-        } elseif ($hasNumeric) {
-            return Mode::NUMERIC();
-        }
-
-        return Mode::BYTE();
+        return Mode::ALPHANUMERIC();
     }
 
     /**
