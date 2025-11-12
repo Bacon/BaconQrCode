@@ -67,6 +67,7 @@ final class ImagickRenderingTest extends TestCase
         unlink($tempName);
     }
 
+    #[RequiresPhpExtension('imagick')]
     public function testIssue105() : void
     {
         $squareModule = SquareModule::instance();
