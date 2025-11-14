@@ -222,7 +222,7 @@ final class Encoder
         }
 
         for ($i = 0; $i < $length; $i += 2) {
-            $byte = ord($bytes[$i]) & 0xff;
+            $byte = ord($bytes[$i]);
 
             if (($byte < 0x81 || $byte > 0x9f) && $byte < 0xe0 || $byte > 0xeb) {
                 return false;
@@ -649,8 +649,8 @@ final class Encoder
         $length = strlen($bytes);
 
         for ($i = 0; $i < $length; $i += 2) {
-            $byte1 = ord($bytes[$i]) & 0xff;
-            $byte2 = ord($bytes[$i + 1]) & 0xff;
+            $byte1 = ord($bytes[$i]);
+            $byte2 = ord($bytes[$i + 1]);
             $code = ($byte1 << 8) | $byte2;
 
             if ($code >= 0x8140 && $code <= 0x9ffc) {
