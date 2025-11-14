@@ -170,17 +170,11 @@ final class Encoder
             return Mode::NUMERIC();
         }
 
-        $contentLength = strlen($content);
-
-        for ($i = 0; $i < $contentLength; ++$i) {
-            $char = $content[$i];
-
-            if (-1 === self::getAlphanumericCode(ord($char))) {
-                return Mode::BYTE();
-            }
+        if (self::isOnlyAlphanumeric($content)) {
+            return Mode::ALPHANUMERIC();
         }
 
-        return Mode::ALPHANUMERIC();
+        return Mode::BYTE();
     }
 
     /**
@@ -217,6 +211,24 @@ final class Encoder
             $byte = ord($bytes[$i]) & 0xff;
 
             if (($byte < 0x81 || $byte > 0x9f) && $byte < 0xe0 || $byte > 0xeb) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks if content only consists of alphanumeric characters (or is empty).
+     */
+    private static function isOnlyAlphanumeric(string $content) : bool
+    {
+        $length = strlen($content);
+
+        for ($i = 0; $i < $length; ++$i) {
+            $byte = ord($content[$i]);
+
+            if (-1 === self::getAlphanumericCode($byte)) {
                 return false;
             }
         }
