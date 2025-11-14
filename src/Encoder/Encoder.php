@@ -148,13 +148,9 @@ final class Encoder
     /**
      * Gets the alphanumeric code for a byte.
      */
-    private static function getAlphanumericCode(int $code) : int
+    private static function getAlphanumericCode(int $byte) : int
     {
-        if (isset(self::ALPHANUMERIC_TABLE[$code])) {
-            return self::ALPHANUMERIC_TABLE[$code];
-        }
-
-        return -1;
+        return self::ALPHANUMERIC_TABLE[$byte] ?? -1;
     }
 
     /**
@@ -201,7 +197,7 @@ final class Encoder
     }
 
     /**
-     * Checks if content only consists of double-byte kanji characters.
+     * Checks if content only consists of double-byte kanji characters (or is empty).
      */
     private static function isOnlyDoubleByteKanji(string $content) : bool
     {
