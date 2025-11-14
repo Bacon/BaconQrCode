@@ -457,7 +457,7 @@ final class Encoder
         $toEncode = new SplFixedArray($numDataBytes + $numEcBytesInBlock);
 
         for ($i = 0; $i < $numDataBytes; $i++) {
-            $toEncode[$i] = $dataBytes[$i] & 0xff;
+            $toEncode[$i] = $dataBytes[$i];
         }
 
         $ecBytes = new SplFixedArray($numEcBytesInBlock);
