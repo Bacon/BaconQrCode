@@ -5,22 +5,14 @@ declare(strict_types=1);
 namespace BaconQrCodeTest\Integration;
 
 use BaconQrCode\Exception\InvalidArgumentException;
-use BaconQrCode\Exception\RuntimeException;
 use BaconQrCode\Renderer\Color\Alpha;
 use BaconQrCode\Renderer\Color\Rgb;
-use BaconQrCode\Renderer\Eye\EyeInterface;
-use BaconQrCode\Renderer\Eye\SimpleCircleEye;
-use BaconQrCode\Renderer\Eye\SquareEye;
 use BaconQrCode\Renderer\GDLibRenderer;
-use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\Image\GDImageBackEnd;
-use BaconQrCode\Renderer\Module\DotsModule;
-use BaconQrCode\Renderer\Module\RoundnessModule;
 use BaconQrCode\Renderer\RendererStyle\EyeFill;
 use BaconQrCode\Renderer\RendererStyle\Fill;
 use BaconQrCode\Renderer\RendererStyle\Gradient;
 use BaconQrCode\Renderer\RendererStyle\GradientType;
-use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Writer;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
@@ -40,7 +32,7 @@ final class GDLibRenderingTest extends TestCase
         $tempName = tempnam(sys_get_temp_dir(), 'test') . '.png';
         $writer->writeFile('Hello World!', $tempName);
 
-        $this->assertMatchesFileSnapshot($tempName);
+        $this->assertMatchesImageSnapshot($tempName);
         unlink($tempName);
     }
 
@@ -64,7 +56,7 @@ final class GDLibRenderingTest extends TestCase
         $tempName = tempnam(sys_get_temp_dir(), 'test') . '.png';
         $writer->writeFile('Hello World!', $tempName);
 
-        $this->assertMatchesFileSnapshot($tempName);
+        $this->assertMatchesImageSnapshot($tempName);
         unlink($tempName);
     }
 
