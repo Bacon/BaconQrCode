@@ -18,12 +18,23 @@ use BaconQrCode\Writer;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 use Spatie\Snapshots\MatchesSnapshots;
 
 #[Group('integration')]
 final class ImagickRenderingTest extends TestCase
 {
     use MatchesSnapshots;
+
+    protected function getSnapshotId(): string
+    {
+        $version = mb_substr(\Imagick::getVersion()['versionString'], 12, 1);
+
+        return (new ReflectionClass($this))->getShortName().'__'.
+            $this->name().'__'.
+            $version.'__'.
+            $this->snapshotIncrementor;
+    }
 
     #[RequiresPhpExtension('imagick')]
     public function testGenericQrCode() : void
@@ -67,6 +78,7 @@ final class ImagickRenderingTest extends TestCase
         unlink($tempName);
     }
 
+    #[RequiresPhpExtension('imagick')]
     public function testIssue105() : void
     {
         $squareModule = SquareModule::instance();
