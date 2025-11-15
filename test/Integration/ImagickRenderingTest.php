@@ -28,11 +28,22 @@ final class ImagickRenderingTest extends TestCase
 
     protected function getSnapshotId(): string
     {
-        $version = mb_substr(\Imagick::getVersion()['versionString'], 12, 1);
+        $versionString = \Imagick::getVersion()['versionString'];
+
+        if (! preg_match('/^ImageMagick (\d+)\./', $versionString, $matches)) {
+            throw new \RuntimeException('Unable to extract ImageMagick major version from: ' . $versionString);
+        }
+
+        $version = $matches[1];
+        $extend = '';
+
+        if ($version == 7) {
+            $extend = $version.'__';
+        }
 
         return (new ReflectionClass($this))->getShortName().'__'.
             $this->name().'__'.
-            $version.'__'.
+            $extend.
             $this->snapshotIncrementor;
     }
 
