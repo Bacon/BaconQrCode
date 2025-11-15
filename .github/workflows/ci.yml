@@ -36,6 +36,11 @@ jobs:
           extensions: iconv, imagick, gd
           coverage: xdebug
 
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
       - name: Get composer cache directory
         id: composer-cache
         run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
@@ -47,8 +52,11 @@ jobs:
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
           restore-keys: ${{ runner.os }}-composer-
 
-      - name: Install dependencies
+      - name: Install PHP dependencies
         run: composer install --no-progress --prefer-dist --optimize-autoloader
+
+      - name: Install Node dependencies
+        run: npm install
 
       - name: Test with phpunit
         run: vendor/bin/phpunit --coverage-clover clover.xml
@@ -58,7 +66,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./clover.xml
-          
+
   release:
     needs: [lint, test]
     runs-on: ubuntu-latest
