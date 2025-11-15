@@ -15,10 +15,13 @@ use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Writer;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
+use Spatie\Snapshots\MatchesSnapshots;
 
 #[Group('integration')]
 final class SVGRenderingTest extends TestCase
 {
+    use MatchesSnapshots;
+
     public function testGenericQrCode(): void
     {
         $renderer = new ImageRenderer(
@@ -26,18 +29,15 @@ final class SVGRenderingTest extends TestCase
             new SvgImageBackEnd()
         );
         $writer = new Writer($renderer);
+        $svg = $writer->writeString('Hello World!');
 
-        $svgCode = $writer->writeString('Hello World!');
-        $expected = file_get_contents(__DIR__.'/__snapshots__/files/SVGRenderingTest__testGenericQrCode__1.svg');
-
-        $this->assertEquals($expected, $svgCode);
+        $this->assertMatchesXmlSnapshot($svg);
     }
 
-    //    SVGRenderingTest__testQrWithGradientGeneratesDifferentIdsForDifferentGradients_horizontal
-    //SVGRenderingTest__testQrWithGradientGeneratesDifferentIdsForDifferentGradients_vertical
     public function testQrWithGradientGeneratesDifferentIdsForDifferentGradients()
     {
         $types = ['HORIZONTAL', 'VERTICAL'];
+
         foreach ($types as $type) {
             $gradient = new Gradient(
                 new Rgb(0, 0, 0),
@@ -58,13 +58,9 @@ final class SVGRenderingTest extends TestCase
                 new SvgImageBackEnd()
             );
             $writer = new Writer($renderer);
-            $qr = $writer->writeString('Hello World!');
-            $expectedFile = __DIR__ . '/__snapshots__/files/';
-            $expectedFile .= 'SVGRenderingTest__testQrWithGradientGeneratesDifferentIdsForDifferentGradients__';
-            $expectedFile .= strtolower($type) . '.svg';
-            $expected = file_get_contents($expectedFile);
+            $svg = $writer->writeString('Hello World!');
 
-            $this->assertEquals($expected, $qr);
+            $this->assertMatchesXmlSnapshot($svg);
         }
     }
 }

@@ -55,3 +55,8 @@ $renderer = new GDLibRenderer(400);
 $writer = new Writer($renderer);
 $writer->writeFile('Hello World!', 'qrcode.png');
 ```
+
+## Development
+
+To run unit tests, you need to have [Node.js](https://nodejs.org/en) and the pixelmatch library installed. Running
+`npm install` will install this for you.

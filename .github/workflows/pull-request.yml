@@ -26,6 +26,7 @@ jobs:
       matrix:
         operating-system: [ubuntu-latest]
         php-versions: ['8.1', '8.2', '8.3', '8.4', '8.5']
+
     runs-on: ${{ matrix.operating-system }}
     steps:
       - uses: actions/checkout@v5
@@ -36,6 +37,11 @@ jobs:
           php-version: ${{ matrix.php-versions }}
           extensions: iconv, imagick
           coverage: xdebug
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
 
       - name: Get composer cache directory
         id: composer-cache
@@ -48,8 +54,11 @@ jobs:
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
           restore-keys: ${{ runner.os }}-composer-
 
-      - name: Install dependencies
+      - name: Install PHP dependencies
         run: composer install --no-progress --prefer-dist --optimize-autoloader
+
+      - name: Install Node dependencies
+        run: npm install
 
       - name: Test with phpunit
         run: vendor/bin/phpunit --coverage-clover clover.xml

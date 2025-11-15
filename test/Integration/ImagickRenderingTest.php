@@ -36,7 +36,7 @@ final class ImagickRenderingTest extends TestCase
         $tempName = tempnam(sys_get_temp_dir(), 'test') . '.png';
         $writer->writeFile('Hello World!', $tempName);
 
-        $this->assertMatchesFileSnapshot($tempName);
+        $this->assertMatchesImageSnapshot($tempName);
         unlink($tempName);
     }
 
@@ -63,10 +63,11 @@ final class ImagickRenderingTest extends TestCase
         $tempName = tempnam(sys_get_temp_dir(), 'test') . '.png';
         $writer->writeFile('https://apiroad.net/very-long-url', $tempName);
 
-        $this->assertMatchesFileSnapshot($tempName);
+        $this->assertMatchesImageSnapshot($tempName);
         unlink($tempName);
     }
 
+    #[RequiresPhpExtension('imagick')]
     public function testIssue105() : void
     {
         $squareModule = SquareModule::instance();
@@ -86,7 +87,7 @@ final class ImagickRenderingTest extends TestCase
         $tempName1 = tempnam(sys_get_temp_dir(), 'test') . '.png';
         $writer1->writeFile('rotation without eye color', $tempName1);
 
-        $this->assertMatchesFileSnapshot($tempName1);
+        $this->assertMatchesImageSnapshot($tempName1);
         unlink($tempName1);
 
         $eyeFill = new EyeFill(new Rgb(255, 0, 0), new Rgb(0, 255, 0));
@@ -105,7 +106,7 @@ final class ImagickRenderingTest extends TestCase
         $tempName2 = tempnam(sys_get_temp_dir(), 'test') . '.png';
         $writer2->writeFile('rotation with eye color', $tempName2);
 
-        $this->assertMatchesFileSnapshot($tempName2);
+        $this->assertMatchesImageSnapshot($tempName2);
         unlink($tempName2);
     }
 }
