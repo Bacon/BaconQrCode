@@ -89,7 +89,7 @@ final class BitArrayTest extends TestCase
 
     public function testGetNextSet5() : void
     {
-        mt_srand(0xdeadbeef, MT_RAND_PHP);
+        mt_srand(0xdeadbeef);
 
         for ($i = 0; $i < 10; ++$i) {
             $array = new BitArray(mt_rand(1, 100));
