@@ -223,17 +223,9 @@ final class Encoder
      */
     private static function isOnlyAlphanumeric(string $content) : bool
     {
-        $length = strlen($content);
+        $allowed = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:';
 
-        for ($i = 0; $i < $length; ++$i) {
-            $byte = ord($content[$i]);
-
-            if (-1 === self::getAlphanumericCode($byte)) {
-                return false;
-            }
-        }
-
-        return true;
+        return strlen($content) === strspn($content, $allowed);
     }
 
     /**
