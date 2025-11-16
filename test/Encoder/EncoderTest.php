@@ -90,6 +90,12 @@ final class EncoderTest extends TestCase
 
         // Sou-Utso-Byou in Kanji in SHIFT-JIS
         $this->assertSame(Mode::BYTE(), $this->methods['chooseMode']->invoke(null, "\xe\x4\x9\x5\x9\x61"));
+
+        // SHIFT-JIS encoding, content only consists of double-byte kanji characters
+        $this->assertSame(Mode::KANJI(), $this->methods['chooseMode']->invoke(null, 'あいうえお', 'SHIFT-JIS'));
+
+        // SHIFT-JIS encoding, but content doesn't exclusively consist of kanji characters
+        $this->assertSame(Mode::BYTE(), $this->methods['chooseMode']->invoke(null, 'あいうえお123', 'SHIFT-JIS'));
     }
 
     public function testEncode() : void

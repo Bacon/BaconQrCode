@@ -120,7 +120,11 @@ final class Encoder
         $headerAndDataBits->appendBitArray($headerBits);
 
         // Find "length" of main segment and write it.
-        $numLetters = (Mode::BYTE() === $mode ? $dataBits->getSizeInBytes() : strlen($content));
+        $numLetters = match ($mode) {
+            Mode::BYTE()                          => $dataBits->getSizeInBytes(),
+            Mode::NUMERIC(), Mode::ALPHANUMERIC() => strlen($content),
+            Mode::KANJI()                         => iconv_strlen($content, 'utf-8'),
+        };
         self::appendLengthInfo($numLetters, $version, $mode, $headerAndDataBits);
 
         // Put data together into the overall payload.
@@ -513,31 +517,15 @@ final class Encoder
 
     /**
      * Appends bytes to a bit array in a specific mode.
-     *
-     * @throws WriterException if an invalid mode was supplied
      */
     private static function appendBytes(string $content, Mode $mode, BitArray $bits, string $encoding) : void
     {
-        switch ($mode) {
-            case Mode::NUMERIC():
-                self::appendNumericBytes($content, $bits);
-                break;
-
-            case Mode::ALPHANUMERIC():
-                self::appendAlphanumericBytes($content, $bits);
-                break;
-
-            case Mode::BYTE():
-                self::append8BitBytes($content, $bits, $encoding);
-                break;
-
-            case Mode::KANJI():
-                self::appendKanjiBytes($content, $bits);
-                break;
-
-            default:
-                throw new WriterException('Invalid mode: ' . $mode);
-        }
+        match ($mode) {
+            Mode::NUMERIC()      => self::appendNumericBytes($content, $bits),
+            Mode::ALPHANUMERIC() => self::appendAlphanumericBytes($content, $bits),
+            Mode::BYTE()         => self::append8BitBytes($content, $bits, $encoding),
+            Mode::KANJI()        => self::appendKanjiBytes($content, $bits),
+        };
     }
 
     /**
