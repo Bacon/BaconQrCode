@@ -111,10 +111,6 @@ final class BitArrayTest extends TestCase
 
                 $actual = $array->getNextSet($query);
 
-                if ($actual !== $expected) {
-                    $array->getNextSet($query);
-                }
-
                 $this->assertEquals($expected, $actual);
             }
         }
