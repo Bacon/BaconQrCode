@@ -26,6 +26,11 @@ final class Encoder
     public const DEFAULT_BYTE_MODE_ECODING = self::DEFAULT_BYTE_MODE_ENCODING;
 
     /**
+     * Allowed characters for the Alphanumeric Mode.
+     */
+    private const ALPHANUMERIC_CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:';
+
+    /**
      * The original table is defined in the table 5 of JISX0510:2004 (p.19).
      */
     private const ALPHANUMERIC_TABLE = [
@@ -223,9 +228,7 @@ final class Encoder
      */
     private static function isOnlyAlphanumeric(string $content) : bool
     {
-        $allowed = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:';
-
-        return strlen($content) === strspn($content, $allowed);
+        return strlen($content) === strspn($content, self::ALPHANUMERIC_CHARS);
     }
 
     /**
