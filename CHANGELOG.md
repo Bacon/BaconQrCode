@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 This file is automatically maintained by release-please.
 
+## [3.0.2](https://github.com/Bacon/BaconQrCode/compare/v3.0.1...v3.0.2) (2025-11-16)
+
+
+### Bug Fixes
+
+* **encoder:** use floor() for explicit truncation in MaskUtil ([#211](https://github.com/Bacon/BaconQrCode/issues/211)) ([5278045](https://github.com/Bacon/BaconQrCode/commit/527804511b1c51c26cfc6d0e070598e8524653d7))
+* remove unnecessary imagedestroy call ([#199](https://github.com/Bacon/BaconQrCode/issues/199)) ([bd2370d](https://github.com/Bacon/BaconQrCode/commit/bd2370dfd3cceeee8fe7e83f56b16bd1b2e70f0f))
+* use iconv_strlen in kanji mode  ([#200](https://github.com/Bacon/BaconQrCode/issues/200)) ([38d3c55](https://github.com/Bacon/BaconQrCode/commit/38d3c55a2011b493503f2d8e0ea2f7ba90084130))
+
+
+### Miscellaneous Chores
+
+* use wider PHPUnit version constraint ([1e00ebd](https://github.com/Bacon/BaconQrCode/commit/1e00ebd58b6d13605abed832ad16d73b182efcce))
+
 ## [3.0.1](https://github.com/Bacon/BaconQrCode/compare/v3.0.0...v3.0.1) (2024-10-01)
 
 
