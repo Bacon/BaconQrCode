@@ -518,31 +518,15 @@ final class Encoder
 
     /**
      * Appends bytes to a bit array in a specific mode.
-     *
-     * @throws WriterException if an invalid mode was supplied
      */
     private static function appendBytes(string $content, Mode $mode, BitArray $bits, string $encoding) : void
     {
-        switch ($mode) {
-            case Mode::NUMERIC():
-                self::appendNumericBytes($content, $bits);
-                break;
-
-            case Mode::ALPHANUMERIC():
-                self::appendAlphanumericBytes($content, $bits);
-                break;
-
-            case Mode::BYTE():
-                self::append8BitBytes($content, $bits, $encoding);
-                break;
-
-            case Mode::KANJI():
-                self::appendKanjiBytes($content, $bits);
-                break;
-
-            default:
-                throw new WriterException('Invalid mode: ' . $mode);
-        }
+        match ($mode) {
+            Mode::NUMERIC()      => self::appendNumericBytes($content, $bits),
+            Mode::ALPHANUMERIC() => self::appendAlphanumericBytes($content, $bits),
+            Mode::BYTE()         => self::append8BitBytes($content, $bits, $encoding),
+            Mode::KANJI()        => self::appendKanjiBytes($content, $bits),
+        };
     }
 
     /**
