@@ -26,7 +26,7 @@ class ReedSolomonCodecTest extends TestCase
     #[DataProvider('tabs')]
     public function testCodec(int $symbolSize, int $generatorPoly, int $firstRoot, int $primitive, int $numRoots) : void
     {
-        mt_srand(0xdeadbeef, MT_RAND_PHP);
+        mt_srand(0xdeadbeef);
 
         $blockSize = (1 << $symbolSize) - 1;
         $dataSize  = $blockSize - $numRoots;
@@ -60,7 +60,7 @@ class ReedSolomonCodecTest extends TestCase
                 $errorValue = mt_rand(1, $blockSize);
 
                 do {
-                    $errorLocation = mt_rand(0, $blockSize);
+                    $errorLocation = mt_rand(0, $blockSize - 1);
                 } while (0 !== $errorLocations[$errorLocation]);
 
                 $errorLocations[$errorLocation] = 1;
