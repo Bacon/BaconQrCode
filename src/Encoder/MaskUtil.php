@@ -172,7 +172,7 @@ final class MaskUtil
 
         $numTotalCells = $height * $width;
         $darkRatio = $numDarkCells / $numTotalCells;
-        $fixedPercentVariances = (int) (abs($darkRatio - 0.5) * 20);
+        $fixedPercentVariances = (int) floor(abs($darkRatio - 0.5) * 20);
 
         return $fixedPercentVariances * self::N4;
     }
