@@ -26,6 +26,11 @@ final class Encoder
     public const DEFAULT_BYTE_MODE_ECODING = self::DEFAULT_BYTE_MODE_ENCODING;
 
     /**
+     * Allowed characters for the Alphanumeric Mode.
+     */
+    private const ALPHANUMERIC_CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:';
+
+    /**
      * The original table is defined in the table 5 of JISX0510:2004 (p.19).
      */
     private const ALPHANUMERIC_TABLE = [
@@ -148,13 +153,9 @@ final class Encoder
     /**
      * Gets the alphanumeric code for a byte.
      */
-    private static function getAlphanumericCode(int $code) : int
+    private static function getAlphanumericCode(int $byte) : int
     {
-        if (isset(self::ALPHANUMERIC_TABLE[$code])) {
-            return self::ALPHANUMERIC_TABLE[$code];
-        }
-
-        return -1;
+        return self::ALPHANUMERIC_TABLE[$byte] ?? -1;
     }
 
     /**
@@ -162,30 +163,20 @@ final class Encoder
      */
     private static function chooseMode(string $content, ?string $encoding = null) : Mode
     {
+        if ('' === $content) {
+            return Mode::BYTE();
+        }
+
         if (null !== $encoding && 0 === strcasecmp($encoding, 'SHIFT-JIS')) {
             return self::isOnlyDoubleByteKanji($content) ? Mode::KANJI() : Mode::BYTE();
         }
 
-        $hasNumeric = false;
-        $hasAlphanumeric = false;
-        $contentLength = strlen($content);
-
-        for ($i = 0; $i < $contentLength; ++$i) {
-            $char = $content[$i];
-
-            if (ctype_digit($char)) {
-                $hasNumeric = true;
-            } elseif (-1 !== self::getAlphanumericCode(ord($char))) {
-                $hasAlphanumeric = true;
-            } else {
-                return Mode::BYTE();
-            }
+        if (ctype_digit($content)) {
+            return Mode::NUMERIC();
         }
 
-        if ($hasAlphanumeric) {
+        if (self::isOnlyAlphanumeric($content)) {
             return Mode::ALPHANUMERIC();
-        } elseif ($hasNumeric) {
-            return Mode::NUMERIC();
         }
 
         return Mode::BYTE();
@@ -205,7 +196,7 @@ final class Encoder
     }
 
     /**
-     * Checks if content only consists of double-byte kanji characters.
+     * Checks if content only consists of double-byte kanji characters (or is empty).
      */
     private static function isOnlyDoubleByteKanji(string $content) : bool
     {
@@ -230,6 +221,14 @@ final class Encoder
         }
 
         return true;
+    }
+
+    /**
+     * Checks if content only consists of alphanumeric characters (or is empty).
+     */
+    private static function isOnlyAlphanumeric(string $content) : bool
+    {
+        return strlen($content) === strspn($content, self::ALPHANUMERIC_CHARS);
     }
 
     /**

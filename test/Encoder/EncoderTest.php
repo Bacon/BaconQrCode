@@ -63,6 +63,10 @@ final class EncoderTest extends TestCase
 
     public function testChooseMode() : void
     {
+        // Empty string
+        $this->assertSame(Mode::BYTE(), $this->methods['chooseMode']->invoke(null, ''));
+        $this->assertSame(Mode::BYTE(), $this->methods['chooseMode']->invoke(null, '', 'SHIFT-JIS'));
+
         // Numeric mode
         $this->assertSame(Mode::NUMERIC(), $this->methods['chooseMode']->invoke(null, '0'));
         $this->assertSame(Mode::NUMERIC(), $this->methods['chooseMode']->invoke(null, '0123456789'));
@@ -77,7 +81,6 @@ final class EncoderTest extends TestCase
         // 8-bit byte mode
         $this->assertSame(Mode::BYTE(), $this->methods['chooseMode']->invoke(null, 'a'));
         $this->assertSame(Mode::BYTE(), $this->methods['chooseMode']->invoke(null, '#'));
-        $this->assertSame(Mode::BYTE(), $this->methods['chooseMode']->invoke(null, ''));
 
         // AIUE in Hiragana in SHIFT-JIS
         $this->assertSame(Mode::BYTE(), $this->methods['chooseMode']->invoke(null, "\x8\xa\x8\xa\x8\xa\x8\xa6"));
