@@ -1,8 +1,9 @@
 /.gitattributes export-ignore
-/.gitignore export-ignore
 /.github export-ignore
-/phpcs.xml export-ignore
+/.gitignore export-ignore
 /CHANGELOG.md export-ignore
-/Dockerfile export-ignore
-/test/ export-ignore
+/package-lock.json export-ignore
+/package.json export-ignore
+/phpcs.xml export-ignore
 /phpunit.xml.dist export-ignore
+/test/ export-ignore
