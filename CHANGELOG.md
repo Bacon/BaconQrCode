@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 This file is automatically maintained by release-please.
 
+## [3.0.3](https://github.com/Bacon/BaconQrCode/compare/v3.0.2...v3.0.3) (2025-11-19)
+
+
+### Bug Fixes
+
+* exclude package.json and package-lock.json from git export ([#213](https://github.com/Bacon/BaconQrCode/issues/213)) ([470d59f](https://github.com/Bacon/BaconQrCode/commit/470d59fd3037165f379f0ffc21609ba82606a621))
+
 ## [3.0.2](https://github.com/Bacon/BaconQrCode/compare/v3.0.1...v3.0.2) (2025-11-16)
 
 
