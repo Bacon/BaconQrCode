@@ -21,6 +21,23 @@ use BaconQrCode\Renderer\RendererStyle\GradientType;
 final class EpsImageBackEnd implements ImageBackEndInterface
 {
     private const PRECISION = 3;
+    private const S_SAFE = "%1.".self::PRECISION."F";
+    private const SS_SAFE = self::S_SAFE." ".self::S_SAFE;
+    private const SSS_SAFE = self::SS_SAFE." ".self::S_SAFE;
+    private const SSSS_SAFE = self::SS_SAFE." ".self::SS_SAFE;
+    private const SCALE_FORMAT = "%1\$1.".self::PRECISION."F %1\$1.".self::PRECISION."F s\n";
+    private const TRANSLATE_FORMAT = self::SS_SAFE." t\n";
+    private const MOVE_FORMAT = self::SS_SAFE." m";
+    private const LINE_FORMAT = self::SS_SAFE." l";
+    private const CURVE_FORMAT = self::SSS_SAFE." ".self::SSS_SAFE." c";
+    private const GRADIENTH_FORMAT = " /Coords [ ".self::SSSS_SAFE." ]\n";
+    private const GRADIENTV_FORMAT = " /Coords [ ".self::SSSS_SAFE." ]\n";
+    private const GRADIENTD_FORMAT = " /Coords [ ".self::SSSS_SAFE." ]\n";
+    private const GRADIENTID_FORMAT = " /Coords [ ".self::SSSS_SAFE." ]\n";
+    private const GRADIENTR_FORMAT = " /Coords [ ".self::SS_SAFE." 0 ".self::SSS_SAFE." ]\n";
+    private const RGBCOLOR_FORMAT = self::SSS_SAFE;
+    private const CMYKCOLOR_FORMAT = self::SSSS_SAFE;
+    
 
     private ?string $eps;
 
@@ -72,7 +89,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
             throw new RuntimeException('No image has been started');
         }
 
-        $this->eps .= sprintf("%1\$s %1\$s s\n", round($size, self::PRECISION));
+        $this->eps .= sprintf(self::SCALE_FORMAT, round($size, self::PRECISION));
     }
 
     public function translate(float $x, float $y) : void
@@ -81,7 +98,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
             throw new RuntimeException('No image has been started');
         }
 
-        $this->eps .= sprintf("%s %s t\n", round($x, self::PRECISION), round($y, self::PRECISION));
+        $this->eps .= sprintf(self::TRANSLATE_FORMAT, round($x, self::PRECISION), round($y, self::PRECISION));
     }
 
     public function rotate(int $degrees) : void
@@ -173,13 +190,13 @@ final class EpsImageBackEnd implements ImageBackEndInterface
                 case $op instanceof Move:
                     $fromX = $toX = round($op->getX(), self::PRECISION);
                     $fromY = $toY = round($op->getY(), self::PRECISION);
-                    $pathData[] = sprintf('%s %s m', $toX, $toY);
+                    $pathData[] = sprintf(self::MOVE_FORMAT, $toX, $toY);
                     break;
 
                 case $op instanceof Line:
                     $fromX = $toX = round($op->getX(), self::PRECISION);
                     $fromY = $toY = round($op->getY(), self::PRECISION);
-                    $pathData[] = sprintf('%s %s l', $toX, $toY);
+                    $pathData[] = sprintf(self::LINE_FORMAT, $toX, $toY);
                     break;
 
                 case $op instanceof EllipticArc:
@@ -193,7 +210,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
                     $y2 = round($op->getY2(), self::PRECISION);
                     $fromX = $x3 = round($op->getX3(), self::PRECISION);
                     $fromY = $y3 = round($op->getY3(), self::PRECISION);
-                    $pathData[] = sprintf('%s %s %s %s %s %s c', $x1, $y1, $x2, $y2, $x3, $y3);
+                    $pathData[] = sprintf(self::CURVE_FORMAT, $x1, $y1, $x2, $y2, $x3, $y3);
                     break;
 
                 case $op instanceof Close:
@@ -268,7 +285,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         switch ($gradient->getType()) {
             case GradientType::HORIZONTAL():
                 $this->eps .= sprintf(
-                    " /Coords [ %s %s %s %s ]\n",
+                    self::GRADIENTH_FORMAT,
                     round($x, self::PRECISION),
                     round($y, self::PRECISION),
                     round($x + $width, self::PRECISION),
@@ -278,7 +295,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
 
             case GradientType::VERTICAL():
                 $this->eps .= sprintf(
-                    " /Coords [ %s %s %s %s ]\n",
+                    self::GRADIENTV_FORMAT,
                     round($x, self::PRECISION),
                     round($y, self::PRECISION),
                     round($x, self::PRECISION),
@@ -288,7 +305,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
 
             case GradientType::DIAGONAL():
                 $this->eps .= sprintf(
-                    " /Coords [ %s %s %s %s ]\n",
+                    self::GRADIENTD_FORMAT,
                     round($x, self::PRECISION),
                     round($y, self::PRECISION),
                     round($x + $width, self::PRECISION),
@@ -298,7 +315,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
 
             case GradientType::INVERSE_DIAGONAL():
                 $this->eps .= sprintf(
-                    " /Coords [ %s %s %s %s ]\n",
+                    self::GRADIENTID_FORMAT,
                     round($x, self::PRECISION),
                     round($y + $height, self::PRECISION),
                     round($x + $width, self::PRECISION),
@@ -311,7 +328,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
                 $centerY = ($y + $height) / 2;
 
                 $this->eps .= sprintf(
-                    " /Coords [ %s %s 0 %s %s %s ]\n",
+                    self::GRADIENTR_FORMAT,
                     round($centerX, self::PRECISION),
                     round($centerY, self::PRECISION),
                     round($centerX, self::PRECISION),
@@ -351,12 +368,12 @@ final class EpsImageBackEnd implements ImageBackEndInterface
     private function getColorString(ColorInterface $color) : string
     {
         if ($color instanceof Rgb) {
-            return sprintf('%s %s %s', $color->getRed() / 255, $color->getGreen() / 255, $color->getBlue() / 255);
+            return sprintf(self::RGBCOLOR_FORMAT, $color->getRed() / 255, $color->getGreen() / 255, $color->getBlue() / 255);
         }
 
         if ($color instanceof Cmyk) {
             return sprintf(
-                '%s %s %s %s',
+                self::CMYKCOLOR_FORMAT,
                 $color->getCyan() / 100,
                 $color->getMagenta() / 100,
                 $color->getYellow() / 100,
@@ -365,7 +382,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         }
 
         if ($color instanceof Gray) {
-            return sprintf('%s', $color->getGray() / 100);
+            return sprintf("%1.".self::PRECISION."F", $color->getGray() / 100);
         }
 
         return $this->getColorString($color->toCmyk());
