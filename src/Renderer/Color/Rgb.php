@@ -49,14 +49,15 @@ final class Rgb implements ColorInterface
 
     public function toCmyk() : Cmyk
     {
+        // avoid division by zero with input rgb(0,0,0), by handling it as a specific case
+        if (0 === $this->red && 0 === $this->green && 0 === $this->blue) {
+            return new Cmyk(0, 0, 0, 100);
+        }
+
         $c = 1 - ($this->red / 255);
         $m = 1 - ($this->green / 255);
         $y = 1 - ($this->blue / 255);
         $k = min($c, $m, $y);
-
-        if ($k === 0) {
-            return new Cmyk(0, 0, 0, 0);
-        }
 
         return new Cmyk(
             (int) (100 * ($c - $k) / (1 - $k)),
