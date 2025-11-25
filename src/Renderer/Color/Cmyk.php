@@ -64,9 +64,9 @@ final class Cmyk implements ColorInterface
         $k = $this->black / 100;
 
         return new Rgb(
-            (int) (255 * (1 - $c) * (1 - $k)),
-            (int) (255 * (1 - $m) * (1 - $k)),
-            (int) (255 * (1 - $y) * (1 - $k))
+            (int) round(255 * (1 - $c) * (1 - $k)),
+            (int) round(255 * (1 - $m) * (1 - $k)),
+            (int) round(255 * (1 - $y) * (1 - $k))
         );
     }
 

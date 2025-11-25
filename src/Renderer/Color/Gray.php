@@ -25,7 +25,7 @@ final class Gray implements ColorInterface
     public function toRgb() : Rgb
     {
         // use 255/100 instead of 2.55 to avoid floating-point precision loss (100 * 2.55 = 254.999...)
-        $value = (int) ($this->gray * 255 / 100);
+        $value = (int) round($this->gray * 255 / 100);
 
         return new Rgb($value, $value, $value);
     }

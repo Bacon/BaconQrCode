@@ -60,16 +60,16 @@ final class Rgb implements ColorInterface
         $k = min($c, $m, $y);
 
         return new Cmyk(
-            (int) (100 * ($c - $k) / (1 - $k)),
-            (int) (100 * ($m - $k) / (1 - $k)),
-            (int) (100 * ($y - $k) / (1 - $k)),
-            (int) (100 * $k)
+            (int) round(100 * ($c - $k) / (1 - $k)),
+            (int) round(100 * ($m - $k) / (1 - $k)),
+            (int) round(100 * ($y - $k) / (1 - $k)),
+            (int) round(100 * $k)
         );
     }
 
     public function toGray() : Gray
     {
         // use integer-based calculation to avoid floating-point precision loss
-        return new Gray((int) (($this->red * 2126 + $this->green * 7152 + $this->blue * 722) / 25500));
+        return new Gray((int) round(($this->red * 2126 + $this->green * 7152 + $this->blue * 722) / 25500));
     }
 }
