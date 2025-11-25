@@ -69,6 +69,6 @@ final class Rgb implements ColorInterface
 
     public function toGray() : Gray
     {
-        return new Gray((int) (($this->red * 0.21 + $this->green * 0.71 + $this->blue * 0.07) / 2.55));
+        return new Gray((int) (($this->red * 0.2126 + $this->green * 0.7152 + $this->blue * 0.0722) / 2.55));
     }
 }
