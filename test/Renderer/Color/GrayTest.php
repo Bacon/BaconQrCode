@@ -27,14 +27,14 @@ final class GrayTest extends TestCase
         $this->assertEquals(new Rgb(255, 255, 255), $grayWhite->toRgb(), 'Gray White to RGB');
 
         // Midpoint (50) -> RGB(128, 128, 128)
-        // Check for rounding: 50 * 255 / 100 = 127.5 -> round(127.5) = 128
+        // Check for precision and rounding: 50 * 255 / 100 = 127.5 -> round(127.5) = 128
         $grayMiddle = new Gray(50);
         $this->assertEquals(new Rgb(128, 128, 128), $grayMiddle->toRgb(), 'Gray 50 to RGB (rounding check)');
 
-        // Custom value checking rounding
-        // 33 * 255 / 100 = 84.15 -> round(84.15) = 84
-        $grayCustom = new Gray(33);
-        $this->assertEquals(new Rgb(84, 84, 84), $grayCustom->toRgb(), 'Gray Custom to RGB');
+        // Custom value (90) -> RGB(230, 230, 230)
+        // Check for precision and rounding: 90 * 255 / 100 = 229.5 -> round(229.5) = 230
+        $grayCustom = new Gray(90);
+        $this->assertEquals(new Rgb(230, 230, 230), $grayCustom->toRgb(), 'Gray Custom to RGB (rounding check)');
     }
 
     /**
