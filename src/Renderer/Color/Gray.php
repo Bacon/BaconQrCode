@@ -24,7 +24,10 @@ final class Gray implements ColorInterface
 
     public function toRgb() : Rgb
     {
-        return new Rgb((int) ($this->gray * 2.55), (int) ($this->gray * 2.55), (int) ($this->gray * 2.55));
+        // use 255/100 instead of 2.55 to avoid floating-point precision loss (100 * 2.55 = 254.999...)
+        $value = (int) round($this->gray * 255 / 100);
+
+        return new Rgb($value, $value, $value);
     }
 
     public function toCmyk() : Cmyk

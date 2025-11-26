@@ -58,15 +58,15 @@ final class Cmyk implements ColorInterface
 
     public function toRgb() : Rgb
     {
+        $c = $this->cyan / 100;
+        $m = $this->magenta / 100;
+        $y = $this->yellow / 100;
         $k = $this->black / 100;
-        $c = (-$k * $this->cyan + $k * 100 + $this->cyan) / 100;
-        $m = (-$k * $this->magenta + $k * 100 + $this->magenta) / 100;
-        $y = (-$k * $this->yellow + $k * 100 + $this->yellow) / 100;
 
         return new Rgb(
-            (int) (-$c * 255 + 255),
-            (int) (-$m * 255 + 255),
-            (int) (-$y * 255 + 255)
+            (int) round(255 * (1 - $c) * (1 - $k)),
+            (int) round(255 * (1 - $m) * (1 - $k)),
+            (int) round(255 * (1 - $y) * (1 - $k))
         );
     }
 
