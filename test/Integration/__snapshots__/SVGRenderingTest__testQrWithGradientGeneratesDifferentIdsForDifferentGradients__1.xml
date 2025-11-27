@@ -2,7 +2,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="400" height="400" viewBox="0 0 400 400">
   <rect x="0" y="0" width="400" height="400" fill="#ffffff"/>
   <g transform="scale(13.793)">
-    <g transform="translate(4.000,4.000)">
+    <g transform="translate(4,4)">
       <defs>
         <linearGradient gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="21" y2="0" id="g1-a40de6dbf9322546">
           <stop offset="0%" stop-color="#000000"/>
