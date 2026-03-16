@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 This file is automatically maintained by release-please.
 
+## [3.0.4](https://github.com/Bacon/BaconQrCode/compare/v3.0.3...v3.0.4) (2026-03-15)
+
+
+### Bug Fixes
+
+* **color:** improve precision in conversions and add tests ([#217](https://github.com/Bacon/BaconQrCode/issues/217)) ([a3d5124](https://github.com/Bacon/BaconQrCode/commit/a3d51244b0e91146a3f12a405a563a3fe24b9626))
+
+
+### Reverts
+
+* **svg:** use %s instead of %.3F in transform formatting ([#218](https://github.com/Bacon/BaconQrCode/issues/218)) ([88a1370](https://github.com/Bacon/BaconQrCode/commit/88a137029ff6221a94a6cc3a152b5493129a01ef))
+
 ## [3.0.3](https://github.com/Bacon/BaconQrCode/compare/v3.0.2...v3.0.3) (2025-11-19)
 
 
