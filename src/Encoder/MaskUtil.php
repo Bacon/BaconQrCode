@@ -187,7 +187,7 @@ final class MaskUtil
     {
         switch ($maskPattern) {
             case 0:
-                $intermediate = ($y + $x) % 2;
+                $intermediate = ($x + $y) % 2;
                 break;
 
             case 1:
@@ -199,7 +199,7 @@ final class MaskUtil
                 break;
 
             case 3:
-                $intermediate = ($y + $x) % 3;
+                $intermediate = ($x + $y) % 3;
                 break;
 
             case 4:
@@ -207,18 +207,15 @@ final class MaskUtil
                 break;
 
             case 5:
-                $temp = $y * $x;
-                $intermediate = ($temp % 2) + ($temp % 3);
+                $intermediate = (($x * $y) % 2) + (($x * $y) % 3);
                 break;
 
             case 6:
-                $temp = $y * $x;
-                $intermediate = (($temp % 2) + ($temp % 3)) % 2;
+                $intermediate = ((($x * $y) % 2) + (($x * $y) % 3)) % 2;
                 break;
 
             case 7:
-                $temp = $y * $x;
-                $intermediate = (($temp % 3) + (($y + $x) % 2)) % 2;
+                $intermediate = ((($x + $y) % 2) + (($x * $y) % 3)) % 2;
                 break;
 
             default:
