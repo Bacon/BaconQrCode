@@ -3,7 +3,6 @@ declare(strict_types = 1);
 
 namespace BaconQrCode\Encoder;
 
-use BaconQrCode\Common\BitUtils;
 use BaconQrCode\Exception\InvalidArgumentException;
 
 /**
@@ -204,7 +203,7 @@ final class MaskUtil
                 break;
 
             case 4:
-                $intermediate = (BitUtils::unsignedRightShift($y, 1) + (int) ($x / 3)) & 0x1;
+                $intermediate = ((int) ($y / 2) + (int) ($x / 3)) & 0x1;
                 break;
 
             case 5:
