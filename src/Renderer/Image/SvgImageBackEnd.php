@@ -318,7 +318,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         if ($startColor instanceof Alpha) {
             $toBeHashed .= (string) $startColor->getAlpha();
         }
-        $id = sprintf('g%d-%s', ++$this->gradientCount, hash('xxh64', $toBeHashed));
+        $id = sprintf('g%d-%s', ++$this->gradientCount, hash('xxh3', $toBeHashed));
         $this->xmlWriter->writeAttribute('id', $id);
 
         $this->xmlWriter->startElement('stop');
