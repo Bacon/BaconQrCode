@@ -203,7 +203,7 @@ final class MaskUtil
                 break;
 
             case 4:
-                $intermediate = ((int) ($y / 2) + (int) ($x / 3)) & 0x1;
+                $intermediate = (intdiv($y, 2) + intdiv($x, 3)) & 0x1;
                 break;
 
             case 5:
