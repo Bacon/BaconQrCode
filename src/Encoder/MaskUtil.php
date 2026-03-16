@@ -3,8 +3,6 @@ declare(strict_types = 1);
 
 namespace BaconQrCode\Encoder;
 
-use BaconQrCode\Exception\InvalidArgumentException;
-
 /**
  * Mask utility.
  */
@@ -180,8 +178,6 @@ final class MaskUtil
      * Returns the mask bit for "getMaskPattern" at "x" and "y".
      *
      * See 8.8 of JISX0510:2004 for mask pattern conditions.
-     *
-     * @throws InvalidArgumentException if an invalid mask pattern was supplied
      */
     public static function getDataMaskBit(int $maskPattern, int $x, int $y) : bool
     {
@@ -194,7 +190,6 @@ final class MaskUtil
             5 => (($x * $y) % 2) + (($x * $y) % 3),
             6 => ((($x * $y) % 2) + (($x * $y) % 3)) % 2,
             7 => ((($x + $y) % 2) + (($x * $y) % 3)) % 2,
-            default => throw new InvalidArgumentException('Invalid mask pattern: ' . $maskPattern),
         };
     }
 
