@@ -181,7 +181,7 @@ final class MaskUtil
      */
     public static function getDataMaskBit(int $maskPattern, int $x, int $y) : bool
     {
-        return 0 == match ($maskPattern) {
+        return 0 === match ($maskPattern) {
             0 => ($x + $y) % 2,
             1 => $y % 2,
             2 => $x % 3,
