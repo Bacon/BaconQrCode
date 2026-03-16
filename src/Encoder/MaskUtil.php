@@ -185,44 +185,17 @@ final class MaskUtil
      */
     public static function getDataMaskBit(int $maskPattern, int $x, int $y) : bool
     {
-        switch ($maskPattern) {
-            case 0:
-                $intermediate = ($x + $y) % 2;
-                break;
-
-            case 1:
-                $intermediate = $y % 2;
-                break;
-
-            case 2:
-                $intermediate = $x % 3;
-                break;
-
-            case 3:
-                $intermediate = ($x + $y) % 3;
-                break;
-
-            case 4:
-                $intermediate = (intdiv($y, 2) + intdiv($x, 3)) % 2;
-                break;
-
-            case 5:
-                $intermediate = (($x * $y) % 2) + (($x * $y) % 3);
-                break;
-
-            case 6:
-                $intermediate = ((($x * $y) % 2) + (($x * $y) % 3)) % 2;
-                break;
-
-            case 7:
-                $intermediate = ((($x + $y) % 2) + (($x * $y) % 3)) % 2;
-                break;
-
-            default:
-                throw new InvalidArgumentException('Invalid mask pattern: ' . $maskPattern);
-        }
-
-        return 0 == $intermediate;
+        return 0 == match ($maskPattern) {
+            0 => ($x + $y) % 2,
+            1 => $y % 2,
+            2 => $x % 3,
+            3 => ($x + $y) % 3,
+            4 => (intdiv($y, 2) + intdiv($x, 3)) % 2,
+            5 => (($x * $y) % 2) + (($x * $y) % 3),
+            6 => ((($x * $y) % 2) + (($x * $y) % 3)) % 2,
+            7 => ((($x + $y) % 2) + (($x * $y) % 3)) % 2,
+            default => throw new InvalidArgumentException('Invalid mask pattern: ' . $maskPattern),
+        };
     }
 
     /**
