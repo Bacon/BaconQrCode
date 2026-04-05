@@ -70,7 +70,7 @@ final class Encoder
         $headerBits = new BitArray();
 
         // Append ECI segment if applicable
-        if ($prefixEci && Mode::BYTE() === $mode && self::DEFAULT_BYTE_MODE_ENCODING !== $encoding) {
+        if ($prefixEci && Mode::BYTE === $mode && self::DEFAULT_BYTE_MODE_ENCODING !== $encoding) {
             $eci = CharacterSetEci::getCharacterSetEciByName($encoding);
 
             if (null !== $eci) {
@@ -121,9 +121,9 @@ final class Encoder
 
         // Find "length" of main segment and write it.
         $numLetters = match ($mode) {
-            Mode::BYTE()                          => $dataBits->getSizeInBytes(),
-            Mode::NUMERIC(), Mode::ALPHANUMERIC() => strlen($content),
-            Mode::KANJI()                         => iconv_strlen($content, 'utf-8'),
+            Mode::BYTE                        => $dataBits->getSizeInBytes(),
+            Mode::NUMERIC, Mode::ALPHANUMERIC => strlen($content),
+            Mode::KANJI                       => iconv_strlen($content, 'utf-8'),
         };
         self::appendLengthInfo($numLetters, $version, $mode, $headerAndDataBits);
 
@@ -168,22 +168,22 @@ final class Encoder
     private static function chooseMode(string $content, ?string $encoding = null) : Mode
     {
         if ('' === $content) {
-            return Mode::BYTE();
+            return Mode::BYTE;
         }
 
         if (null !== $encoding && 0 === strcasecmp($encoding, 'SHIFT-JIS')) {
-            return self::isOnlyDoubleByteKanji($content) ? Mode::KANJI() : Mode::BYTE();
+            return self::isOnlyDoubleByteKanji($content) ? Mode::KANJI : Mode::BYTE;
         }
 
         if (ctype_digit($content)) {
-            return Mode::NUMERIC();
+            return Mode::NUMERIC;
         }
 
         if (self::isOnlyAlphanumeric($content)) {
-            return Mode::ALPHANUMERIC();
+            return Mode::ALPHANUMERIC;
         }
 
-        return Mode::BYTE();
+        return Mode::BYTE;
     }
 
     /**
@@ -521,10 +521,10 @@ final class Encoder
     private static function appendBytes(string $content, Mode $mode, BitArray $bits, string $encoding) : void
     {
         match ($mode) {
-            Mode::NUMERIC()      => self::appendNumericBytes($content, $bits),
-            Mode::ALPHANUMERIC() => self::appendAlphanumericBytes($content, $bits),
-            Mode::BYTE()         => self::append8BitBytes($content, $bits, $encoding),
-            Mode::KANJI()        => self::appendKanjiBytes($content, $bits),
+            Mode::NUMERIC      => self::appendNumericBytes($content, $bits),
+            Mode::ALPHANUMERIC => self::appendAlphanumericBytes($content, $bits),
+            Mode::BYTE         => self::append8BitBytes($content, $bits, $encoding),
+            Mode::KANJI        => self::appendKanjiBytes($content, $bits),
         };
     }
 
@@ -659,7 +659,7 @@ final class Encoder
      */
     private static function appendEci(CharacterSetEci $eci, BitArray $bits) : void
     {
-        $mode = Mode::ECI();
+        $mode = Mode::ECI;
         $bits->appendBits($mode->getBits(), 4);
         $bits->appendBits($eci->getValue(), 8);
     }

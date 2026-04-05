@@ -29,7 +29,7 @@ class FormatInformationTest extends TestCase
 
         $this->assertNotNull($expected);
         $this->assertSame(7, $expected->getDataMask());
-        $this->assertSame(ErrorCorrectionLevel::Q(), $expected->getErrorCorrectionLevel());
+        $this->assertSame(ErrorCorrectionLevel::Q, $expected->getErrorCorrectionLevel());
 
         $this->assertEquals(
             $expected,

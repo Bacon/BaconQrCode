@@ -3,43 +3,21 @@ declare(strict_types = 1);
 
 namespace BaconQrCode\Common;
 
-use DASPRiD\Enum\AbstractEnum;
-
 /**
  * Enum representing various modes in which data can be encoded to bits.
- *
- * @method static self TERMINATOR()
- * @method static self NUMERIC()
- * @method static self ALPHANUMERIC()
- * @method static self STRUCTURED_APPEND()
- * @method static self BYTE()
- * @method static self ECI()
- * @method static self KANJI()
- * @method static self FNC1_FIRST_POSITION()
- * @method static self FNC1_SECOND_POSITION()
- * @method static self HANZI()
  */
-final class Mode extends AbstractEnum
+enum Mode
 {
-    protected const TERMINATOR = [[0, 0, 0], 0x00];
-    protected const NUMERIC = [[10, 12, 14], 0x01];
-    protected const ALPHANUMERIC = [[9, 11, 13], 0x02];
-    protected const STRUCTURED_APPEND = [[0, 0, 0], 0x03];
-    protected const BYTE = [[8, 16, 16], 0x04];
-    protected const ECI = [[0, 0, 0], 0x07];
-    protected const KANJI = [[8, 10, 12], 0x08];
-    protected const FNC1_FIRST_POSITION = [[0, 0, 0], 0x05];
-    protected const FNC1_SECOND_POSITION = [[0, 0, 0], 0x09];
-    protected const HANZI = [[8, 10, 12], 0x0d];
-
-    /**
-     * @param int[] $characterCountBitsForVersions
-     */
-    protected function __construct(
-        private readonly array $characterCountBitsForVersions,
-        private readonly int   $bits
-    ) {
-    }
+    case TERMINATOR;
+    case NUMERIC;
+    case ALPHANUMERIC;
+    case STRUCTURED_APPEND;
+    case BYTE;
+    case ECI;
+    case KANJI;
+    case FNC1_FIRST_POSITION;
+    case FNC1_SECOND_POSITION;
+    case HANZI;
 
     /**
      * Returns the number of bits used in a specific QR code version.
@@ -56,7 +34,14 @@ final class Mode extends AbstractEnum
             $offset = 2;
         }
 
-        return $this->characterCountBitsForVersions[$offset];
+        return match ($this) {
+            self::TERMINATOR, self::STRUCTURED_APPEND, self::ECI,
+            self::FNC1_FIRST_POSITION, self::FNC1_SECOND_POSITION => [0, 0, 0][$offset],
+            self::NUMERIC => [10, 12, 14][$offset],
+            self::ALPHANUMERIC => [9, 11, 13][$offset],
+            self::BYTE => [8, 16, 16][$offset],
+            self::KANJI, self::HANZI => [8, 10, 12][$offset],
+        };
     }
 
     /**
@@ -64,6 +49,17 @@ final class Mode extends AbstractEnum
      */
     public function getBits() : int
     {
-        return $this->bits;
+        return match ($this) {
+            self::TERMINATOR => 0x00,
+            self::NUMERIC => 0x01,
+            self::ALPHANUMERIC => 0x02,
+            self::STRUCTURED_APPEND => 0x03,
+            self::BYTE => 0x04,
+            self::FNC1_FIRST_POSITION => 0x05,
+            self::ECI => 0x07,
+            self::KANJI => 0x08,
+            self::FNC1_SECOND_POSITION => 0x09,
+            self::HANZI => 0x0d,
+        };
     }
 }

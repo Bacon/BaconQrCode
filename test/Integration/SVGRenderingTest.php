@@ -36,13 +36,13 @@ final class SVGRenderingTest extends TestCase
 
     public function testQrWithGradientGeneratesDifferentIdsForDifferentGradients()
     {
-        $types = ['HORIZONTAL', 'VERTICAL'];
+        $types = [GradientType::HORIZONTAL, GradientType::VERTICAL];
 
         foreach ($types as $type) {
             $gradient = new Gradient(
                 new Rgb(0, 0, 0),
                 new Rgb(255, 0, 0),
-                GradientType::$type()
+                $type
             );
             $renderer = new ImageRenderer(
                 new RendererStyle(
