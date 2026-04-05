@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 This file is automatically maintained by release-please.
 
+## [3.1.0](https://github.com/Bacon/BaconQrCode/compare/v3.0.4...v3.1.0) (2026-04-05)
+
+
+### Features
+
+* **imagick:** add antialias option to ImagickImageBackEnd ([#209](https://github.com/Bacon/BaconQrCode/issues/209)) ([#235](https://github.com/Bacon/BaconQrCode/issues/235)) ([6146e80](https://github.com/Bacon/BaconQrCode/commit/6146e80da352a12d5cb3ba726763fc5243003f8f))
+* replace xxh64 with xxh3 for SVG gradient ID generation ([#228](https://github.com/Bacon/BaconQrCode/issues/228)) ([c055692](https://github.com/Bacon/BaconQrCode/commit/c05569226042fb34d367859a87ce0505c0cb2889))
+
+
+### Bug Fixes
+
+* **eps:** correct elliptic arc to curve conversion sweep handling ([#233](https://github.com/Bacon/BaconQrCode/issues/233)) ([092067a](https://github.com/Bacon/BaconQrCode/commit/092067afd46935a43e9b4040071f8925f956d410)), closes [#150](https://github.com/Bacon/BaconQrCode/issues/150)
+* **svg:** mention xmlwriter extension in error message ([#232](https://github.com/Bacon/BaconQrCode/issues/232)) ([ec5d4c4](https://github.com/Bacon/BaconQrCode/commit/ec5d4c469b998f39903f5326692aea7d37499789)), closes [#182](https://github.com/Bacon/BaconQrCode/issues/182)
+
+
+### Miscellaneous Chores
+
+* add CLAUDE.md for Claude Code guidance ([bf7d67c](https://github.com/Bacon/BaconQrCode/commit/bf7d67c0d2903256e7d1af9ac6cd113ef318736e))
+
 ## [3.0.4](https://github.com/Bacon/BaconQrCode/compare/v3.0.3...v3.0.4) (2026-03-15)
 
 
