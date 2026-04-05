@@ -22,9 +22,6 @@ final class Encoder
      */
     public const DEFAULT_BYTE_MODE_ENCODING = 'ISO-8859-1';
 
-    /** @deprecated use DEFAULT_BYTE_MODE_ENCODING */
-    public const DEFAULT_BYTE_MODE_ECODING = self::DEFAULT_BYTE_MODE_ENCODING;
-
     /**
      * Allowed characters for the Alphanumeric Mode.
      */
