@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 This file is automatically maintained by release-please.
 
+## [3.1.1](https://github.com/Bacon/BaconQrCode/compare/v3.1.0...v3.1.1) (2026-04-05)
+
+
+### Bug Fixes
+
+* add CLAUDE.md to vendor excludes ([#236](https://github.com/Bacon/BaconQrCode/issues/236)) ([cde3eae](https://github.com/Bacon/BaconQrCode/commit/cde3eae0d97a10d7f47b88559035ee6025d6b1bc))
+
 ## [3.1.0](https://github.com/Bacon/BaconQrCode/compare/v3.0.4...v3.1.0) (2026-04-05)
 
 
