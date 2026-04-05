@@ -213,8 +213,10 @@ final class EllipticArc implements OperationInterface
         $delta = self::angle(($x1p - $cxp) / $rX, ($y1p - $cyp) / $rY, (-$x1p - $cxp) / $rX, (-$y1p - $cyp) / $rY);
         $delta = fmod($delta, pi() * 2);
 
-        if (! $this->sweep) {
+        if (! $this->sweep && $delta > 0) {
             $delta -= 2 * pi();
+        } elseif ($this->sweep && $delta < 0) {
+            $delta += 2 * pi();
         }
 
         return [$cx, $cy, $rX, $rY, $theta, $delta];
