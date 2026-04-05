@@ -4,92 +4,78 @@ declare(strict_types = 1);
 namespace BaconQrCode\Common;
 
 use BaconQrCode\Exception\InvalidArgumentException;
-use DASPRiD\Enum\AbstractEnum;
 
 /**
  * Encapsulates a Character Set ECI, according to "Extended Channel Interpretations" 5.3.1.1 of ISO 18004.
- *
- * @method static self CP437()
- * @method static self ISO8859_1()
- * @method static self ISO8859_2()
- * @method static self ISO8859_3()
- * @method static self ISO8859_4()
- * @method static self ISO8859_5()
- * @method static self ISO8859_6()
- * @method static self ISO8859_7()
- * @method static self ISO8859_8()
- * @method static self ISO8859_9()
- * @method static self ISO8859_10()
- * @method static self ISO8859_11()
- * @method static self ISO8859_12()
- * @method static self ISO8859_13()
- * @method static self ISO8859_14()
- * @method static self ISO8859_15()
- * @method static self ISO8859_16()
- * @method static self SJIS()
- * @method static self CP1250()
- * @method static self CP1251()
- * @method static self CP1252()
- * @method static self CP1256()
- * @method static self UNICODE_BIG_UNMARKED()
- * @method static self UTF8()
- * @method static self ASCII()
- * @method static self BIG5()
- * @method static self GB18030()
- * @method static self EUC_KR()
  */
-final class CharacterSetEci extends AbstractEnum
+enum CharacterSetEci
 {
-    protected const CP437 = [[0, 2]];
-    protected const ISO8859_1 = [[1, 3], 'ISO-8859-1'];
-    protected const ISO8859_2 = [[4], 'ISO-8859-2'];
-    protected const ISO8859_3 = [[5], 'ISO-8859-3'];
-    protected const ISO8859_4 = [[6], 'ISO-8859-4'];
-    protected const ISO8859_5 = [[7], 'ISO-8859-5'];
-    protected const ISO8859_6 = [[8], 'ISO-8859-6'];
-    protected const ISO8859_7 = [[9], 'ISO-8859-7'];
-    protected const ISO8859_8 = [[10], 'ISO-8859-8'];
-    protected const ISO8859_9 = [[11], 'ISO-8859-9'];
-    protected const ISO8859_10 = [[12], 'ISO-8859-10'];
-    protected const ISO8859_11 = [[13], 'ISO-8859-11'];
-    protected const ISO8859_12 = [[14], 'ISO-8859-12'];
-    protected const ISO8859_13 = [[15], 'ISO-8859-13'];
-    protected const ISO8859_14 = [[16], 'ISO-8859-14'];
-    protected const ISO8859_15 = [[17], 'ISO-8859-15'];
-    protected const ISO8859_16 = [[18], 'ISO-8859-16'];
-    protected const SJIS = [[20], 'Shift_JIS'];
-    protected const CP1250 = [[21], 'windows-1250'];
-    protected const CP1251 = [[22], 'windows-1251'];
-    protected const CP1252 = [[23], 'windows-1252'];
-    protected const CP1256 = [[24], 'windows-1256'];
-    protected const UNICODE_BIG_UNMARKED = [[25], 'UTF-16BE', 'UnicodeBig'];
-    protected const UTF8 = [[26], 'UTF-8'];
-    protected const ASCII = [[27, 170], 'US-ASCII'];
-    protected const BIG5 = [[28]];
-    protected const GB18030 = [[29], 'GB2312', 'EUC_CN', 'GBK'];
-    protected const EUC_KR = [[30], 'EUC-KR'];
+    case CP437;
+    case ISO8859_1;
+    case ISO8859_2;
+    case ISO8859_3;
+    case ISO8859_4;
+    case ISO8859_5;
+    case ISO8859_6;
+    case ISO8859_7;
+    case ISO8859_8;
+    case ISO8859_9;
+    case ISO8859_10;
+    case ISO8859_11;
+    case ISO8859_12;
+    case ISO8859_13;
+    case ISO8859_14;
+    case ISO8859_15;
+    case ISO8859_16;
+    case SJIS;
+    case CP1250;
+    case CP1251;
+    case CP1252;
+    case CP1256;
+    case UNICODE_BIG_UNMARKED;
+    case UTF8;
+    case ASCII;
+    case BIG5;
+    case GB18030;
+    case EUC_KR;
 
     /**
-     * @var string[]
+     * Returns the ECI values for this character set.
+     *
+     * @return int[]
      */
-    private array $otherEncodingNames;
-
-    /**
-     * @var array<int, self>|null
-     */
-    private static ?array $valueToEci;
-
-    /**
-     * @var array<string, self>|null
-     */
-    private static ?array $nameToEci = null;
-
-    /**
-     * @param int[] $values
-     */
-    public function __construct(private readonly array $values, string ...$otherEncodingNames)
+    public function getValues() : array
     {
-        $this->otherEncodingNames = $otherEncodingNames;
+        return match ($this) {
+            self::CP437 => [0, 2],
+            self::ISO8859_1 => [1, 3],
+            self::ISO8859_2 => [4],
+            self::ISO8859_3 => [5],
+            self::ISO8859_4 => [6],
+            self::ISO8859_5 => [7],
+            self::ISO8859_6 => [8],
+            self::ISO8859_7 => [9],
+            self::ISO8859_8 => [10],
+            self::ISO8859_9 => [11],
+            self::ISO8859_10 => [12],
+            self::ISO8859_11 => [13],
+            self::ISO8859_12 => [14],
+            self::ISO8859_13 => [15],
+            self::ISO8859_14 => [16],
+            self::ISO8859_15 => [17],
+            self::ISO8859_16 => [18],
+            self::SJIS => [20],
+            self::CP1250 => [21],
+            self::CP1251 => [22],
+            self::CP1252 => [23],
+            self::CP1256 => [24],
+            self::UNICODE_BIG_UNMARKED => [25],
+            self::UTF8 => [26],
+            self::ASCII => [27, 170],
+            self::BIG5 => [28],
+            self::GB18030 => [29],
+            self::EUC_KR => [30],
+        };
     }
 
     /**
@@ -97,7 +83,45 @@ final class CharacterSetEci extends AbstractEnum
      */
     public function getValue() : int
     {
-        return $this->values[0];
+        return $this->getValues()[0];
+    }
+
+    /**
+     * Returns the other encoding names for this character set.
+     *
+     * @return string[]
+     */
+    public function getOtherEncodingNames() : array
+    {
+        return match ($this) {
+            self::ISO8859_1 => ['ISO-8859-1'],
+            self::ISO8859_2 => ['ISO-8859-2'],
+            self::ISO8859_3 => ['ISO-8859-3'],
+            self::ISO8859_4 => ['ISO-8859-4'],
+            self::ISO8859_5 => ['ISO-8859-5'],
+            self::ISO8859_6 => ['ISO-8859-6'],
+            self::ISO8859_7 => ['ISO-8859-7'],
+            self::ISO8859_8 => ['ISO-8859-8'],
+            self::ISO8859_9 => ['ISO-8859-9'],
+            self::ISO8859_10 => ['ISO-8859-10'],
+            self::ISO8859_11 => ['ISO-8859-11'],
+            self::ISO8859_12 => ['ISO-8859-12'],
+            self::ISO8859_13 => ['ISO-8859-13'],
+            self::ISO8859_14 => ['ISO-8859-14'],
+            self::ISO8859_15 => ['ISO-8859-15'],
+            self::ISO8859_16 => ['ISO-8859-16'],
+            self::SJIS => ['Shift_JIS'],
+            self::CP1250 => ['windows-1250'],
+            self::CP1251 => ['windows-1251'],
+            self::CP1252 => ['windows-1252'],
+            self::CP1256 => ['windows-1256'],
+            self::UNICODE_BIG_UNMARKED => ['UTF-16BE', 'UnicodeBig'],
+            self::UTF8 => ['UTF-8'],
+            self::ASCII => ['US-ASCII'],
+            self::GB18030 => ['GB2312', 'EUC_CN', 'GBK'],
+            self::EUC_KR => ['EUC-KR'],
+            default => [],
+        };
     }
 
     /**
@@ -141,37 +165,41 @@ final class CharacterSetEci extends AbstractEnum
 
     private static function valueToEci() : array
     {
-        if (null !== self::$valueToEci) {
-            return self::$valueToEci;
+        static $cache = null;
+
+        if (null !== $cache) {
+            return $cache;
         }
 
-        self::$valueToEci = [];
+        $cache = [];
 
-        foreach (self::values() as $eci) {
-            foreach ($eci->values as $value) {
-                self::$valueToEci[$value] = $eci;
+        foreach (self::cases() as $eci) {
+            foreach ($eci->getValues() as $value) {
+                $cache[$value] = $eci;
             }
         }
 
-        return self::$valueToEci;
+        return $cache;
     }
 
     private static function nameToEci() : array
     {
-        if (null !== self::$nameToEci) {
-            return self::$nameToEci;
+        static $cache = null;
+
+        if (null !== $cache) {
+            return $cache;
         }
 
-        self::$nameToEci = [];
+        $cache = [];
 
-        foreach (self::values() as $eci) {
-            self::$nameToEci[strtolower($eci->name())] = $eci;
+        foreach (self::cases() as $eci) {
+            $cache[strtolower($eci->name)] = $eci;
 
-            foreach ($eci->otherEncodingNames as $name) {
-                self::$nameToEci[strtolower($name)] = $eci;
+            foreach ($eci->getOtherEncodingNames() as $name) {
+                $cache[strtolower($name)] = $eci;
             }
         }
 
-        return self::$nameToEci;
+        return $cache;
     }
 }

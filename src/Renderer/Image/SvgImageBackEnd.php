@@ -270,7 +270,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         $startColor = $gradient->getStartColor();
         $endColor = $gradient->getEndColor();
 
-        if ($gradient->getType() === GradientType::RADIAL()) {
+        if ($gradient->getType() === GradientType::RADIAL) {
             $this->xmlWriter->startElement('radialGradient');
         } else {
             $this->xmlWriter->startElement('linearGradient');
@@ -278,43 +278,36 @@ final class SvgImageBackEnd implements ImageBackEndInterface
 
         $this->xmlWriter->writeAttribute('gradientUnits', 'userSpaceOnUse');
 
-        switch ($gradient->getType()) {
-            case GradientType::HORIZONTAL():
-                $this->xmlWriter->writeAttribute('x1', (string) round($x, self::PRECISION));
-                $this->xmlWriter->writeAttribute('y1', (string) round($y, self::PRECISION));
-                $this->xmlWriter->writeAttribute('x2', (string) round($x + $width, self::PRECISION));
-                $this->xmlWriter->writeAttribute('y2', (string) round($y, self::PRECISION));
-                break;
+        $attributes = match ($gradient->getType()) {
+            GradientType::HORIZONTAL => [
+                'x1' => $x, 'y1' => $y,
+                'x2' => $x + $width, 'y2' => $y,
+            ],
+            GradientType::VERTICAL => [
+                'x1' => $x, 'y1' => $y,
+                'x2' => $x, 'y2' => $y + $height,
+            ],
+            GradientType::DIAGONAL => [
+                'x1' => $x, 'y1' => $y,
+                'x2' => $x + $width, 'y2' => $y + $height,
+            ],
+            GradientType::INVERSE_DIAGONAL => [
+                'x1' => $x, 'y1' => $y + $height,
+                'x2' => $x + $width, 'y2' => $y,
+            ],
+            GradientType::RADIAL => [
+                'cx' => ($x + $width) / 2, 'cy' => ($y + $height) / 2,
+                'r' => max($width, $height) / 2,
+            ],
+        };
 
-            case GradientType::VERTICAL():
-                $this->xmlWriter->writeAttribute('x1', (string) round($x, self::PRECISION));
-                $this->xmlWriter->writeAttribute('y1', (string) round($y, self::PRECISION));
-                $this->xmlWriter->writeAttribute('x2', (string) round($x, self::PRECISION));
-                $this->xmlWriter->writeAttribute('y2', (string) round($y + $height, self::PRECISION));
-                break;
-
-            case GradientType::DIAGONAL():
-                $this->xmlWriter->writeAttribute('x1', (string) round($x, self::PRECISION));
-                $this->xmlWriter->writeAttribute('y1', (string) round($y, self::PRECISION));
-                $this->xmlWriter->writeAttribute('x2', (string) round($x + $width, self::PRECISION));
-                $this->xmlWriter->writeAttribute('y2', (string) round($y + $height, self::PRECISION));
-                break;
-
-            case GradientType::INVERSE_DIAGONAL():
-                $this->xmlWriter->writeAttribute('x1', (string) round($x, self::PRECISION));
-                $this->xmlWriter->writeAttribute('y1', (string) round($y + $height, self::PRECISION));
-                $this->xmlWriter->writeAttribute('x2', (string) round($x + $width, self::PRECISION));
-                $this->xmlWriter->writeAttribute('y2', (string) round($y, self::PRECISION));
-                break;
-
-            case GradientType::RADIAL():
-                $this->xmlWriter->writeAttribute('cx', (string) round(($x + $width) / 2, self::PRECISION));
-                $this->xmlWriter->writeAttribute('cy', (string) round(($y + $height) / 2, self::PRECISION));
-                $this->xmlWriter->writeAttribute('r', (string) round(max($width, $height) / 2, self::PRECISION));
-                break;
+        foreach ($attributes as $name => $value) {
+            $this->xmlWriter->writeAttribute($name, (string) round($value, self::PRECISION));
         }
 
-        $toBeHashed = $this->getColorString($startColor) . $this->getColorString($endColor) . $gradient->getType();
+        $toBeHashed = $this->getColorString($startColor)
+            . $this->getColorString($endColor)
+            . $gradient->getType()->name;
         if ($startColor instanceof Alpha) {
             $toBeHashed .= (string) $startColor->getAlpha();
         }
