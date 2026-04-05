@@ -56,6 +56,26 @@ $writer = new Writer($renderer);
 $writer->writeFile('Hello World!', 'qrcode.png');
 ```
 
+## Known issues
+
+### ImagickImageBackEnd: white pixel artifacts
+
+When using `ImagickImageBackEnd`, single white pixels may appear inside filled regions. This is
+most visible with margin 0 (where artifacts appear at the image edge), but can in theory occur at
+any position. The cause is a bug in ImageMagick's path fill rasterizer (`GetFillAlpha` in
+`MagickCore/draw.c`): an off-by-one error in the winding number calculation combined with an edge
+skipping bug in the scanline processing can incorrectly classify pixels as outside the polygon.
+
+The bug cannot be reliably worked around in this library:
+
+- **Canvas padding** (rendering on a larger canvas and cropping) does not work because the required
+  padding depends on the scale factor, path complexity, and ImageMagick's internal edge processing
+  state. No fixed padding value is safe for all inputs.
+- **Post-processing** (scanning for and fixing isolated white pixels) risks corrupting legitimate
+  rendering features such as curved module edges.
+
+For artifact-free output, use `SvgImageBackEnd` or `GDLibRenderer` instead.
+
 ## Development
 
 To run unit tests, you need to have [Node.js](https://nodejs.org/en) and the pixelmatch library installed. Running
