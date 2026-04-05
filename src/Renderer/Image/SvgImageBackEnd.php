@@ -31,7 +31,9 @@ final class SvgImageBackEnd implements ImageBackEndInterface
     public function __construct()
     {
         if (! class_exists(XMLWriter::class)) {
-            throw new RuntimeException('You need to install the libxml extension to use this back end');
+            throw new RuntimeException(
+                'You need to install the libxml extension and enable the xmlwriter extension to use this back end'
+            );
         }
     }
 
