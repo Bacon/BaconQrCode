@@ -4,13 +4,31 @@ updates:
     directory: "/"
     schedule:
       interval: monthly
+    groups:
+      composer-minor-patch:
+        update-types:
+          - minor
+          - patch
+      composer-major:
+        update-types:
+          - major
 
   - package-ecosystem: npm
     directory: "/"
     schedule:
       interval: monthly
+    groups:
+      npm-minor-patch:
+        update-types:
+          - minor
+          - patch
+      npm-major:
+        update-types:
+          - major
 
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
       interval: monthly
+    groups:
+      actions-all: {}
