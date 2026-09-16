@@ -74,7 +74,7 @@ final class GDLibRenderingTest extends TestCase
             9,
             Fill::withForegroundGradient(
                 new Alpha(25, new Rgb(0, 0, 0)),
-                new Gradient(new Rgb(255, 255, 0), new Rgb(255, 0, 255), GradientType::DIAGONAL()),
+                new Gradient(new Rgb(255, 255, 0), new Rgb(255, 0, 255), GradientType::DIAGONAL),
                 new EyeFill(new Rgb(220, 50, 50), new Alpha(50, new Rgb(220, 50, 50))),
                 new EyeFill(new Rgb(50, 220, 50), new Alpha(50, new Rgb(50, 220, 50))),
                 new EyeFill(new Rgb(50, 50, 220), new Alpha(50, new Rgb(50, 50, 220))),

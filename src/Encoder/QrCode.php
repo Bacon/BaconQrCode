@@ -89,8 +89,8 @@ final class QrCode
     public function __toString() : string
     {
         $result = "<<\n"
-                . ' mode: ' . $this->mode . "\n"
-                . ' ecLevel: ' . $this->errorCorrectionLevel . "\n"
+                . ' mode: ' . $this->mode->name . "\n"
+                . ' ecLevel: ' . $this->errorCorrectionLevel->name . "\n"
                 . ' version: ' . $this->version . "\n"
                 . ' maskPattern: ' . $this->maskPattern . "\n";
 

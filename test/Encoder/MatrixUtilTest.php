@@ -135,7 +135,7 @@ class MatrixUtilTest extends TestCase
         MatrixUtil::clearMatrix($matrix);
         $this->methods['embedTypeInfo']->invoke(
             null,
-            ErrorCorrectionLevel::M(),
+            ErrorCorrectionLevel::M,
             5,
             $matrix
         );
@@ -256,7 +256,7 @@ class MatrixUtilTest extends TestCase
         $matrix = new ByteMatrix(21, 21);
         MatrixUtil::buildMatrix(
             $bits,
-            ErrorCorrectionLevel::H(),
+            ErrorCorrectionLevel::H,
             Version::getVersionForNumber(1),
             3,
             $matrix
@@ -328,7 +328,7 @@ class MatrixUtilTest extends TestCase
     {
         // From Appendix D in JISX0510:2004 (p 68)
         $bits = new BitArray();
-        $this->methods['makeTypeInfoBits']->invoke(null, ErrorCorrectionLevel::M(), 5, $bits);
+        $this->methods['makeTypeInfoBits']->invoke(null, ErrorCorrectionLevel::M, 5, $bits);
         $this->assertSame(' X......X X..XXX.', (string) $bits);
     }
 }

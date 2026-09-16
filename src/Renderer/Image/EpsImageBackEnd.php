@@ -242,7 +242,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
 
         $this->eps .= "eoclip\n<<\n";
 
-        if ($gradient->getType() === GradientType::RADIAL()) {
+        if ($gradient->getType() === GradientType::RADIAL) {
             $this->eps .= " /ShadingType 3\n";
         } else {
             $this->eps .= " /ShadingType 2\n";
@@ -251,75 +251,53 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         $this->eps .= " /Extend [ true true ]\n"
             . " /AntiAlias true\n";
 
-        switch ($startColorType) {
-            case Cmyk::class:
-                $this->eps .= " /ColorSpace /DeviceCMYK\n";
-                break;
+        $this->eps .= match ($startColorType) {
+            Cmyk::class => " /ColorSpace /DeviceCMYK\n",
+            Rgb::class => " /ColorSpace /DeviceRGB\n",
+            Gray::class => " /ColorSpace /DeviceGray\n",
+        };
 
-            case Rgb::class:
-                $this->eps .= " /ColorSpace /DeviceRGB\n";
-                break;
+        $centerX = ($x + $width) / 2;
+        $centerY = ($y + $height) / 2;
 
-            case Gray::class:
-                $this->eps .= " /ColorSpace /DeviceGray\n";
-                break;
-        }
-
-        switch ($gradient->getType()) {
-            case GradientType::HORIZONTAL():
-                $this->eps .= sprintf(
-                    " /Coords [ %s %s %s %s ]\n",
-                    round($x, self::PRECISION),
-                    round($y, self::PRECISION),
-                    round($x + $width, self::PRECISION),
-                    round($y, self::PRECISION)
-                );
-                break;
-
-            case GradientType::VERTICAL():
-                $this->eps .= sprintf(
-                    " /Coords [ %s %s %s %s ]\n",
-                    round($x, self::PRECISION),
-                    round($y, self::PRECISION),
-                    round($x, self::PRECISION),
-                    round($y + $height, self::PRECISION)
-                );
-                break;
-
-            case GradientType::DIAGONAL():
-                $this->eps .= sprintf(
-                    " /Coords [ %s %s %s %s ]\n",
-                    round($x, self::PRECISION),
-                    round($y, self::PRECISION),
-                    round($x + $width, self::PRECISION),
-                    round($y + $height, self::PRECISION)
-                );
-                break;
-
-            case GradientType::INVERSE_DIAGONAL():
-                $this->eps .= sprintf(
-                    " /Coords [ %s %s %s %s ]\n",
-                    round($x, self::PRECISION),
-                    round($y + $height, self::PRECISION),
-                    round($x + $width, self::PRECISION),
-                    round($y, self::PRECISION)
-                );
-                break;
-
-            case GradientType::RADIAL():
-                $centerX = ($x + $width) / 2;
-                $centerY = ($y + $height) / 2;
-
-                $this->eps .= sprintf(
-                    " /Coords [ %s %s 0 %s %s %s ]\n",
-                    round($centerX, self::PRECISION),
-                    round($centerY, self::PRECISION),
-                    round($centerX, self::PRECISION),
-                    round($centerY, self::PRECISION),
-                    round(max($width, $height) / 2, self::PRECISION)
-                );
-                break;
-        }
+        $this->eps .= match ($gradient->getType()) {
+            GradientType::HORIZONTAL => sprintf(
+                " /Coords [ %s %s %s %s ]\n",
+                round($x, self::PRECISION),
+                round($y, self::PRECISION),
+                round($x + $width, self::PRECISION),
+                round($y, self::PRECISION)
+            ),
+            GradientType::VERTICAL => sprintf(
+                " /Coords [ %s %s %s %s ]\n",
+                round($x, self::PRECISION),
+                round($y, self::PRECISION),
+                round($x, self::PRECISION),
+                round($y + $height, self::PRECISION)
+            ),
+            GradientType::DIAGONAL => sprintf(
+                " /Coords [ %s %s %s %s ]\n",
+                round($x, self::PRECISION),
+                round($y, self::PRECISION),
+                round($x + $width, self::PRECISION),
+                round($y + $height, self::PRECISION)
+            ),
+            GradientType::INVERSE_DIAGONAL => sprintf(
+                " /Coords [ %s %s %s %s ]\n",
+                round($x, self::PRECISION),
+                round($y + $height, self::PRECISION),
+                round($x + $width, self::PRECISION),
+                round($y, self::PRECISION)
+            ),
+            GradientType::RADIAL => sprintf(
+                " /Coords [ %s %s 0 %s %s %s ]\n",
+                round($centerX, self::PRECISION),
+                round($centerY, self::PRECISION),
+                round($centerX, self::PRECISION),
+                round($centerY, self::PRECISION),
+                round(max($width, $height) / 2, self::PRECISION)
+            ),
+        };
 
         $this->eps .= " /Function\n"
             . " <<\n"

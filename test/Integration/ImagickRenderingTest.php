@@ -47,7 +47,7 @@ final class ImagickRenderingTest extends TestCase
         $squareModule = SquareModule::instance();
 
         $eyeFill = new EyeFill(new Rgb(100, 100, 55), new Rgb(100, 100, 255));
-        $gradient = new Gradient(new Rgb(100, 100, 55), new Rgb(100, 100, 255), GradientType::HORIZONTAL());
+        $gradient = new Gradient(new Rgb(100, 100, 55), new Rgb(100, 100, 255), GradientType::HORIZONTAL);
 
         $renderer = new ImageRenderer(
             new RendererStyle(

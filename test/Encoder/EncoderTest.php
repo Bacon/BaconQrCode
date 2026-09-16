@@ -64,43 +64,43 @@ final class EncoderTest extends TestCase
     public function testChooseMode() : void
     {
         // Empty string
-        $this->assertSame(Mode::BYTE(), $this->methods['chooseMode']->invoke(null, ''));
-        $this->assertSame(Mode::BYTE(), $this->methods['chooseMode']->invoke(null, '', 'SHIFT-JIS'));
+        $this->assertSame(Mode::BYTE, $this->methods['chooseMode']->invoke(null, ''));
+        $this->assertSame(Mode::BYTE, $this->methods['chooseMode']->invoke(null, '', 'SHIFT-JIS'));
 
         // Numeric mode
-        $this->assertSame(Mode::NUMERIC(), $this->methods['chooseMode']->invoke(null, '0'));
-        $this->assertSame(Mode::NUMERIC(), $this->methods['chooseMode']->invoke(null, '0123456789'));
+        $this->assertSame(Mode::NUMERIC, $this->methods['chooseMode']->invoke(null, '0'));
+        $this->assertSame(Mode::NUMERIC, $this->methods['chooseMode']->invoke(null, '0123456789'));
 
         // Alphanumeric mode
-        $this->assertSame(Mode::ALPHANUMERIC(), $this->methods['chooseMode']->invoke(null, 'A'));
+        $this->assertSame(Mode::ALPHANUMERIC, $this->methods['chooseMode']->invoke(null, 'A'));
         $this->assertSame(
-            Mode::ALPHANUMERIC(),
+            Mode::ALPHANUMERIC,
             $this->methods['chooseMode']->invoke(null, '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:')
         );
 
         // 8-bit byte mode
-        $this->assertSame(Mode::BYTE(), $this->methods['chooseMode']->invoke(null, 'a'));
-        $this->assertSame(Mode::BYTE(), $this->methods['chooseMode']->invoke(null, '#'));
+        $this->assertSame(Mode::BYTE, $this->methods['chooseMode']->invoke(null, 'a'));
+        $this->assertSame(Mode::BYTE, $this->methods['chooseMode']->invoke(null, '#'));
 
         // AIUE in Hiragana in SHIFT-JIS
-        $this->assertSame(Mode::BYTE(), $this->methods['chooseMode']->invoke(null, "\x8\xa\x8\xa\x8\xa\x8\xa6"));
+        $this->assertSame(Mode::BYTE, $this->methods['chooseMode']->invoke(null, "\x8\xa\x8\xa\x8\xa\x8\xa6"));
 
         // Nihon in Kanji in SHIFT-JIS
-        $this->assertSame(Mode::BYTE(), $this->methods['chooseMode']->invoke(null, "\x9\xf\x9\x7b"));
+        $this->assertSame(Mode::BYTE, $this->methods['chooseMode']->invoke(null, "\x9\xf\x9\x7b"));
 
         // Sou-Utso-Byou in Kanji in SHIFT-JIS
-        $this->assertSame(Mode::BYTE(), $this->methods['chooseMode']->invoke(null, "\xe\x4\x9\x5\x9\x61"));
+        $this->assertSame(Mode::BYTE, $this->methods['chooseMode']->invoke(null, "\xe\x4\x9\x5\x9\x61"));
 
         // SHIFT-JIS encoding, content only consists of double-byte kanji characters
-        $this->assertSame(Mode::KANJI(), $this->methods['chooseMode']->invoke(null, 'あいうえお', 'SHIFT-JIS'));
+        $this->assertSame(Mode::KANJI, $this->methods['chooseMode']->invoke(null, 'あいうえお', 'SHIFT-JIS'));
 
         // SHIFT-JIS encoding, but content doesn't exclusively consist of kanji characters
-        $this->assertSame(Mode::BYTE(), $this->methods['chooseMode']->invoke(null, 'あいうえお123', 'SHIFT-JIS'));
+        $this->assertSame(Mode::BYTE, $this->methods['chooseMode']->invoke(null, 'あいうえお123', 'SHIFT-JIS'));
     }
 
     public function testEncode() : void
     {
-        $qrCode = Encoder::encode('ABCDEF', ErrorCorrectionLevel::H());
+        $qrCode = Encoder::encode('ABCDEF', ErrorCorrectionLevel::H);
         $expected = "<<\n"
             . " mode: ALPHANUMERIC\n"
             . " ecLevel: H\n"
@@ -135,7 +135,7 @@ final class EncoderTest extends TestCase
 
     public function testSimpleUtf8Eci() : void
     {
-        $qrCode = Encoder::encode('hello', ErrorCorrectionLevel::H(), 'utf-8');
+        $qrCode = Encoder::encode('hello', ErrorCorrectionLevel::H, 'utf-8');
         $expected = "<<\n"
             . " mode: BYTE\n"
             . " ecLevel: H\n"
@@ -170,7 +170,7 @@ final class EncoderTest extends TestCase
 
     public function testSimpleUtf8WithoutEci() : void
     {
-        $qrCode = Encoder::encode('hello', ErrorCorrectionLevel::H(), 'utf-8', null, false);
+        $qrCode = Encoder::encode('hello', ErrorCorrectionLevel::H, 'utf-8', null, false);
         $expected = "<<\n"
             . " mode: BYTE\n"
             . " ecLevel: H\n"
@@ -206,7 +206,7 @@ final class EncoderTest extends TestCase
     public function testAppendModeInfo() : void
     {
         $bits = new BitArray();
-        $this->methods['appendModeInfo']->invoke(null, Mode::NUMERIC(), $bits);
+        $this->methods['appendModeInfo']->invoke(null, Mode::NUMERIC, $bits);
         $this->assertSame(' ...X', (string) $bits);
     }
 
@@ -218,7 +218,7 @@ final class EncoderTest extends TestCase
             null,
             1,
             Version::getVersionForNumber(1),
-            Mode::NUMERIC(),
+            Mode::NUMERIC,
             $bits
         );
         $this->assertSame(' ........ .X', (string) $bits);
@@ -229,7 +229,7 @@ final class EncoderTest extends TestCase
             null,
             2,
             Version::getVersionForNumber(10),
-            Mode::ALPHANUMERIC(),
+            Mode::ALPHANUMERIC,
             $bits
         );
         $this->assertSame(' ........ .X.', (string) $bits);
@@ -240,7 +240,7 @@ final class EncoderTest extends TestCase
             null,
             255,
             Version::getVersionForNumber(27),
-            Mode::BYTE(),
+            Mode::BYTE,
             $bits
         );
         $this->assertSame(' ........ XXXXXXXX', (string) $bits);
@@ -251,7 +251,7 @@ final class EncoderTest extends TestCase
             null,
             512,
             Version::getVersionForNumber(40),
-            Mode::KANJI(),
+            Mode::KANJI,
             $bits
         );
         $this->assertSame(' ..X..... ....', (string) $bits);
@@ -265,7 +265,7 @@ final class EncoderTest extends TestCase
         $this->methods['appendBytes']->invoke(
             null,
             '1',
-            Mode::NUMERIC(),
+            Mode::NUMERIC,
             $bits,
             Encoder::DEFAULT_BYTE_MODE_ENCODING
         );
@@ -277,7 +277,7 @@ final class EncoderTest extends TestCase
         $this->methods['appendBytes']->invoke(
             null,
             'A',
-            Mode::ALPHANUMERIC(),
+            Mode::ALPHANUMERIC,
             $bits,
             Encoder::DEFAULT_BYTE_MODE_ENCODING
         );
@@ -289,7 +289,7 @@ final class EncoderTest extends TestCase
         $this->methods['appendBytes']->invoke(
             null,
             'abc',
-            Mode::BYTE(),
+            Mode::BYTE,
             $bits,
             Encoder::DEFAULT_BYTE_MODE_ENCODING
         );
@@ -301,7 +301,7 @@ final class EncoderTest extends TestCase
         $this->methods['appendBytes']->invoke(
             null,
             '点',
-            Mode::KANJI(),
+            Mode::KANJI,
             $bits,
             Encoder::DEFAULT_BYTE_MODE_ENCODING
         );
@@ -312,7 +312,7 @@ final class EncoderTest extends TestCase
         $this->methods['appendBytes']->invoke(
             null,
             'a',
-            Mode::ALPHANUMERIC(),
+            Mode::ALPHANUMERIC,
             $bits,
             Encoder::DEFAULT_BYTE_MODE_ENCODING
         );
