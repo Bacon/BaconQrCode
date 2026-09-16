@@ -5,10 +5,11 @@
     "homepage": "https://github.com/Bacon/BaconQrCode",
     "require": {
         "php": "^8.1",
-        "ext-iconv": "*",
-        "dasprid/enum": "^1.0.3"
+        "dasprid/enum": "^1.0.3",
+        "symfony/polyfill-iconv": "*"
     },
     "suggest": {
+        "ext-iconv": "for faster byte-mode and kanji encoding (a pure-PHP polyfill is used otherwise)",
         "ext-imagick": "to generate QR code images"
     },
     "authors": [
