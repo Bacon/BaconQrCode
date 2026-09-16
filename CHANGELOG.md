@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 This file is automatically maintained by release-please.
 
+## [3.1.2](https://github.com/Bacon/BaconQrCode/compare/v3.1.1...v3.1.2) (2026-09-16)
+
+
+### Miscellaneous Chores
+
+* **deps:** raise PHPUnit 10/11 security minima ([#243](https://github.com/Bacon/BaconQrCode/issues/243)) ([c0c9671](https://github.com/Bacon/BaconQrCode/commit/c0c96714747ba7ae28968726d5ff1c58fbb0ceae))
+
 ## [3.1.1](https://github.com/Bacon/BaconQrCode/compare/v3.1.0...v3.1.1) (2026-04-05)
 
 
