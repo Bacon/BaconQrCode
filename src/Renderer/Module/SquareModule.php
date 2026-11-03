@@ -30,13 +30,16 @@ final class SquareModule implements ModuleInterface
         foreach (new EdgeIterator($matrix) as $edge) {
             $points = $edge->getSimplifiedPoints();
             $length = count($points);
-            $path = $path->move($points[0][0], $points[0][1]);
+
+            // Each operation added to a path copies the ones before it, so every edge is built as a short path of its
+            // own first, rather than one operation at a time onto the whole path
+            $edgePath = (new Path())->move($points[0][0], $points[0][1]);
 
             for ($i = 1; $i < $length; ++$i) {
-                $path = $path->line($points[$i][0], $points[$i][1]);
+                $edgePath = $edgePath->line($points[$i][0], $points[$i][1]);
             }
 
-            $path = $path->close();
+            $path = $path->append($edgePath->close());
         }
 
         return $path;
