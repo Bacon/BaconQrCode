@@ -51,12 +51,15 @@ final class MaskUtil
         $height = $matrix->getHeight();
 
         for ($y = 0; $y < $height - 1; ++$y) {
-            for ($x = 0; $x < $width - 1; ++$x) {
-                $value = $array[$y][$x];
+            $row = $array[$y];
+            $nextRow = $array[$y + 1];
 
-                if ($value === $array[$y][$x + 1]
-                    && $value === $array[$y + 1][$x]
-                    && $value === $array[$y + 1][$x + 1]
+            for ($x = 0; $x < $width - 1; ++$x) {
+                $value = $row[$x];
+
+                if ($value === $row[$x + 1]
+                    && $value === $nextRow[$x]
+                    && $value === $nextRow[$x + 1]
                 ) {
                     ++$penalty;
                 }
@@ -81,29 +84,31 @@ final class MaskUtil
         $height = $matrix->getHeight();
 
         for ($y = 0; $y < $height; ++$y) {
+            $row = $array[$y];
+
             for ($x = 0; $x < $width; ++$x) {
                 if ($x + 6 < $width
-                    && 1 === $array[$y][$x]
-                    && 0 === $array[$y][$x + 1]
-                    && 1 === $array[$y][$x + 2]
-                    && 1 === $array[$y][$x + 3]
-                    && 1 === $array[$y][$x + 4]
-                    && 0 === $array[$y][$x + 5]
-                    && 1 === $array[$y][$x + 6]
+                    && 1 === $row[$x]
+                    && 0 === $row[$x + 1]
+                    && 1 === $row[$x + 2]
+                    && 1 === $row[$x + 3]
+                    && 1 === $row[$x + 4]
+                    && 0 === $row[$x + 5]
+                    && 1 === $row[$x + 6]
                     && (
                         (
                             $x + 10 < $width
-                            && 0 === $array[$y][$x + 7]
-                            && 0 === $array[$y][$x + 8]
-                            && 0 === $array[$y][$x + 9]
-                            && 0 === $array[$y][$x + 10]
+                            && 0 === $row[$x + 7]
+                            && 0 === $row[$x + 8]
+                            && 0 === $row[$x + 9]
+                            && 0 === $row[$x + 10]
                         )
                         || (
                             $x - 4 >= 0
-                            && 0 === $array[$y][$x - 1]
-                            && 0 === $array[$y][$x - 2]
-                            && 0 === $array[$y][$x - 3]
-                            && 0 === $array[$y][$x - 4]
+                            && 0 === $row[$x - 1]
+                            && 0 === $row[$x - 2]
+                            && 0 === $row[$x - 3]
+                            && 0 === $row[$x - 4]
                         )
                     )
                 ) {
@@ -111,7 +116,7 @@ final class MaskUtil
                 }
 
                 if ($y + 6 < $height
-                    && 1 === $array[$y][$x]
+                    && 1 === $row[$x]
                     && 0 === $array[$y + 1][$x]
                     && 1 === $array[$y + 2][$x]
                     && 1 === $array[$y + 3][$x]
