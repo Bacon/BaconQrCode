@@ -86,9 +86,9 @@ final class ByteMatrix
      */
     public function clear(int $value) : void
     {
-        for ($y = 0; $y < $this->height; ++$y) {
+        foreach ($this->bytes as $row) {
             for ($x = 0; $x < $this->width; ++$x) {
-                $this->bytes[$y][$x] = $value;
+                $row[$x] = $value;
             }
         }
     }
