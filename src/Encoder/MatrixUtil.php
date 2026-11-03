@@ -459,10 +459,13 @@ final class MatrixUtil
     {
         $bitIndex = 0;
         $direction = -1;
+        $numBits = $dataBits->getSize();
+        $height = $matrix->getHeight();
+        $rows = $matrix->getArray();
 
         // Start from the right bottom cell.
         $x = $matrix->getWidth() - 1;
-        $y = $matrix->getHeight() - 1;
+        $y = $height - 1;
 
         while ($x > 0) {
             // Skip vertical timing pattern.
@@ -470,16 +473,18 @@ final class MatrixUtil
                 --$x;
             }
 
-            while ($y >= 0 && $y < $matrix->getHeight()) {
+            while ($y >= 0 && $y < $height) {
+                $row = $rows[$y];
+
                 for ($i = 0; $i < 2; $i++) {
                     $xx = $x - $i;
 
                     // Skip the cell if it's not empty.
-                    if (-1 !== $matrix->get($xx, $y)) {
+                    if (-1 !== $row[$xx]) {
                         continue;
                     }
 
-                    if ($bitIndex < $dataBits->getSize()) {
+                    if ($bitIndex < $numBits) {
                         $bit = $dataBits->get($bitIndex);
                         ++$bitIndex;
                     } else {
@@ -494,7 +499,7 @@ final class MatrixUtil
                         $bit = ! $bit;
                     }
 
-                    $matrix->set($xx, $y, (int) $bit);
+                    $row[$xx] = (int) $bit;
                 }
 
                 $y += $direction;
