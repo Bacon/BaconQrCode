@@ -122,10 +122,11 @@ final class EdgeIterator implements IteratorAggregate
             }
 
             $x = $points[$i][0];
-            $minY = min($y1, $y);
+            $offset = $this->width * min($y1, $y);
 
-            for ($j = $x; $j < $maxX; ++$j) {
-                $this->flip($j, $minY);
+            // The cells flipped here are always inside of the matrix, so they need no bounds checks
+            for ($j = $offset + $x, $end = $offset + $maxX; $j < $end; ++$j) {
+                $this->bytes[$j] = 1 === $this->bytes[$j] ? 0 : 1;
             }
 
             $y1 = $y;
@@ -149,12 +150,5 @@ final class EdgeIterator implements IteratorAggregate
     {
         $y = intdiv($i, $this->width);
         return [$i - $y * $this->width, $y];
-    }
-
-    private function flip(int $x, int $y) : void
-    {
-        $this->bytes[$this->width * $y + $x] = (
-            $this->isSet($x, $y) ? 0 : 1
-        );
     }
 }
