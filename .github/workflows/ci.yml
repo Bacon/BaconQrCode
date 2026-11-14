@@ -67,8 +67,52 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./clover.xml
 
+  # Runs the whole suite with ext-iconv removed, proving the library works with
+  # neither ext-iconv nor ext-mbstring by falling back to the pure-PHP
+  # symfony/polyfill-iconv. The polyfill only activates when iconv is genuinely
+  # absent (not merely disabled via disable_functions), so the extension is
+  # dropped with setup-php's ":iconv". If a runner has iconv compiled into core
+  # and can't drop it, the suite is skipped with a warning rather than giving a
+  # misleading pass.
+  test-without-iconv:
+    name: Tests without ext-iconv (PHP ${{ matrix.php-versions }})
+    strategy:
+      fail-fast: false
+      matrix:
+        php-versions: ['8.1', '8.5']
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup PHP without iconv
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: :iconv, imagick, gd
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Install PHP dependencies
+        run: composer install --no-progress --prefer-dist --optimize-autoloader
+
+      - name: Install Node dependencies
+        run: npm install
+
+      - name: Test with phpunit (polyfill-iconv path)
+        run: |
+          if php -r 'exit(extension_loaded("iconv") ? 1 : 0);'; then
+            echo "ext-iconv is absent; conversions use the pure-PHP polyfill."
+            php -r 'require "vendor/autoload.php"; $r = new ReflectionFunction("iconv"); if ($r->isInternal()) { fwrite(STDERR, "Expected the polyfill iconv(), got a native one\n"); exit(1); } echo "iconv() is provided by symfony/polyfill-iconv\n";'
+            vendor/bin/phpunit
+          else
+            echo "::warning::ext-iconv is compiled into core on this runner and could not be removed; skipping the no-iconv suite."
+          fi
+
   release:
-    needs: [lint, test]
+    needs: [lint, test, test-without-iconv]
     runs-on: ubuntu-latest
     steps:
       - uses: googleapis/release-please-action@v4
