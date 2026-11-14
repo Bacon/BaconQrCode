@@ -225,7 +225,7 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
         $gradientImage = new Imagick();
 
         switch ($gradient->getType()) {
-            case GradientType::HORIZONTAL():
+            case GradientType::HORIZONTAL:
                 $gradientImage->newPseudoImage((int) $height, (int) $width, sprintf(
                     'gradient:%s-%s',
                     $startColor,
@@ -234,7 +234,7 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
                 $gradientImage->rotateImage('transparent', -90);
                 break;
 
-            case GradientType::VERTICAL():
+            case GradientType::VERTICAL:
                 $gradientImage->newPseudoImage((int) $width, (int) $height, sprintf(
                     'gradient:%s-%s',
                     $startColor,
@@ -242,15 +242,15 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
                 ));
                 break;
 
-            case GradientType::DIAGONAL():
-            case GradientType::INVERSE_DIAGONAL():
+            case GradientType::DIAGONAL:
+            case GradientType::INVERSE_DIAGONAL:
                 $gradientImage->newPseudoImage((int) ($width * sqrt(2)), (int) ($height * sqrt(2)), sprintf(
                     'gradient:%s-%s',
                     $startColor,
                     $endColor
                 ));
 
-                if (GradientType::DIAGONAL() === $gradient->getType()) {
+                if (GradientType::DIAGONAL === $gradient->getType()) {
                     $gradientImage->rotateImage('transparent', -45);
                 } else {
                     $gradientImage->rotateImage('transparent', -135);
@@ -268,7 +268,7 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
                 );
                 break;
 
-            case GradientType::RADIAL():
+            case GradientType::RADIAL:
                 $gradientImage->newPseudoImage((int) $width, (int) $height, sprintf(
                     'radial-gradient:%s-%s',
                     $startColor,

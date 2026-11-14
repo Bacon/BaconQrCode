@@ -47,10 +47,10 @@ class VersionTest extends TestCase
         }
 
         $this->assertEquals($dimension, $version->getDimensionForVersion());
-        $this->assertNotNull($version->getEcBlocksForLevel(ErrorCorrectionLevel::H()));
-        $this->assertNotNull($version->getEcBlocksForLevel(ErrorCorrectionLevel::L()));
-        $this->assertNotNull($version->getEcBlocksForLevel(ErrorCorrectionLevel::M()));
-        $this->assertNotNull($version->getEcBlocksForLevel(ErrorCorrectionLevel::Q()));
+        $this->assertNotNull($version->getEcBlocksForLevel(ErrorCorrectionLevel::H));
+        $this->assertNotNull($version->getEcBlocksForLevel(ErrorCorrectionLevel::L));
+        $this->assertNotNull($version->getEcBlocksForLevel(ErrorCorrectionLevel::M));
+        $this->assertNotNull($version->getEcBlocksForLevel(ErrorCorrectionLevel::Q));
         $this->assertNotNull($version->buildFunctionPattern());
     }
 

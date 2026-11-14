@@ -40,7 +40,7 @@ final class Writer
         }
 
         if (null === $ecLevel) {
-            $ecLevel = ErrorCorrectionLevel::L();
+            $ecLevel = ErrorCorrectionLevel::L;
         }
 
         return $this->renderer->render(Encoder::encode($content, $ecLevel, $encoding, $forcedVersion));

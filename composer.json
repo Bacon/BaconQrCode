@@ -5,8 +5,7 @@
     "homepage": "https://github.com/Bacon/BaconQrCode",
     "require": {
         "php": "^8.1",
-        "ext-iconv": "*",
-        "dasprid/enum": "^1.0.3"
+        "ext-iconv": "*"
     },
     "suggest": {
         "ext-imagick": "to generate QR code images"
